@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, ShoppingBag } from "lucide-react";
+import { Menu, Search, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 
@@ -28,13 +28,13 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Navbar becomes more visible after hero interaction or scroll
-  const isActive = isHeroComplete || isScrolled;
+  // Full navbar becomes visible after hero interaction or scroll
+  const showFullNav = isHeroComplete || isScrolled;
 
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isActive
+        showFullNav
           ? "bg-background/80 backdrop-blur-md shadow-organic border-b border-border"
           : "bg-transparent"
       }`}
@@ -44,34 +44,30 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
     >
       <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
+          {/* Logo - always visible */}
           <motion.a
             href="/"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 z-10"
             whileHover={{ scale: 1.02 }}
           >
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-organic">
               <span className="text-primary-foreground font-serif text-lg">S</span>
             </div>
-            <span
-              className={`font-serif text-xl transition-opacity duration-300 ${
-                isActive ? "opacity-100" : "opacity-70"
-              }`}
-            >
+            <span className="font-serif text-xl text-foreground">
               Stencil Studio
             </span>
           </motion.a>
 
-          {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            <AnimatePresence>
-              {isActive && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-6"
-                >
+          {/* Desktop navigation - only visible after hero complete or scroll */}
+          <AnimatePresence>
+            {showFullNav && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="hidden lg:flex items-center gap-8"
+              >
+                <div className="flex items-center gap-6">
                   {navLinks.map((link, index) => (
                     <motion.a
                       key={link.href}
@@ -85,15 +81,15 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
                     </motion.a>
                   ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          {/* Right side actions */}
+          {/* Right side actions - only visible after hero complete or scroll */}
           <div className="flex items-center gap-4">
             <AnimatePresence>
-              {isActive && (
+              {showFullNav && (
                 <>
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -119,41 +115,51 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
               )}
             </AnimatePresence>
 
-            {/* Mobile menu */}
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Menu className="w-5 h-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] bg-background">
-                <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
-                <nav className="flex flex-col gap-6">
-                  {navLinks.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="text-lg font-sans text-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                  <hr className="border-border my-4" />
-                  <div className="flex gap-4">
-                    <Button variant="outline" size="icon">
-                      <Search className="w-5 h-5" />
-                    </Button>
-                    <Button variant="outline" size="icon" className="relative">
-                      <ShoppingBag className="w-5 h-5" />
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                        0
-                      </span>
-                    </Button>
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
+            {/* Mobile menu - only visible after hero complete or scroll */}
+            <AnimatePresence>
+              {showFullNav && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                >
+                  <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                    <SheetTrigger asChild className="lg:hidden">
+                      <Button variant="ghost" size="icon" className="relative">
+                        <Menu className="w-5 h-5" />
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-[300px] bg-background">
+                      <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
+                      <nav className="flex flex-col gap-6">
+                        {navLinks.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setIsOpen(false)}
+                            className="text-lg font-sans text-foreground hover:text-primary transition-colors"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                        <hr className="border-border my-4" />
+                        <div className="flex gap-4">
+                          <Button variant="outline" size="icon">
+                            <Search className="w-5 h-5" />
+                          </Button>
+                          <Button variant="outline" size="icon" className="relative">
+                            <ShoppingBag className="w-5 h-5" />
+                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                              0
+                            </span>
+                          </Button>
+                        </div>
+                      </nav>
+                    </SheetContent>
+                  </Sheet>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </nav>

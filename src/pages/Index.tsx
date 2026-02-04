@@ -9,14 +9,18 @@ import {
   Footer,
 } from "@/components/sections";
 
+type Phase = "curiosity" | "relief" | "confidence";
+
 const Index = () => {
-  const [isHeroComplete, setIsHeroComplete] = useState(false);
+  const [heroPhase, setHeroPhase] = useState<Phase>("curiosity");
+
+  const isHeroComplete = heroPhase === "confidence";
 
   return (
     <div className="min-h-screen bg-background scroll-smooth">
       <Navbar isHeroComplete={isHeroComplete} />
       <main>
-        <HeroExperience />
+        <HeroExperience onPhaseChange={setHeroPhase} />
         <FeaturesSection />
         <CollectionSection />
         <TestimonialsSection />
