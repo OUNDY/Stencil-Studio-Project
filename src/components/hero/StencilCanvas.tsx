@@ -1,14 +1,14 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
 import wallPainted from "@/assets/wall-painted.png";
 
-interface BrushPoint {
-  x: number;
-  y: number;
-  radius: number;
+interface BrushStroke {
+  points: { x: number; y: number }[];
+  width: number;
   opacity: number;
   createdAt: number;
+  angle: number;
 }
 
 interface StencilCanvasProps {
@@ -16,25 +16,110 @@ interface StencilCanvasProps {
   onExplorationComplete: () => void;
 }
 
-const BRUSH_RADIUS = 80;
-const FADE_DURATION = 25000; // 25 seconds to fully fade
-const FADE_START_DELAY = 5000; // Start fading after 5 seconds of inactivity
+const BRUSH_WIDTH = 60;
+const FADE_DURATION = 25000;
+const FADE_START_DELAY = 5000;
 
 export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: StencilCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const brushPointsRef = useRef<BrushPoint[]>([]);
+  const brushTextureRef = useRef<HTMLCanvasElement | null>(null);
+  const strokesRef = useRef<BrushStroke[]>([]);
+  const currentStrokeRef = useRef<BrushStroke | null>(null);
   const hasInteractedRef = useRef(false);
   const interactionCountRef = useRef(0);
   const animationFrameRef = useRef<number>();
   const lastPosRef = useRef({ x: 0, y: 0 });
-  const imagesLoadedRef = useRef({ empty: false, painted: false });
+  const isDrawingRef = useRef(false);
   const emptyImageRef = useRef<HTMLImageElement | null>(null);
   const paintedImageRef = useRef<HTMLImageElement | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [showHint, setShowHint] = useState(true);
+  const [revealProgress, setRevealProgress] = useState(0);
 
-  const addBrushPoint = useCallback((clientX: number, clientY: number) => {
+  // Create brush texture for organic look
+  const createBrushTexture = useCallback(() => {
+    const size = 128;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    // Create organic brush shape
+    ctx.fillStyle = "white";
+    
+    // Main ellipse shape
+    ctx.beginPath();
+    ctx.ellipse(size / 2, size / 2, size / 2.2, size / 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Add bristle texture
+    for (let i = 0; i < 40; i++) {
+      const x = Math.random() * size;
+      const y = size / 2 + (Math.random() - 0.5) * size / 2;
+      const length = 10 + Math.random() * 20;
+      const width = 1 + Math.random() * 3;
+      
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((Math.random() - 0.5) * 0.5);
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.random() * 0.4})`;
+      ctx.fillRect(-width / 2, -length / 2, width, length);
+      ctx.restore();
+    }
+
+    // Soft edges
+    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    gradient.addColorStop(0.6, "rgba(255, 255, 255, 0)");
+    gradient.addColorStop(1, "rgba(0, 0, 0, 1)");
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+
+    return canvas;
+  }, []);
+
+  const drawBrushStroke = useCallback((ctx: CanvasRenderingContext2D, stroke: BrushStroke) => {
+    if (stroke.points.length < 2 || !brushTextureRef.current) return;
+
+    ctx.save();
+    ctx.globalAlpha = stroke.opacity;
+
+    for (let i = 1; i < stroke.points.length; i++) {
+      const p0 = stroke.points[i - 1];
+      const p1 = stroke.points[i];
+      
+      const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+      const distance = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+      const steps = Math.max(1, Math.floor(distance / 8));
+
+      for (let j = 0; j <= steps; j++) {
+        const t = j / steps;
+        const x = p0.x + (p1.x - p0.x) * t;
+        const y = p0.y + (p1.y - p0.y) * t;
+        
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        
+        // Vary brush size slightly for organic feel
+        const scale = stroke.width * (0.9 + Math.random() * 0.2);
+        ctx.drawImage(
+          brushTextureRef.current,
+          -scale / 2,
+          -scale / 4,
+          scale,
+          scale / 2
+        );
+        ctx.restore();
+      }
+    }
+
+    ctx.restore();
+  }, []);
+
+  const addPoint = useCallback((clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -44,67 +129,96 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     
     const x = (clientX - rect.left) * scaleX;
     const y = (clientY - rect.top) * scaleY;
+
+    if (!currentStrokeRef.current) {
+      const angle = Math.atan2(y - lastPosRef.current.y, x - lastPosRef.current.x);
+      currentStrokeRef.current = {
+        points: [{ x, y }],
+        width: BRUSH_WIDTH + Math.random() * 20,
+        opacity: 1,
+        createdAt: Date.now(),
+        angle,
+      };
+    } else {
+      currentStrokeRef.current.points.push({ x, y });
+    }
+
+    lastPosRef.current = { x, y };
+
+    if (!hasInteractedRef.current) {
+      hasInteractedRef.current = true;
+      setShowHint(false);
+      onFirstInteraction();
+    }
+
+    interactionCountRef.current++;
+    setRevealProgress(Math.min(100, interactionCountRef.current / 2));
     
-    const distance = Math.hypot(x - lastPosRef.current.x, y - lastPosRef.current.y);
-    
-    if (distance > 15) {
-      // Add intermediate points for smooth strokes
-      const steps = Math.ceil(distance / 15);
-      for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
-        const px = lastPosRef.current.x + (x - lastPosRef.current.x) * t;
-        const py = lastPosRef.current.y + (y - lastPosRef.current.y) * t;
-        
-        brushPointsRef.current.push({
-          x: px,
-          y: py,
-          radius: BRUSH_RADIUS + Math.random() * 20,
-          opacity: 1,
-          createdAt: Date.now(),
-        });
-      }
-      
-      lastPosRef.current = { x, y };
-      
-      if (!hasInteractedRef.current) {
-        hasInteractedRef.current = true;
-        setShowHint(false);
-        onFirstInteraction();
-      }
-      
-      interactionCountRef.current++;
-      if (interactionCountRef.current === 50) {
-        onExplorationComplete();
-      }
+    if (interactionCountRef.current === 100) {
+      onExplorationComplete();
     }
   }, [onFirstInteraction, onExplorationComplete]);
 
+  const endStroke = useCallback(() => {
+    if (currentStrokeRef.current && currentStrokeRef.current.points.length > 1) {
+      strokesRef.current.push(currentStrokeRef.current);
+    }
+    currentStrokeRef.current = null;
+    isDrawingRef.current = false;
+  }, []);
+
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    addBrushPoint(e.clientX, e.clientY);
-  }, [addBrushPoint]);
+    if (e.buttons === 1 || isDrawingRef.current) {
+      isDrawingRef.current = true;
+      addPoint(e.clientX, e.clientY);
+    }
+  }, [addPoint]);
+
+  const handleMouseDown = useCallback((e: MouseEvent) => {
+    isDrawingRef.current = true;
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      lastPosRef.current = {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY,
+      };
+    }
+    addPoint(e.clientX, e.clientY);
+  }, [addPoint]);
+
+  const handleMouseUp = useCallback(() => {
+    endStroke();
+  }, [endStroke]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (e.touches.length > 0) {
       e.preventDefault();
-      addBrushPoint(e.touches[0].clientX, e.touches[0].clientY);
+      addPoint(e.touches[0].clientX, e.touches[0].clientY);
     }
-  }, [addBrushPoint]);
+  }, [addPoint]);
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (e.touches.length > 0) {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      
-      lastPosRef.current = {
-        x: (e.touches[0].clientX - rect.left) * scaleX,
-        y: (e.touches[0].clientY - rect.top) * scaleY,
-      };
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        lastPosRef.current = {
+          x: (e.touches[0].clientX - rect.left) * scaleX,
+          y: (e.touches[0].clientY - rect.top) * scaleY,
+        };
+      }
+      addPoint(e.touches[0].clientX, e.touches[0].clientY);
     }
-  }, []);
+  }, [addPoint]);
+
+  const handleTouchEnd = useCallback(() => {
+    endStroke();
+  }, [endStroke]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -113,37 +227,38 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Create brush texture
+    brushTextureRef.current = createBrushTexture();
+
     // Create mask canvas
     maskCanvasRef.current = document.createElement("canvas");
-    const maskCtx = maskCanvasRef.current.getContext("2d");
-    if (!maskCtx) return;
 
     // Load images
     const emptyImg = new Image();
     const paintedImg = new Image();
+    let loadedCount = 0;
 
-    emptyImg.onload = () => {
-      emptyImageRef.current = emptyImg;
-      imagesLoadedRef.current.empty = true;
-      checkImagesLoaded();
-    };
-
-    paintedImg.onload = () => {
-      paintedImageRef.current = paintedImg;
-      imagesLoadedRef.current.painted = true;
-      checkImagesLoaded();
-    };
-
-    emptyImg.src = wallEmpty;
-    paintedImg.src = wallPainted;
-
-    const checkImagesLoaded = () => {
-      if (imagesLoadedRef.current.empty && imagesLoadedRef.current.painted) {
+    const checkLoaded = () => {
+      loadedCount++;
+      if (loadedCount === 2) {
         setIsReady(true);
         resize();
         startAnimation();
       }
     };
+
+    emptyImg.onload = () => {
+      emptyImageRef.current = emptyImg;
+      checkLoaded();
+    };
+
+    paintedImg.onload = () => {
+      paintedImageRef.current = paintedImg;
+      checkLoaded();
+    };
+
+    emptyImg.src = wallEmpty;
+    paintedImg.src = wallPainted;
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -163,9 +278,13 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
     const startAnimation = () => {
       window.addEventListener("resize", resize);
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("touchmove", handleTouchMove, { passive: false });
-      window.addEventListener("touchstart", handleTouchStart);
+      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.addEventListener("mouseup", handleMouseUp);
+      canvas.addEventListener("mouseleave", handleMouseUp);
+      canvas.addEventListener("touchstart", handleTouchStart);
+      canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+      canvas.addEventListener("touchend", handleTouchEnd);
       animate();
     };
 
@@ -180,57 +299,42 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
       const now = Date.now();
 
-      // Clear mask canvas
+      // Clear mask
       maskCtx.clearRect(0, 0, maskCanvasRef.current.width, maskCanvasRef.current.height);
 
-      // Update and draw brush points on mask
-      brushPointsRef.current = brushPointsRef.current.filter(point => {
-        const age = now - point.createdAt;
+      // Update and draw strokes
+      strokesRef.current = strokesRef.current.filter(stroke => {
+        const age = now - stroke.createdAt;
         
         if (age > FADE_START_DELAY) {
           const fadeProgress = (age - FADE_START_DELAY) / FADE_DURATION;
-          point.opacity = Math.max(0, 1 - fadeProgress);
+          stroke.opacity = Math.max(0, 1 - fadeProgress);
         }
         
-        return point.opacity > 0;
+        return stroke.opacity > 0;
       });
 
-      // Draw brush strokes on mask
-      brushPointsRef.current.forEach(point => {
-        const gradient = maskCtx.createRadialGradient(
-          point.x, point.y, 0,
-          point.x, point.y, point.radius
-        );
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${point.opacity})`);
-        gradient.addColorStop(0.6, `rgba(255, 255, 255, ${point.opacity * 0.5})`);
-        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-        maskCtx.fillStyle = gradient;
-        maskCtx.beginPath();
-        maskCtx.arc(point.x, point.y, point.radius, 0, Math.PI * 2);
-        maskCtx.fill();
+      // Draw all strokes on mask
+      strokesRef.current.forEach(stroke => {
+        drawBrushStroke(maskCtx, stroke);
       });
 
-      // Draw empty wall as background
-      ctx.drawImage(emptyImageRef.current, 0, 0, canvas.width, canvas.height);
+      // Draw current stroke
+      if (currentStrokeRef.current) {
+        drawBrushStroke(maskCtx, currentStrokeRef.current);
+      }
 
-      // Draw painted wall with mask
-      ctx.save();
-      ctx.globalCompositeOperation = "source-over";
-      
-      // Create clipping from mask
-      const maskData = maskCtx.getImageData(0, 0, canvas.width, canvas.height);
+      // Composite final image
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Draw painted image
       ctx.drawImage(paintedImageRef.current, 0, 0, canvas.width, canvas.height);
       
-      // Apply mask using destination-in
+      // Apply mask
       ctx.globalCompositeOperation = "destination-in";
       ctx.drawImage(maskCanvasRef.current, 0, 0);
       
-      ctx.restore();
-
-      // Redraw empty wall underneath
+      // Draw empty wall underneath
       ctx.globalCompositeOperation = "destination-over";
       ctx.drawImage(emptyImageRef.current, 0, 0, canvas.width, canvas.height);
       ctx.globalCompositeOperation = "source-over";
@@ -240,21 +344,25 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("mousedown", handleMouseDown);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseup", handleMouseUp);
+      canvas.removeEventListener("mouseleave", handleMouseUp);
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener("touchend", handleTouchEnd);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [handleMouseMove, handleTouchMove, handleTouchStart]);
+  }, [createBrushTexture, drawBrushStroke, handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <>
-      {/* Canvas for stencil reveal effect */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-[2] cursor-crosshair"
+        className="fixed inset-0 z-[2]"
+        style={{ cursor: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"12\" fill=\"none\" stroke=\"%23666\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/></svg>') 16 16, crosshair" }}
       />
 
       {/* Loading state */}
@@ -268,17 +376,77 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         </div>
       )}
 
-      {/* Hint text - fades after interaction */}
-      <motion.div
-        className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[5] pointer-events-none"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: showHint && isReady ? 0.7 : 0, y: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-      >
-        <p className="text-sm text-muted-foreground font-sans tracking-wide bg-background/50 backdrop-blur-sm px-4 py-2 rounded-full">
-          duvarı boyamaya başla...
-        </p>
-      </motion.div>
+      {/* Minimal guidance overlay */}
+      <AnimatePresence>
+        {isReady && (
+          <motion.div
+            className="fixed inset-0 z-[4] pointer-events-none flex flex-col items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            {/* Brand mark */}
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: showHint ? 0.15 : 0.05, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="text-center">
+                <h1 className="font-serif text-6xl md:text-8xl lg:text-9xl text-foreground tracking-tight">
+                  Stencil
+                </h1>
+                <p className="font-sans text-lg md:text-xl text-muted-foreground mt-2 tracking-[0.3em] uppercase">
+                  Studio
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Hint text */}
+            <motion.div
+              className="absolute bottom-20 left-1/2 -translate-x-1/2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: showHint ? 1 : 0, y: showHint ? 0 : 10 }}
+              transition={{ delay: 1.5, duration: 0.6 }}
+            >
+              <div className="flex flex-col items-center gap-3">
+                <motion.div
+                  className="w-8 h-8 rounded-full border border-muted-foreground/40 flex items-center justify-center"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <motion.div
+                    className="w-1.5 h-1.5 rounded-full bg-primary"
+                    animate={{ x: [-4, 4, -4], y: [-2, 2, -2] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                </motion.div>
+                <p className="text-sm text-muted-foreground/70 font-sans">
+                  tıkla ve sürükle
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Progress indicator - subtle */}
+            <motion.div
+              className="absolute bottom-8 left-1/2 -translate-x-1/2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: revealProgress > 0 ? 0.6 : 0 }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-24 h-0.5 bg-muted-foreground/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-primary/60 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${revealProgress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
