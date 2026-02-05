@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Search, ShoppingBag } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { SearchPopover } from "./SearchPopover";
+import { ProfileDropdown } from "./ProfileDropdown";
 
 interface NavbarProps {
   isHeroComplete?: boolean;
@@ -89,30 +91,27 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
           </AnimatePresence>
 
           {/* Right side actions - only visible after hero complete or scroll */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <AnimatePresence>
               {showFullNav && (
                 <>
-                  <motion.button
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="hidden lg:flex w-10 h-10 items-center justify-center rounded-full hover:bg-accent transition-colors"
+                    className="hidden lg:block"
                   >
-                    <Search className="w-5 h-5 text-muted-foreground" />
-                  </motion.button>
-                  <motion.button
+                    <SearchPopover />
+                  </motion.div>
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ delay: 0.05 }}
-                    className="hidden lg:flex w-10 h-10 items-center justify-center rounded-full hover:bg-accent transition-colors relative"
+                    className="hidden lg:block"
                   >
-                    <ShoppingBag className="w-5 h-5 text-muted-foreground" />
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                      0
-                    </span>
-                  </motion.button>
+                    <ProfileDropdown />
+                  </motion.div>
                 </>
               )}
             </AnimatePresence>
@@ -144,18 +143,6 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                             {link.label}
                           </Link>
                         ))}
-                        <hr className="border-border my-4" />
-                        <div className="flex gap-4">
-                          <Button variant="outline" size="icon">
-                            <Search className="w-5 h-5" />
-                          </Button>
-                          <Button variant="outline" size="icon" className="relative">
-                            <ShoppingBag className="w-5 h-5" />
-                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                              0
-                            </span>
-                          </Button>
-                        </div>
                       </nav>
                     </SheetContent>
                   </Sheet>
