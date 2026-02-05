@@ -37,45 +37,58 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
   const [showHint, setShowHint] = useState(true);
   const [revealProgress, setRevealProgress] = useState(0);
 
-  // Create brush texture for organic look
+  // Create rectangular brush texture with bristles
   const createBrushTexture = useCallback(() => {
-    const size = 128;
+    const width = 120;
+    const height = 40;
     const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = width;
+    canvas.height = height;
     const ctx = canvas.getContext("2d");
     if (!ctx) return null;
 
-    // Create organic brush shape
-    ctx.fillStyle = "white";
-    
-    // Main ellipse shape
-    ctx.beginPath();
-    ctx.ellipse(size / 2, size / 2, size / 2.2, size / 4, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Clear with transparency
+    ctx.clearRect(0, 0, width, height);
 
-    // Add bristle texture
-    for (let i = 0; i < 40; i++) {
-      const x = Math.random() * size;
-      const y = size / 2 + (Math.random() - 0.5) * size / 2;
-      const length = 10 + Math.random() * 20;
-      const width = 1 + Math.random() * 3;
+    // Create rectangular brush base with soft edges
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.3)");
+    gradient.addColorStop(0.2, "rgba(255, 255, 255, 0.9)");
+    gradient.addColorStop(0.8, "rgba(255, 255, 255, 0.9)");
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0.3)");
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // Add bristle lines following brush direction (horizontal)
+    for (let i = 0; i < 60; i++) {
+      const x = Math.random() * width;
+      const y = 4 + Math.random() * (height - 8);
+      const bristleLength = 15 + Math.random() * 25;
+      const bristleWidth = 0.5 + Math.random() * 1.5;
       
       ctx.save();
       ctx.translate(x, y);
-      ctx.rotate((Math.random() - 0.5) * 0.5);
-      ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.random() * 0.4})`;
-      ctx.fillRect(-width / 2, -length / 2, width, length);
+      // Bristles follow horizontal direction with slight variation
+      ctx.rotate((Math.random() - 0.5) * 0.15);
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + Math.random() * 0.5})`;
+      ctx.fillRect(-bristleLength / 2, -bristleWidth / 2, bristleLength, bristleWidth);
       ctx.restore();
     }
 
-    // Soft edges
-    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    gradient.addColorStop(0.6, "rgba(255, 255, 255, 0)");
-    gradient.addColorStop(1, "rgba(0, 0, 0, 1)");
+    // Add edge softness
+    const edgeGradientLeft = ctx.createLinearGradient(0, 0, 20, 0);
+    edgeGradientLeft.addColorStop(0, "rgba(0, 0, 0, 1)");
+    edgeGradientLeft.addColorStop(1, "rgba(0, 0, 0, 0)");
     ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = edgeGradientLeft;
+    ctx.fillRect(0, 0, 20, height);
+
+    const edgeGradientRight = ctx.createLinearGradient(width - 20, 0, width, 0);
+    edgeGradientRight.addColorStop(0, "rgba(0, 0, 0, 0)");
+    edgeGradientRight.addColorStop(1, "rgba(0, 0, 0, 1)");
+    ctx.fillStyle = edgeGradientRight;
+    ctx.fillRect(width - 20, 0, 20, height);
 
     return canvas;
   }, []);
@@ -86,13 +99,18 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     ctx.save();
     ctx.globalAlpha = stroke.opacity;
 
+    const brushCanvas = brushTextureRef.current;
+    const brushWidth = brushCanvas.width;
+    const brushHeight = brushCanvas.height;
+
     for (let i = 1; i < stroke.points.length; i++) {
       const p0 = stroke.points[i - 1];
       const p1 = stroke.points[i];
       
+      // Calculate angle based on movement direction
       const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
       const distance = Math.hypot(p1.x - p0.x, p1.y - p0.y);
-      const steps = Math.max(1, Math.floor(distance / 8));
+      const steps = Math.max(1, Math.floor(distance / 6));
 
       for (let j = 0; j <= steps; j++) {
         const t = j / steps;
@@ -101,16 +119,19 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         
         ctx.save();
         ctx.translate(x, y);
+        // Rotate brush to follow movement direction
         ctx.rotate(angle);
         
-        // Vary brush size slightly for organic feel
-        const scale = stroke.width * (0.9 + Math.random() * 0.2);
+        // Scale brush with slight variation for realism
+        const scaleX = stroke.width * (0.95 + Math.random() * 0.1);
+        const scaleY = stroke.width * 0.35 * (0.9 + Math.random() * 0.2);
+        
         ctx.drawImage(
-          brushTextureRef.current,
-          -scale / 2,
-          -scale / 4,
-          scale,
-          scale / 2
+          brushCanvas,
+          -scaleX / 2,
+          -scaleY / 2,
+          scaleX,
+          scaleY
         );
         ctx.restore();
       }
@@ -385,21 +406,16 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            {/* Brand mark */}
+            {/* Brand mark - centered "Stencil" */}
             <motion.div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: showHint ? 0.15 : 0.05, scale: 1 }}
+              animate={{ opacity: showHint ? 0.12 : 0.04, scale: 1 }}
               transition={{ duration: 0.8 }}
             >
-              <div className="text-center">
-                <h1 className="font-serif text-6xl md:text-8xl lg:text-9xl text-foreground tracking-tight">
-                  Stencil
-                </h1>
-                <p className="font-sans text-lg md:text-xl text-muted-foreground mt-2 tracking-[0.3em] uppercase">
-                  Studio
-                </p>
-              </div>
+              <h1 className="font-serif text-7xl md:text-9xl lg:text-[12rem] text-foreground tracking-tight text-center">
+                Stencil
+              </h1>
             </motion.div>
 
             {/* Hint text */}
