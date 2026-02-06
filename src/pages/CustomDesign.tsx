@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navigation";
-import { FloatingCart } from "@/components/navigation/FloatingCart";
+import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { Footer } from "@/components/sections";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -39,7 +38,7 @@ const CustomDesign = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar isHeroComplete={true} />
-      <FloatingCart />
+      <GlobalWidgets />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <motion.div

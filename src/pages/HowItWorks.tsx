@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Navbar } from "@/components/navigation";
+import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { Footer } from "@/components/sections";
 
 const steps = [
@@ -29,6 +29,7 @@ const HowItWorks = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar isHeroComplete={true} />
+      <GlobalWidgets />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <motion.div
