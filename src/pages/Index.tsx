@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navbar } from "@/components/navigation";
+import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { HeroExperience } from "@/components/hero";
 import {
   FeaturesSection,
@@ -7,6 +7,7 @@ import {
   TestimonialsSection,
   CTASection,
   Footer,
+  HowItWorksSection,
 } from "@/components/sections";
 
 type Phase = "curiosity" | "relief" | "confidence";
@@ -19,11 +20,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background scroll-smooth">
       <Navbar isHeroComplete={isHeroComplete} />
+      <GlobalWidgets />
       <main>
         <HeroExperience onPhaseChange={setHeroPhase} />
         <FeaturesSection />
-        <CollectionSection />
+        <HowItWorksSection />
         <TestimonialsSection />
+        <CollectionSection />
         <CTASection />
       </main>
       <Footer />

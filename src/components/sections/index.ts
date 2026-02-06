@@ -3,3 +3,4 @@ export { CollectionSection } from "./CollectionSection";
 export { TestimonialsSection } from "./TestimonialsSection";
 export { CTASection } from "./CTASection";
 export { Footer } from "./Footer";
+export { HowItWorksSection } from "./HowItWorksSection";
