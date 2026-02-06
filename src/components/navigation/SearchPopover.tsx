@@ -1,88 +1,99 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Input } from "@/components/ui/input";
 
 export const SearchPopover = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const isOpen = isHovered || isActive;
-
   useEffect(() => {
-    if (isActive && inputRef.current) {
+    if (isExpanded && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isActive]);
+  }, [isExpanded]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsActive(false);
-        setIsHovered(false);
+        if (!searchValue) {
+          setIsExpanded(false);
+        }
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [searchValue]);
 
   const handleClear = () => {
     setSearchValue("");
-    setIsActive(false);
+    inputRef.current?.focus();
+  };
+
+  const handleClose = () => {
+    setSearchValue("");
+    setIsExpanded(false);
   };
 
   return (
     <div
       ref={containerRef}
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => !isActive && setIsHovered(false)}
+      className="flex items-center"
     >
-      <motion.button
-        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-accent transition-colors"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsActive(true)}
+      <motion.div
+        className="flex items-center overflow-hidden rounded-full border border-transparent"
+        animate={{
+          width: isExpanded ? 240 : 40,
+          borderColor: isExpanded ? "hsl(var(--border))" : "transparent",
+          backgroundColor: isExpanded ? "hsl(var(--background))" : "transparent",
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
-        <Search className="w-5 h-5 text-muted-foreground" />
-      </motion.button>
+        <motion.button
+          className="w-10 h-10 flex items-center justify-center flex-shrink-0 hover:bg-accent rounded-full transition-colors"
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsExpanded(true)}
+        >
+          <Search className="w-5 h-5 text-muted-foreground" />
+        </motion.button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, width: 0, x: 20 }}
-            animate={{ opacity: 1, width: 280, x: 0 }}
-            exit={{ opacity: 0, width: 0, x: 20 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 overflow-hidden"
-          >
-            <div className="flex items-center gap-2 bg-background border border-border rounded-full px-4 py-2 shadow-lg">
-              <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <Input
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center flex-1 pr-2"
+            >
+              <input
                 ref={inputRef}
                 type="text"
                 placeholder="Desen ara..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                onFocus={() => setIsActive(true)}
-                className="border-0 bg-transparent h-auto p-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground min-w-0"
               />
-              {searchValue && (
+              {searchValue ? (
                 <button
                   onClick={handleClear}
-                  className="flex-shrink-0 hover:text-foreground text-muted-foreground transition-colors"
+                  className="flex-shrink-0 hover:text-foreground text-muted-foreground transition-colors p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleClose}
+                  className="flex-shrink-0 hover:text-foreground text-muted-foreground transition-colors p-1"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
