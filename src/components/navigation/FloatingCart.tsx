@@ -114,8 +114,8 @@ export const FloatingCart = () => {
                 </div>
               )}
               <Button asChild className="w-full" size="lg">
-                <Link to="/koleksiyon">
-                  {items.length > 0 ? "Sepete Git" : "Alışverişe Başla"}
+                <Link to={items.length > 0 ? "/odeme" : "/koleksiyon"}>
+                  {items.length > 0 ? "Ödemeye Geç" : "Alışverişe Başla"}
                 </Link>
               </Button>
             </div>

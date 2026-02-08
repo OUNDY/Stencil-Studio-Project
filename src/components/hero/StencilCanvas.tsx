@@ -188,14 +188,26 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     isDrawingRef.current = false;
   }, []);
 
+  // Hover-based painting - no click required
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (e.buttons === 1 || isDrawingRef.current) {
+    // Start a new stroke if not already drawing
+    if (!isDrawingRef.current) {
       isDrawingRef.current = true;
-      addPoint(e.clientX, e.clientY);
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        lastPosRef.current = {
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top) * scaleY,
+        };
+      }
     }
+    addPoint(e.clientX, e.clientY);
   }, [addPoint]);
 
-  const handleMouseDown = useCallback((e: MouseEvent) => {
+  const handleMouseEnter = useCallback((e: MouseEvent) => {
     isDrawingRef.current = true;
     const canvas = canvasRef.current;
     if (canvas) {
@@ -207,10 +219,9 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         y: (e.clientY - rect.top) * scaleY,
       };
     }
-    addPoint(e.clientX, e.clientY);
-  }, [addPoint]);
+  }, []);
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseLeave = useCallback(() => {
     endStroke();
   }, [endStroke]);
 
@@ -299,10 +310,9 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
     const startAnimation = () => {
       window.addEventListener("resize", resize);
-      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mouseenter", handleMouseEnter);
       canvas.addEventListener("mousemove", handleMouseMove);
-      canvas.addEventListener("mouseup", handleMouseUp);
-      canvas.addEventListener("mouseleave", handleMouseUp);
+      canvas.addEventListener("mouseleave", handleMouseLeave);
       canvas.addEventListener("touchstart", handleTouchStart);
       canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
       canvas.addEventListener("touchend", handleTouchEnd);
@@ -365,10 +375,9 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
     return () => {
       window.removeEventListener("resize", resize);
-      canvas.removeEventListener("mousedown", handleMouseDown);
+      canvas.removeEventListener("mouseenter", handleMouseEnter);
       canvas.removeEventListener("mousemove", handleMouseMove);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-      canvas.removeEventListener("mouseleave", handleMouseUp);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
       canvas.removeEventListener("touchstart", handleTouchStart);
       canvas.removeEventListener("touchmove", handleTouchMove);
       canvas.removeEventListener("touchend", handleTouchEnd);
@@ -376,7 +385,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [createBrushTexture, drawBrushStroke, handleMouseDown, handleMouseMove, handleMouseUp, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [createBrushTexture, drawBrushStroke, handleMouseEnter, handleMouseMove, handleMouseLeave, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <>

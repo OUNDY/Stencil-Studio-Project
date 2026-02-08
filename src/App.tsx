@@ -11,6 +11,10 @@ import CustomDesign from "./pages/CustomDesign";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Checkout from "./pages/Checkout";
+import Profile from "./pages/Profile";
+import Orders from "./pages/Orders";
+import Favorites from "./pages/Favorites";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +34,10 @@ const App = () => (
             <Route path="/hakkimizda" element={<About />} />
             <Route path="/giris" element={<Login />} />
             <Route path="/kayit" element={<Register />} />
+            <Route path="/odeme" element={<Checkout />} />
+            <Route path="/profil" element={<Profile />} />
+            <Route path="/siparislerim" element={<Orders />} />
+            <Route path="/favorilerim" element={<Favorites />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
