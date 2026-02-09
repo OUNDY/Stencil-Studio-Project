@@ -26,65 +26,60 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Full navbar becomes visible after hero interaction or scroll
   const showFullNav = isHeroComplete || isScrolled;
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Background layer with smooth transition */}
       <motion.div
-        className="absolute inset-0 bg-background/80 backdrop-blur-md shadow-organic"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: showFullNav ? 1 : 0 }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-      />
-      {/* Border layer separated for smooth animation */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-px bg-border"
-        initial={{ opacity: 0, scaleX: 0 }}
-        animate={{ opacity: showFullNav ? 1 : 0, scaleX: showFullNav ? 1 : 0 }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-      />
-      <nav className="container mx-auto px-6 relative z-10">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo - always visible */}
-          <motion.div whileHover={{ scale: 1.02 }}>
-            <Link to="/" className="flex items-center gap-2 z-10">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-organic">
-                <span className="text-primary-foreground font-serif text-lg">S</span>
-              </div>
-              <span className="font-serif text-xl text-foreground">
-                Stencil
-              </span>
-            </Link>
-          </motion.div>
+        className="relative rounded-2xl border border-border/60 bg-background/70 backdrop-blur-xl shadow-organic transition-shadow duration-300"
+        animate={{
+          backgroundColor: showFullNav
+            ? "hsl(var(--background) / 0.85)"
+            : "hsl(var(--background) / 0.5)",
+          borderColor: showFullNav
+            ? "hsl(var(--border) / 0.6)"
+            : "hsl(var(--border) / 0.3)",
+        }}
+        transition={{ duration: 0.4 }}
+      >
+        <nav className="px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 lg:h-16">
+            {/* Logo */}
+            <motion.div whileHover={{ scale: 1.02 }}>
+              <Link to="/" className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shadow-organic">
+                  <span className="text-primary-foreground font-serif text-base">S</span>
+                </div>
+                <span className="font-serif text-lg text-foreground">
+                  Stencil
+                </span>
+              </Link>
+            </motion.div>
 
-          {/* Desktop navigation - only visible after hero complete or scroll */}
-          <AnimatePresence>
-            {showFullNav && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="hidden lg:flex items-center gap-8"
-              >
-                <div className="flex items-center gap-6">
+            {/* Desktop navigation */}
+            <AnimatePresence>
+              {showFullNav && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="hidden lg:flex items-center gap-6"
+                >
                   {navLinks.map((link, index) => (
                     <motion.div
                       key={link.href}
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: index * 0.04 }}
                     >
                       <Link
                         to={link.href}
@@ -95,73 +90,73 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                       </Link>
                     </motion.div>
                   ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Right side actions - only visible after hero complete or scroll */}
-          <div className="flex items-center gap-2">
-            <AnimatePresence>
-              {showFullNav && (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="hidden lg:block"
-                  >
-                    <SearchPopover />
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ delay: 0.05 }}
-                    className="hidden lg:block"
-                  >
-                    <ProfileDropdown />
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-
-            {/* Mobile menu - only visible after hero complete or scroll */}
-            <AnimatePresence>
-              {showFullNav && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                >
-                  <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                    <SheetTrigger asChild className="lg:hidden">
-                      <Button variant="ghost" size="icon" className="relative">
-                        <Menu className="w-5 h-5" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-[300px] bg-background">
-                      <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
-                      <nav className="flex flex-col gap-6">
-                        {navLinks.map((link) => (
-                          <Link
-                            key={link.href}
-                            to={link.href}
-                            onClick={() => setIsOpen(false)}
-                            className="text-lg font-sans text-foreground hover:text-primary transition-colors"
-                          >
-                            {link.label}
-                          </Link>
-                        ))}
-                      </nav>
-                    </SheetContent>
-                  </Sheet>
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Right side */}
+            <div className="flex items-center gap-1.5">
+              <AnimatePresence>
+                {showFullNav && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="hidden lg:block"
+                    >
+                      <SearchPopover />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ delay: 0.04 }}
+                      className="hidden lg:block"
+                    >
+                      <ProfileDropdown />
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+
+              {/* Mobile menu */}
+              <AnimatePresence>
+                {showFullNav && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                  >
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                      <SheetTrigger asChild className="lg:hidden">
+                        <Button variant="ghost" size="icon" className="relative w-9 h-9">
+                          <Menu className="w-5 h-5" />
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent side="right" className="w-[300px] bg-background">
+                        <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
+                        <nav className="flex flex-col gap-6">
+                          {navLinks.map((link) => (
+                            <Link
+                              key={link.href}
+                              to={link.href}
+                              onClick={() => setIsOpen(false)}
+                              className="text-lg font-sans text-foreground hover:text-primary transition-colors"
+                            >
+                              {link.label}
+                            </Link>
+                          ))}
+                        </nav>
+                      </SheetContent>
+                    </Sheet>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </motion.div>
     </motion.header>
   );
 };
