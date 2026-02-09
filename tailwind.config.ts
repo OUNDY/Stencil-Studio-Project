@@ -29,7 +29,7 @@ export default {
   				'serif'
   			],
   			sans: [
-  				'Roboto',
+  				'DM Sans',
   				'ui-sans-serif',
   				'system-ui',
   				'sans-serif',
