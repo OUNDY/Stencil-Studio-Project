@@ -34,25 +34,28 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 w-full"
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 px-4"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <motion.div
-        className="w-full border-b backdrop-blur-xl transition-all duration-500"
+        className="w-full max-w-3xl rounded-full backdrop-blur-xl border border-border/0 transition-all duration-500"
         animate={{
           backgroundColor: showFullNav
-            ? "hsl(var(--background) / 0.9)"
-            : "hsl(var(--background) / 0.6)",
+            ? "hsl(var(--background) / 0.85)"
+            : "hsl(var(--background) / 0.5)",
           borderColor: showFullNav
-            ? "hsl(var(--border) / 0.5)"
+            ? "hsl(var(--border) / 0.4)"
             : "hsl(var(--border) / 0)",
+          boxShadow: showFullNav
+            ? "0 8px 32px -8px hsl(var(--foreground) / 0.08)"
+            : "0 0 0 0 transparent",
         }}
         transition={{ duration: 0.5 }}
       >
-        <nav className="container mx-auto px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 lg:h-16">
+        <nav className="px-4 lg:px-5">
+          <div className="flex items-center justify-between h-12 lg:h-13">
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }}>
               <Link to="/" className="flex items-center gap-2">
