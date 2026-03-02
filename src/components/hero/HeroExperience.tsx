@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { StencilCanvas } from "./StencilCanvas";
+import { SurfaceReveal } from "./SurfaceReveal";
 
 type Phase = "curiosity" | "relief" | "confidence";
 
@@ -23,8 +23,7 @@ export const HeroExperience = ({ onPhaseChange }: HeroExperienceProps) => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Full-screen stencil painting canvas */}
-      <StencilCanvas
+      <SurfaceReveal
         onFirstInteraction={handleFirstInteraction}
         onExplorationComplete={handleExplorationComplete}
       />
@@ -39,9 +38,6 @@ export const HeroExperience = ({ onPhaseChange }: HeroExperienceProps) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <span className="text-sm text-muted-foreground font-sans">
-              aşağı kaydır
-            </span>
             <motion.div
               className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2"
               animate={{ y: [0, 5, 0] }}
