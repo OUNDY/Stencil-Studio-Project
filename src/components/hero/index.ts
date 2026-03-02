@@ -1,2 +1,2 @@
 export { HeroExperience } from "./HeroExperience";
-export { StencilCanvas } from "./StencilCanvas";
+export { SurfaceReveal } from "./SurfaceReveal";
