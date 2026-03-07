@@ -69,14 +69,14 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
               </Link>
             </motion.div>
 
-            {/* Desktop navigation */}
+            {/* Desktop navigation - absolute center */}
             <AnimatePresence>
               {showFullNav && (
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
+                  className="hidden lg:flex items-center gap-6 absolute inset-0 justify-center pointer-events-none"
                 >
                   {navLinks.map((link, index) => (
                     <motion.div
@@ -84,6 +84,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.04 }}
+                      className="pointer-events-auto"
                     >
                       <Link
                         to={link.href}
