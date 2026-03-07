@@ -76,7 +76,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="hidden lg:flex items-center gap-6"
+                  className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
                 >
                   {navLinks.map((link, index) => (
                     <motion.div
