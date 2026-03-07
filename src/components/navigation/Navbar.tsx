@@ -56,7 +56,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
         transition={{ duration: 0.5 }}
       >
         <nav className="container mx-auto px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 lg:h-16">
+          <div className="relative flex items-center justify-between h-14 lg:h-16">
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }}>
               <Link to="/" className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="hidden lg:flex items-center gap-6"
+                  className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
                 >
                   {navLinks.map((link, index) => (
                     <motion.div
