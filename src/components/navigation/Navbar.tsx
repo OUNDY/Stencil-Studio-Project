@@ -20,6 +20,7 @@ const navLinks = [
 
 export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -30,14 +31,17 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isVisible = isHeroComplete || isScrolled || isHovered;
   const showFullNav = isHeroComplete || isScrolled;
 
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-50 w-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      animate={{ y: isVisible ? 0 : -100, opacity: isVisible ? 1 : 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <motion.div
         className="w-full border-b backdrop-blur-xl transition-all duration-500"
