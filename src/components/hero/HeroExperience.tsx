@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SurfaceReveal } from "./SurfaceReveal";
+import { StencilCanvas } from "./StencilCanvas";
 
 type Phase = "curiosity" | "relief" | "confidence";
 
@@ -23,7 +23,7 @@ export const HeroExperience = ({ onPhaseChange }: HeroExperienceProps) => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      <SurfaceReveal
+      <StencilCanvas
         onFirstInteraction={handleFirstInteraction}
         onExplorationComplete={handleExplorationComplete}
       />
