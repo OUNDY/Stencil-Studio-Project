@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const menuItems = [
-  { icon: Package, label: "Siparişlerim", href: "/siparislerim" },
-  { icon: Heart, label: "Favorilerim", href: "/favorilerim" },
-  { icon: Settings, label: "Hesap Ayarları", href: "/hesap" },
+  { icon: Package, label: "Siparişlerim", href: "/hesabim/siparisler" },
+  { icon: Heart, label: "Favorilerim", href: "/hesabim/favoriler" },
+  { icon: Settings, label: "Hesap Ayarları", href: "/hesabim/ayarlar" },
 ];
 
 export const ProfileDropdown = () => {

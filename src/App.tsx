@@ -13,11 +13,19 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
-import Profile from "./pages/Profile";
-import Orders from "./pages/Orders";
-import Favorites from "./pages/Favorites";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+
+// Account pages
+import AccountDashboard from "./pages/account/Dashboard";
+import AccountOrders from "./pages/account/AccountOrders";
+import OrderDetail from "./pages/account/OrderDetail";
+import AccountFavorites from "./pages/account/AccountFavorites";
+import Addresses from "./pages/account/Addresses";
+import AccountProfile from "./pages/account/AccountProfile";
+import Notifications from "./pages/account/Notifications";
+import AccountSettings from "./pages/account/AccountSettings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,10 +45,23 @@ const App = () => (
             <Route path="/giris" element={<Login />} />
             <Route path="/kayit" element={<Register />} />
             <Route path="/odeme" element={<Checkout />} />
-            <Route path="/profil" element={<Profile />} />
-            <Route path="/siparislerim" element={<Orders />} />
-            <Route path="/favorilerim" element={<Favorites />} />
             <Route path="/admin" element={<AdminDashboard />} />
+
+            {/* User Account */}
+            <Route path="/hesabim" element={<AccountDashboard />} />
+            <Route path="/hesabim/siparisler" element={<AccountOrders />} />
+            <Route path="/hesabim/siparisler/:orderId" element={<OrderDetail />} />
+            <Route path="/hesabim/favoriler" element={<AccountFavorites />} />
+            <Route path="/hesabim/adresler" element={<Addresses />} />
+            <Route path="/hesabim/profil" element={<AccountProfile />} />
+            <Route path="/hesabim/bildirimler" element={<Notifications />} />
+            <Route path="/hesabim/ayarlar" element={<AccountSettings />} />
+
+            {/* Legacy redirects */}
+            <Route path="/profil" element={<AccountDashboard />} />
+            <Route path="/siparislerim" element={<AccountOrders />} />
+            <Route path="/favorilerim" element={<AccountFavorites />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
