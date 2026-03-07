@@ -56,7 +56,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
         transition={{ duration: 0.5 }}
       >
         <nav className="container mx-auto px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 lg:h-16">
+          <div className="relative flex items-center justify-between h-14 lg:h-16">
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }}>
               <Link to="/" className="flex items-center gap-2">
