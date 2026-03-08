@@ -21,7 +21,7 @@ export const CTASection = () => {
   return (
     <section
       ref={ref}
-      className="py-24 lg:py-32 bg-background relative overflow-hidden"
+      className="py-14 lg:py-20 bg-background relative overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">

@@ -42,7 +42,7 @@ export const FeaturesSection = () => {
     <section
       ref={ref}
       id="how-it-works"
-      className="py-24 lg:py-32 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden"
+      className="py-14 lg:py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">

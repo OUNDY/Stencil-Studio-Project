@@ -20,7 +20,7 @@ export const CollectionSection = () => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
-    <section ref={ref} id="collection" className="py-24 lg:py-32 bg-background relative">
+    <section ref={ref} id="collection" className="py-14 lg:py-20 bg-background relative">
       <div className="container mx-auto px-6">
         <motion.div
           className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12 lg:mb-16"
