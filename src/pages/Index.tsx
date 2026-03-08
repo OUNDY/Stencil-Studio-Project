@@ -61,8 +61,9 @@ const Index = () => {
       <GlobalWidgets />
       <main>
         <HeroExperience onPhaseChange={setHeroPhase} />
-        <MicroPause delay={0.1}>keşfet</MicroPause>
-        <FeaturesSection />
+        <MicroPause delay={0.1}>discover</MicroPause>
+        <PrimaryPath />
+        <MicroPause delay={0}>keşfet</MicroPause>
         <MicroPause delay={0}>nasıl?</MicroPause>
         <HowItWorksSection />
         <MicroPause delay={0}>ilham al</MicroPause>
