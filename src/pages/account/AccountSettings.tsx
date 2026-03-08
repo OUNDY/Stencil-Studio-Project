@@ -53,7 +53,7 @@ const AccountSettings = () => {
   const [showNewPw, setShowNewPw] = useState(false);
 
   // Preferences
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [marketingEmails, setMarketingEmails] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
 
@@ -92,6 +92,7 @@ const AccountSettings = () => {
   const handleDarkModeToggle = (checked: boolean) => {
     setDarkMode(checked);
     document.documentElement.classList.toggle("dark", checked);
+    localStorage.setItem("stencil_theme", checked ? "dark" : "light");
     toast.success(checked ? "Karanlık mod açıldı" : "Aydınlık mod açıldı");
   };
 

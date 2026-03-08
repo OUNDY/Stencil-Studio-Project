@@ -4,3 +4,4 @@ export { FloatingCart } from "./FloatingCart";
 export { ProfileDropdown } from "./ProfileDropdown";
 export { ChatbotWidget } from "./ChatbotWidget";
 export { GlobalWidgets } from "./GlobalWidgets";
+export { DarkModeToggle } from "./DarkModeToggle";
