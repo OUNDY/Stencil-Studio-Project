@@ -3,6 +3,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
 import wallPainted from "@/assets/wall-painted.png";
 
+const useDarkMode = () => {
+  const [isDark, setIsDark] = useState(() =>
+    typeof window !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+};
+
 interface BrushStroke {
   points: { x: number; y: number }[];
   width: number;
@@ -36,7 +52,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
   const [isReady, setIsReady] = useState(false);
   const [showHint, setShowHint] = useState(true);
   const [revealProgress, setRevealProgress] = useState(0);
-
+  const isDark = useDarkMode();
   // Create rectangular brush texture with bristles
   const createBrushTexture = useCallback(() => {
     const width = 120;
@@ -370,6 +386,51 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
       ctx.drawImage(emptyImageRef.current, 0, 0, canvas.width, canvas.height);
       ctx.globalCompositeOperation = "source-over";
 
+      // Night overlay for dark mode
+      if (isDark) {
+        // Dark ambient layer
+        ctx.globalCompositeOperation = "multiply";
+        ctx.fillStyle = "rgba(18, 16, 14, 0.82)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = "source-over";
+
+        // Warm soft ambient light spots (like dim wall sconces)
+        const dpr = window.devicePixelRatio || 1;
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // Top-center soft warm glow
+        const g1 = ctx.createRadialGradient(w * 0.5, h * 0.15, 0, w * 0.5, h * 0.15, h * 0.55);
+        g1.addColorStop(0, "rgba(255, 195, 120, 0.12)");
+        g1.addColorStop(0.4, "rgba(255, 180, 100, 0.05)");
+        g1.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = g1;
+        ctx.fillRect(0, 0, w, h);
+
+        // Left-side warm accent
+        const g2 = ctx.createRadialGradient(w * 0.15, h * 0.4, 0, w * 0.15, h * 0.4, h * 0.4);
+        g2.addColorStop(0, "rgba(255, 170, 90, 0.08)");
+        g2.addColorStop(0.5, "rgba(255, 160, 80, 0.03)");
+        g2.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = g2;
+        ctx.fillRect(0, 0, w, h);
+
+        // Right-side warm accent
+        const g3 = ctx.createRadialGradient(w * 0.85, h * 0.5, 0, w * 0.85, h * 0.5, h * 0.35);
+        g3.addColorStop(0, "rgba(255, 180, 100, 0.06)");
+        g3.addColorStop(0.5, "rgba(255, 160, 80, 0.02)");
+        g3.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = g3;
+        ctx.fillRect(0, 0, w, h);
+
+        // Subtle vignette
+        const vignette = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.25, w * 0.5, h * 0.5, h * 0.75);
+        vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+        vignette.addColorStop(1, "rgba(0, 0, 0, 0.3)");
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, w, h);
+      }
+
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
@@ -385,7 +446,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [createBrushTexture, drawBrushStroke, handleMouseEnter, handleMouseMove, handleMouseLeave, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [isDark, createBrushTexture, drawBrushStroke, handleMouseEnter, handleMouseMove, handleMouseLeave, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <>
