@@ -1,27 +1,35 @@
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { Footer } from "@/components/sections";
+import howStep1 from "@/assets/how-step-1.jpg";
+import howStep2 from "@/assets/how-step-2.jpg";
+import howStep3 from "@/assets/how-step-3.jpg";
+import howStep4 from "@/assets/how-step-4.jpg";
 
 const steps = [
   {
     number: "01",
     title: "Desen Seçin",
     description: "Koleksiyonumuzdan size uygun deseni seçin veya özel tasarım talep edin.",
+    image: howStep1,
   },
   {
     number: "02",
     title: "Duvarınızı Hazırlayın",
     description: "Duvarınızın temiz ve kuru olduğundan emin olun. Stencil'i istediğiniz konuma yerleştirin.",
+    image: howStep2,
   },
   {
     number: "03",
     title: "Boyama Yapın",
     description: "Rulo veya fırça ile boyayı stencil üzerinden uygulayın. Eşit baskı uygulayın.",
+    image: howStep3,
   },
   {
     number: "04",
     title: "Stencil'i Kaldırın",
     description: "Boya kurumadan stencil'i dikkatlice kaldırın. Muhteşem sonucun tadını çıkarın!",
+    image: howStep4,
   },
 ];
 
