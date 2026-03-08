@@ -53,7 +53,7 @@ const AccountSettings = () => {
   const [showNewPw, setShowNewPw] = useState(false);
 
   // Preferences
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [marketingEmails, setMarketingEmails] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
 
