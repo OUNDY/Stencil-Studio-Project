@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, Calendar, Edit2, Save, Camera } from "lucide-react";
+import { User, Mail, Phone, Calendar, Edit2, Save, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AccountLayout } from "@/components/account/AccountLayout";
@@ -10,6 +10,8 @@ import { toast } from "sonner";
 const AccountProfile = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -17,22 +19,48 @@ const AccountProfile = () => {
     phone: "0532 123 45 67",
     birthDate: "1990-01-15",
   });
+  const [original, setOriginal] = useState(profile);
 
   useEffect(() => {
     if (user) {
       const parts = user.name.split(" ");
-      setProfile((p) => ({
-        ...p,
+      const p = {
+        ...profile,
         firstName: parts[0] || user.name,
         lastName: parts.slice(1).join(" ") || "",
         email: user.email,
-      }));
+      };
+      setProfile(p);
+      setOriginal(p);
     }
   }, [user]);
 
   const handleSave = () => {
+    if (!profile.firstName || !profile.email) {
+      toast.error("Ad ve e-posta alanları zorunludur");
+      return;
+    }
     setIsEditing(false);
+    setOriginal(profile);
     toast.success("Profil bilgileri güncellendi");
+  };
+
+  const handleCancel = () => {
+    setProfile(original);
+    setIsEditing(false);
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Dosya boyutu 5MB'dan küçük olmalıdır");
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      setAvatarUrl(url);
+      toast.success("Profil fotoğrafı güncellendi");
+    }
   };
 
   return (
@@ -45,30 +73,45 @@ const AccountProfile = () => {
         {/* Avatar */}
         <div className="flex items-center gap-4 mb-8 pb-6 border-b border-border">
           <div className="relative">
-            <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-serif text-2xl">
-                {profile.firstName?.charAt(0)?.toUpperCase()}
-              </span>
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" className="w-20 h-20 rounded-full object-cover" />
+            ) : (
+              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-primary-foreground font-serif text-2xl">
+                  {profile.firstName?.charAt(0)?.toUpperCase()}
+                </span>
+              </div>
+            )}
             {isEditing && (
-              <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+              >
                 <Camera className="w-4 h-4" />
               </button>
             )}
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
           </div>
           <div>
             <h2 className="font-serif text-xl">{profile.firstName} {profile.lastName}</h2>
             <p className="text-sm text-muted-foreground">{profile.email}</p>
           </div>
           <div className="flex-1" />
-          <Button
-            variant={isEditing ? "default" : "outline"}
-            size="sm"
-            onClick={isEditing ? handleSave : () => setIsEditing(true)}
-            className="gap-2"
-          >
-            {isEditing ? <><Save className="w-4 h-4" />Kaydet</> : <><Edit2 className="w-4 h-4" />Düzenle</>}
-          </Button>
+          <div className="flex gap-2">
+            {isEditing && (
+              <Button variant="outline" size="sm" onClick={handleCancel} className="gap-2">
+                <X className="w-4 h-4" />İptal
+              </Button>
+            )}
+            <Button
+              variant={isEditing ? "default" : "outline"}
+              size="sm"
+              onClick={isEditing ? handleSave : () => setIsEditing(true)}
+              className="gap-2"
+            >
+              {isEditing ? <><Save className="w-4 h-4" />Kaydet</> : <><Edit2 className="w-4 h-4" />Düzenle</>}
+            </Button>
+          </div>
         </div>
 
         {/* Fields */}
