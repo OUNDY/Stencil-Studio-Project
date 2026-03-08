@@ -92,6 +92,7 @@ const AccountSettings = () => {
   const handleDarkModeToggle = (checked: boolean) => {
     setDarkMode(checked);
     document.documentElement.classList.toggle("dark", checked);
+    localStorage.setItem("stencil_theme", checked ? "dark" : "light");
     toast.success(checked ? "Karanlık mod açıldı" : "Aydınlık mod açıldı");
   };
 
