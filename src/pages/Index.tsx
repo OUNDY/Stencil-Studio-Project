@@ -67,9 +67,9 @@ const Index = () => {
         <MicroPause delay={0}>ilham al</MicroPause>
         <TestimonialsSection />
         <MicroPause delay={0} />
-        <CollectionSection />
-        <MicroPause delay={0} />
         <CTASection />
+        <MicroPause delay={0} />
+        <CollectionSection />
       </main>
       <Footer />
     </div>
