@@ -446,7 +446,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [createBrushTexture, drawBrushStroke, handleMouseEnter, handleMouseMove, handleMouseLeave, handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [isDark, createBrushTexture, drawBrushStroke, handleMouseEnter, handleMouseMove, handleMouseLeave, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <>
