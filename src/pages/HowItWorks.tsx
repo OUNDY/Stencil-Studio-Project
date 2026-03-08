@@ -73,6 +73,11 @@ const HowItWorks = () => {
                     transition={{ duration: 0.8, delay: index * 0.1 }}
                   />
                 </div>
+                <div>
+                  <span className="text-xs font-medium text-primary tracking-widest">{step.number}</span>
+                  <h3 className="font-serif text-2xl text-foreground mb-2">{step.title}</h3>
+                  <p className="text-muted-foreground">{step.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
