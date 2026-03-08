@@ -16,7 +16,7 @@ type Phase = "curiosity" | "relief" | "confidence";
 /* Micro-pause: a breathing divider between sections */
 const MicroPause = ({ children, delay = 0 }: { children?: React.ReactNode; delay?: number }) => (
   <motion.div
-    className="relative py-6 flex flex-col items-center justify-center overflow-hidden"
+    className="relative py-2 flex flex-col items-center justify-center overflow-hidden"
     initial={{ opacity: 0 }}
     whileInView={{ opacity: 1 }}
     viewport={{ once: true, margin: "-40px" }}

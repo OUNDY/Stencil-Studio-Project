@@ -46,7 +46,7 @@ export const HowItWorksSection = () => {
     <section
       ref={ref}
       id="how-it-works"
-      className="py-24 lg:py-32 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
+      className="py-14 lg:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
