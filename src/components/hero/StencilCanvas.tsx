@@ -52,7 +52,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
   const [isReady, setIsReady] = useState(false);
   const [showHint, setShowHint] = useState(true);
   const [revealProgress, setRevealProgress] = useState(0);
-
+  const isDark = useDarkMode();
   // Create rectangular brush texture with bristles
   const createBrushTexture = useCallback(() => {
     const width = 120;
