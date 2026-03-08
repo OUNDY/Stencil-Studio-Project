@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Paintbrush, Ruler, Sparkles, CheckCircle2 } from "lucide-react";
+import howStep1 from "@/assets/how-step-1.jpg";
+import howStep2 from "@/assets/how-step-2.jpg";
+import howStep3 from "@/assets/how-step-3.jpg";
+import howStep4 from "@/assets/how-step-4.jpg";
 
 const steps = [
   {
@@ -9,7 +13,7 @@ const steps = [
     icon: Ruler,
     title: "Desen Seçin",
     description: "Koleksiyonumuzdan size uygun deseni seçin veya özel tasarım talep edin.",
-    videoPlaceholder: "Desen seçimi animasyonu",
+    image: howStep1,
     color: "from-primary/20 to-primary/5",
   },
   {
@@ -17,7 +21,7 @@ const steps = [
     icon: Sparkles,
     title: "Duvarınızı Hazırlayın",
     description: "Duvarınızın temiz ve kuru olduğundan emin olun. Stencil'i konumlandırın.",
-    videoPlaceholder: "Duvar hazırlığı animasyonu",
+    image: howStep2,
     color: "from-secondary/30 to-secondary/10",
   },
   {
@@ -25,7 +29,7 @@ const steps = [
     icon: Paintbrush,
     title: "Boyama Yapın",
     description: "Rulo veya fırça ile boyayı stencil üzerinden eşit şekilde uygulayın.",
-    videoPlaceholder: "Boyama tekniği animasyonu",
+    image: howStep3,
     color: "from-accent/30 to-accent/10",
   },
   {
@@ -33,7 +37,7 @@ const steps = [
     icon: CheckCircle2,
     title: "Tadını Çıkarın",
     description: "Boya kurumadan stencil'i dikkatlice kaldırın. Muhteşem sonuç!",
-    videoPlaceholder: "Final sonuç animasyonu",
+    image: howStep4,
     color: "from-primary/20 to-accent/10",
   },
 ];
@@ -87,27 +91,32 @@ export const HowItWorksSection = () => {
               <div className="relative h-full">
                 {/* Card */}
                 <div className="h-full bg-card border border-border rounded-3xl overflow-hidden shadow-organic transition-all duration-300 group-hover:shadow-organic-elevated group-hover:-translate-y-1">
-                  {/* Video/Visual area */}
+                  {/* Visual area with image */}
                   <div className={`aspect-video bg-gradient-to-br ${step.color} relative overflow-hidden`}>
+                    <motion.img
+                      src={step.image}
+                      alt={step.title}
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1.1 }}
+                      animate={isInView ? { scale: 1 } : {}}
+                      transition={{ duration: 1.2, delay: index * 0.15 }}
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-card/40 to-transparent" />
                     {/* Step number badge */}
                     <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center border border-border">
                       <span className="font-serif text-lg text-foreground">{step.number}</span>
                     </div>
-                    
-                    {/* Placeholder for video/animation */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <motion.div
-                        className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center shadow-lg"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <step.icon className="w-8 h-8 text-primary" />
-                      </motion.div>
-                    </div>
-
-                    {/* Animated decoration */}
+                    {/* Icon badge */}
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-1 bg-primary/30"
+                      className="absolute bottom-4 right-4 w-12 h-12 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center shadow-lg border border-border/50"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <step.icon className="w-5 h-5 text-primary" />
+                    </motion.div>
+                    {/* Animated progress bar */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-1 bg-primary/40"
                       initial={{ scaleX: 0 }}
                       animate={isInView ? { scaleX: 1 } : {}}
                       transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
