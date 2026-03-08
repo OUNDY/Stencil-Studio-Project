@@ -91,27 +91,32 @@ export const HowItWorksSection = () => {
               <div className="relative h-full">
                 {/* Card */}
                 <div className="h-full bg-card border border-border rounded-3xl overflow-hidden shadow-organic transition-all duration-300 group-hover:shadow-organic-elevated group-hover:-translate-y-1">
-                  {/* Video/Visual area */}
+                  {/* Visual area with image */}
                   <div className={`aspect-video bg-gradient-to-br ${step.color} relative overflow-hidden`}>
+                    <motion.img
+                      src={step.image}
+                      alt={step.title}
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1.1 }}
+                      animate={isInView ? { scale: 1 } : {}}
+                      transition={{ duration: 1.2, delay: index * 0.15 }}
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-card/40 to-transparent" />
                     {/* Step number badge */}
                     <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center border border-border">
                       <span className="font-serif text-lg text-foreground">{step.number}</span>
                     </div>
-                    
-                    {/* Placeholder for video/animation */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <motion.div
-                        className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center shadow-lg"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <step.icon className="w-8 h-8 text-primary" />
-                      </motion.div>
-                    </div>
-
-                    {/* Animated decoration */}
+                    {/* Icon badge */}
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-1 bg-primary/30"
+                      className="absolute bottom-4 right-4 w-12 h-12 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center shadow-lg border border-border/50"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <step.icon className="w-5 h-5 text-primary" />
+                    </motion.div>
+                    {/* Animated progress bar */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-1 bg-primary/40"
                       initial={{ scaleX: 0 }}
                       animate={isInView ? { scaleX: 1 } : {}}
                       transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
