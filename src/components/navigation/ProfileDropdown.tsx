@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { User, Settings, Package, Heart, LogOut, ChevronRight } from "lucide-react";
+import { User, Settings, Package, Heart, LogOut, ChevronRight, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const menuItems = [
+  { icon: LayoutDashboard, label: "Genel Bakış", href: "/hesabim" },
   { icon: Package, label: "Siparişlerim", href: "/hesabim/siparisler" },
   { icon: Heart, label: "Favorilerim", href: "/hesabim/favoriler" },
   { icon: Settings, label: "Hesap Ayarları", href: "/hesabim/ayarlar" },
@@ -12,9 +14,8 @@ const menuItems = [
 export const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Mock user state - would be replaced with real auth
-  const isLoggedIn = false;
+  const { user, isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -22,10 +23,15 @@ export const ProfileDropdown = () => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    navigate("/");
+  };
 
   return (
     <div ref={containerRef} className="relative">
@@ -35,7 +41,15 @@ export const ProfileDropdown = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <User className="w-5 h-5 text-muted-foreground" />
+        {isLoggedIn ? (
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <span className="text-primary-foreground text-xs font-medium">
+              {user?.name?.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        ) : (
+          <User className="w-5 h-5 text-muted-foreground" />
+        )}
       </motion.button>
 
       <AnimatePresence>
@@ -49,20 +63,20 @@ export const ProfileDropdown = () => {
           >
             {isLoggedIn ? (
               <>
-                {/* User Info */}
                 <div className="p-4 border-b border-border">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                      <span className="text-primary-foreground text-sm font-medium">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </span>
                     </div>
                     <div>
-                      <p className="font-medium text-sm">Kullanıcı Adı</p>
-                      <p className="text-xs text-muted-foreground">kullanici@email.com</p>
+                      <p className="font-medium text-sm">{user?.name}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Menu Items */}
                 <div className="py-2">
                   {menuItems.map((item) => (
                     <Link
@@ -78,9 +92,11 @@ export const ProfileDropdown = () => {
                   ))}
                 </div>
 
-                {/* Logout */}
                 <div className="p-2 border-t border-border">
-                  <button className="flex items-center gap-3 px-4 py-2.5 w-full hover:bg-destructive/10 rounded-lg transition-colors text-destructive">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-4 py-2.5 w-full hover:bg-destructive/10 rounded-lg transition-colors text-destructive"
+                  >
                     <LogOut className="w-4 h-4" />
                     <span className="text-sm">Çıkış Yap</span>
                   </button>

@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, Globe, Palette, Trash2, Shield } from "lucide-react";
+import { Lock, Globe, Palette, Trash2, Shield, CreditCard, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { AccountLayout } from "@/components/account/AccountLayout";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 const AccountSettings = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const { user } = useAuth();
 
   const handlePasswordChange = () => {
     toast.success("Şifre değiştirme bağlantısı e-posta adresinize gönderildi");
@@ -44,6 +46,35 @@ const AccountSettings = () => {
           </div>
         </motion.div>
 
+        {/* Payment Methods */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="bg-card border border-border rounded-2xl p-6"
+        >
+          <h2 className="font-medium flex items-center gap-2 mb-4">
+            <CreditCard className="w-4 h-4 text-muted-foreground" />
+            Ödeme Yöntemleri
+          </h2>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+              <div className="w-10 h-7 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center">
+                <span className="text-white text-[8px] font-bold">VISA</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium">•••• •••• •••• 4242</p>
+                <p className="text-xs text-muted-foreground">Son kullanma: 12/26</p>
+              </div>
+              <span className="text-xs text-primary font-medium">Varsayılan</span>
+            </div>
+            <Button variant="outline" size="sm" className="gap-2">
+              <CreditCard className="w-4 h-4" />
+              Yeni Kart Ekle
+            </Button>
+          </div>
+        </motion.div>
+
         {/* Preferences */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -75,6 +106,46 @@ const AccountSettings = () => {
           </div>
         </motion.div>
 
+        {/* Privacy & Legal */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+          className="bg-card border border-border rounded-2xl p-6"
+        >
+          <h2 className="font-medium flex items-center gap-2 mb-4">
+            <FileText className="w-4 h-4 text-muted-foreground" />
+            Gizlilik ve Yasal
+          </h2>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Pazarlama E-postaları</p>
+                <p className="text-xs text-muted-foreground">Kampanya ve indirim e-postaları alın</p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between pt-3 border-t border-border">
+              <div>
+                <p className="text-sm font-medium">Veri Paylaşımı</p>
+                <p className="text-xs text-muted-foreground">Kullanım verilerini anonim olarak paylaş</p>
+              </div>
+              <Switch />
+            </div>
+            <div className="pt-3 border-t border-border flex gap-3">
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto text-muted-foreground">
+                Kullanım Koşulları
+              </Button>
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto text-muted-foreground">
+                Gizlilik Politikası
+              </Button>
+              <Button variant="link" size="sm" className="text-xs p-0 h-auto text-muted-foreground">
+                Verilerimi İndir
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Security */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -86,12 +157,21 @@ const AccountSettings = () => {
             <Shield className="w-4 h-4 text-muted-foreground" />
             Güvenlik
           </h2>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">İki Faktörlü Doğrulama</p>
-              <p className="text-xs text-muted-foreground">Hesabınıza ek güvenlik katmanı ekleyin</p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">İki Faktörlü Doğrulama</p>
+                <p className="text-xs text-muted-foreground">Hesabınıza ek güvenlik katmanı ekleyin</p>
+              </div>
+              <Button variant="outline" size="sm">Etkinleştir</Button>
             </div>
-            <Button variant="outline" size="sm">Etkinleştir</Button>
+            <div className="flex items-center justify-between pt-4 border-t border-border">
+              <div>
+                <p className="text-sm font-medium">Oturum Yönetimi</p>
+                <p className="text-xs text-muted-foreground">Aktif oturumlar: 1 cihaz</p>
+              </div>
+              <Button variant="outline" size="sm">Oturumları Gör</Button>
+            </div>
           </div>
         </motion.div>
 
