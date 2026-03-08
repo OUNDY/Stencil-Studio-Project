@@ -3,6 +3,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
 import wallPainted from "@/assets/wall-painted.png";
 
+const useDarkMode = () => {
+  const [isDark, setIsDark] = useState(() =>
+    typeof window !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+};
+
 interface BrushStroke {
   points: { x: number; y: number }[];
   width: number;
