@@ -63,12 +63,15 @@ const HowItWorks = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="flex gap-6 items-start"
               >
-                <div className="flex-shrink-0 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="font-serif text-2xl text-primary">{step.number}</span>
-                </div>
-                <div>
-                  <h3 className="font-serif text-2xl text-foreground mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
+                <div className="flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-md">
+                  <motion.img
+                    src={step.image}
+                    alt={step.title}
+                    className="w-full h-full object-cover"
+                    initial={{ scale: 1.15 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                  />
                 </div>
               </motion.div>
             ))}
