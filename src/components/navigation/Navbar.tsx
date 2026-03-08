@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu } from "lucide-react";
+import { Menu, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { SearchPopover } from "./SearchPopover";
 import { ProfileDropdown } from "./ProfileDropdown";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 interface NavbarProps {
   isHeroComplete?: boolean;
@@ -100,7 +101,7 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
             </AnimatePresence>
 
             {/* Right side */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <AnimatePresence>
                 {showFullNav && (
                   <>
@@ -116,6 +117,15 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ delay: 0.02 }}
+                      className="hidden lg:block"
+                    >
+                      <DarkModeToggle />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ delay: 0.04 }}
                       className="hidden lg:block"
                     >
@@ -125,37 +135,63 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
                 )}
               </AnimatePresence>
 
-              {/* Mobile menu */}
+              {/* Mobile: dark mode + menu */}
               <AnimatePresence>
                 {showFullNav && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                  >
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                      <SheetTrigger asChild className="lg:hidden">
-                        <Button variant="ghost" size="icon" className="relative w-9 h-9">
-                          <Menu className="w-5 h-5" />
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent side="right" className="w-[300px] bg-background">
-                        <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
-                        <nav className="flex flex-col gap-6">
-                          {navLinks.map((link) => (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="lg:hidden"
+                    >
+                      <DarkModeToggle />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                    >
+                      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                        <SheetTrigger asChild className="lg:hidden">
+                          <Button variant="ghost" size="icon" className="relative w-9 h-9">
+                            <Menu className="w-5 h-5" />
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-[300px] bg-background">
+                          <SheetTitle className="font-serif text-xl mb-8">Menü</SheetTitle>
+                          <nav className="flex flex-col gap-6">
+                            {navLinks.map((link) => (
+                              <Link
+                                key={link.href}
+                                to={link.href}
+                                onClick={() => setIsOpen(false)}
+                                className="text-lg font-sans text-foreground hover:text-primary transition-colors"
+                              >
+                                {link.label}
+                              </Link>
+                            ))}
+                          </nav>
+                          <div className="mt-8 pt-6 border-t border-border space-y-4">
                             <Link
-                              key={link.href}
-                              to={link.href}
+                              to="/giris"
                               onClick={() => setIsOpen(false)}
-                              className="text-lg font-sans text-foreground hover:text-primary transition-colors"
+                              className="block w-full py-3 bg-primary text-primary-foreground text-center text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors"
                             >
-                              {link.label}
+                              Giriş Yap
                             </Link>
-                          ))}
-                        </nav>
-                      </SheetContent>
-                    </Sheet>
-                  </motion.div>
+                            <Link
+                              to="/kayit"
+                              onClick={() => setIsOpen(false)}
+                              className="block w-full py-3 border border-border text-center text-sm font-medium rounded-xl hover:bg-accent transition-colors"
+                            >
+                              Hesap Oluştur
+                            </Link>
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    </motion.div>
+                  </>
                 )}
               </AnimatePresence>
             </div>
