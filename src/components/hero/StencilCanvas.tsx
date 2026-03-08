@@ -388,51 +388,51 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
       // Night overlay for dark mode
       if (isDark) {
-        // Dark ambient layer
+        // Dark ambient layer - reduced to allow more brightness
         ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = "rgba(18, 16, 14, 0.85)";
+        ctx.fillStyle = "rgba(18, 16, 14, 0.78)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalCompositeOperation = "source-over";
 
         const w = canvas.width;
         const h = canvas.height;
 
-        // Top-center soft warm glow
+        // Top-center soft warm glow (+25% light)
         const g1 = ctx.createRadialGradient(w * 0.5, h * 0.15, 0, w * 0.5, h * 0.15, h * 0.6);
-        g1.addColorStop(0, "rgba(255, 195, 120, 0.22)");
-        g1.addColorStop(0.35, "rgba(255, 180, 100, 0.10)");
+        g1.addColorStop(0, "rgba(255, 195, 120, 0.28)");
+        g1.addColorStop(0.35, "rgba(255, 180, 100, 0.13)");
         g1.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = g1;
         ctx.fillRect(0, 0, w, h);
 
-        // Left-side warm accent
+        // Left-side warm accent (+25% light)
         const g2 = ctx.createRadialGradient(w * 0.12, h * 0.35, 0, w * 0.12, h * 0.35, h * 0.45);
-        g2.addColorStop(0, "rgba(255, 170, 90, 0.16)");
-        g2.addColorStop(0.4, "rgba(255, 160, 80, 0.06)");
+        g2.addColorStop(0, "rgba(255, 170, 90, 0.20)");
+        g2.addColorStop(0.4, "rgba(255, 160, 80, 0.08)");
         g2.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = g2;
         ctx.fillRect(0, 0, w, h);
 
-        // Right-side warm accent
+        // Right-side warm accent (+25% light)
         const g3 = ctx.createRadialGradient(w * 0.88, h * 0.45, 0, w * 0.88, h * 0.45, h * 0.4);
-        g3.addColorStop(0, "rgba(255, 180, 100, 0.14)");
-        g3.addColorStop(0.4, "rgba(255, 160, 80, 0.05)");
+        g3.addColorStop(0, "rgba(255, 180, 100, 0.18)");
+        g3.addColorStop(0.4, "rgba(255, 160, 80, 0.06)");
         g3.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = g3;
         ctx.fillRect(0, 0, w, h);
 
-        // Bottom warm fill light
+        // Bottom warm fill light (+25% light)
         const g4 = ctx.createRadialGradient(w * 0.5, h * 0.85, 0, w * 0.5, h * 0.85, h * 0.5);
-        g4.addColorStop(0, "rgba(255, 190, 110, 0.10)");
-        g4.addColorStop(0.5, "rgba(255, 170, 90, 0.04)");
+        g4.addColorStop(0, "rgba(255, 190, 110, 0.13)");
+        g4.addColorStop(0.5, "rgba(255, 170, 90, 0.05)");
         g4.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = g4;
         ctx.fillRect(0, 0, w, h);
 
-        // Vignette
+        // Vignette - softened for brightness
         const vignette = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.25, w * 0.5, h * 0.5, h * 0.75);
         vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
-        vignette.addColorStop(1, "rgba(0, 0, 0, 0.35)");
+        vignette.addColorStop(1, "rgba(0, 0, 0, 0.30)");
         ctx.fillStyle = vignette;
         ctx.fillRect(0, 0, w, h);
       }
