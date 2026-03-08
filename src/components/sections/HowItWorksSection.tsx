@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Paintbrush, Ruler, Sparkles, CheckCircle2 } from "lucide-react";
+import howStep1 from "@/assets/how-step-1.jpg";
+import howStep2 from "@/assets/how-step-2.jpg";
+import howStep3 from "@/assets/how-step-3.jpg";
+import howStep4 from "@/assets/how-step-4.jpg";
 
 const steps = [
   {
@@ -9,7 +13,7 @@ const steps = [
     icon: Ruler,
     title: "Desen Seçin",
     description: "Koleksiyonumuzdan size uygun deseni seçin veya özel tasarım talep edin.",
-    videoPlaceholder: "Desen seçimi animasyonu",
+    image: howStep1,
     color: "from-primary/20 to-primary/5",
   },
   {
@@ -17,7 +21,7 @@ const steps = [
     icon: Sparkles,
     title: "Duvarınızı Hazırlayın",
     description: "Duvarınızın temiz ve kuru olduğundan emin olun. Stencil'i konumlandırın.",
-    videoPlaceholder: "Duvar hazırlığı animasyonu",
+    image: howStep2,
     color: "from-secondary/30 to-secondary/10",
   },
   {
@@ -25,7 +29,7 @@ const steps = [
     icon: Paintbrush,
     title: "Boyama Yapın",
     description: "Rulo veya fırça ile boyayı stencil üzerinden eşit şekilde uygulayın.",
-    videoPlaceholder: "Boyama tekniği animasyonu",
+    image: howStep3,
     color: "from-accent/30 to-accent/10",
   },
   {
@@ -33,7 +37,7 @@ const steps = [
     icon: CheckCircle2,
     title: "Tadını Çıkarın",
     description: "Boya kurumadan stencil'i dikkatlice kaldırın. Muhteşem sonuç!",
-    videoPlaceholder: "Final sonuç animasyonu",
+    image: howStep4,
     color: "from-primary/20 to-accent/10",
   },
 ];
