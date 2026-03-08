@@ -5,6 +5,8 @@ import { Navbar } from "@/components/navigation";
 import { Footer } from "@/components/sections";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,18 +15,18 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setTimeout(() => {
+      const name = email.split("@")[0];
+      login(email, name, isAdmin ? "admin" : "user");
+      toast.success("Başarıyla giriş yapıldı!");
       setIsLoading(false);
-      if (isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    }, 1500);
+      navigate(isAdmin ? "/admin" : "/hesabim");
+    }, 1000);
   };
 
   return (
@@ -107,7 +109,7 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Admin checkpoint - icon only, no text */}
+              {/* Admin checkpoint */}
               <div className="flex items-center justify-end">
                 <button
                   type="button"
