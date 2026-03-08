@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { HeroExperience } from "@/components/hero";
+import { PrimaryPath } from "@/components/prototype/PrimaryPath";
 import {
   FeaturesSection,
   CollectionSection,
