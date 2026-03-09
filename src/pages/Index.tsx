@@ -12,7 +12,7 @@ import {
   HowItWorksSection,
 } from "@/components/sections";
 
-type Phase = "curiosity" | "relief" | "confidence";
+type Phase = "curiosity" | "relief" | "confidence" | "style-select" | "motif-demo";
 
 /* Micro-pause: a breathing divider between sections */
 const MicroPause = ({ children, delay = 0 }: { children?: React.ReactNode; delay?: number }) => (
@@ -60,7 +60,7 @@ const Index = () => {
       <Navbar isHeroComplete={isHeroComplete} />
       <GlobalWidgets />
       <main>
-        <HeroExperience onPhaseChange={setHeroPhase} />
+        <HeroExperience onPhaseChange={(p) => setHeroPhase(p as Phase)} />
         <MicroPause delay={0.1}>discover</MicroPause>
         <PrimaryPath />
         <MicroPause delay={0}>keşfet</MicroPause>
