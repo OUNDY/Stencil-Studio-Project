@@ -12,7 +12,7 @@ import {
   HowItWorksSection,
 } from "@/components/sections";
 
-type Phase = "curiosity" | "relief" | "confidence";
+type Phase = "curiosity" | "relief" | "confidence" | "style-select" | "motif-demo";
 
 /* Micro-pause: a breathing divider between sections */
 const MicroPause = ({ children, delay = 0 }: { children?: React.ReactNode; delay?: number }) => (
