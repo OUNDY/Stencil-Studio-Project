@@ -60,7 +60,7 @@ const Index = () => {
       <Navbar isHeroComplete={isHeroComplete} />
       <GlobalWidgets />
       <main>
-        <HeroExperience onPhaseChange={setHeroPhase} />
+        <HeroExperience onPhaseChange={(p) => setHeroPhase(p as Phase)} />
         <MicroPause delay={0.1}>discover</MicroPause>
         <PrimaryPath />
         <MicroPause delay={0}>keşfet</MicroPause>
