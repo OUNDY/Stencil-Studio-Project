@@ -93,10 +93,20 @@ export const HowItWorksSection = () => {
                       <span className="font-serif text-lg text-foreground">{step.number}</span>
                     </div>
                     
-                    <img
+                    <motion.img
                       src={step.image}
                       alt={step.title}
-                      className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-contain p-6"
+                      animate={{
+                        y: [0, -8, 0],
+                        scale: [1, 1.02, 1],
+                      }}
+                      transition={{
+                        duration: 5 + index * 0.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      whileHover={{ scale: 1.08 }}
                     />
 
                     <motion.div
