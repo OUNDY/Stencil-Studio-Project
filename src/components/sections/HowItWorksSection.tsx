@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Paintbrush, Ruler, Sparkles, CheckCircle2 } from "lucide-react";
+import stepChoose from "@/assets/step-choose-pattern.png";
+import stepPrepare from "@/assets/step-prepare-wall.png";
+import stepPaint from "@/assets/step-paint.png";
+import stepEnjoy from "@/assets/step-enjoy-result.png";
 
 const steps = [
   {
@@ -9,32 +13,32 @@ const steps = [
     icon: Ruler,
     title: "Desen Seçin",
     description: "Koleksiyonumuzdan size uygun deseni seçin veya özel tasarım talep edin.",
-    videoPlaceholder: "Desen seçimi animasyonu",
     color: "from-primary/20 to-primary/5",
+    image: stepChoose,
   },
   {
     number: "02",
     icon: Sparkles,
     title: "Duvarınızı Hazırlayın",
     description: "Duvarınızın temiz ve kuru olduğundan emin olun. Stencil'i konumlandırın.",
-    videoPlaceholder: "Duvar hazırlığı animasyonu",
     color: "from-secondary/30 to-secondary/10",
+    image: stepPrepare,
   },
   {
     number: "03",
     icon: Paintbrush,
     title: "Boyama Yapın",
     description: "Rulo veya fırça ile boyayı stencil üzerinden eşit şekilde uygulayın.",
-    videoPlaceholder: "Boyama tekniği animasyonu",
     color: "from-accent/30 to-accent/10",
+    image: stepPaint,
   },
   {
     number: "04",
     icon: CheckCircle2,
     title: "Tadını Çıkarın",
     description: "Boya kurumadan stencil'i dikkatlice kaldırın. Muhteşem sonuç!",
-    videoPlaceholder: "Final sonuç animasyonu",
     color: "from-primary/20 to-accent/10",
+    image: stepEnjoy,
   },
 ];
 
@@ -48,14 +52,12 @@ export const HowItWorksSection = () => {
       id="how-it-works"
       className="py-14 lg:py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden"
     >
-      {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        {/* Section header */}
         <motion.div
           className="text-center max-w-2xl mx-auto mb-16 lg:mb-20"
           initial={{ opacity: 0, y: 30 }}
@@ -74,7 +76,6 @@ export const HowItWorksSection = () => {
           </p>
         </motion.div>
 
-        {/* Steps grid */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           {steps.map((step, index) => (
             <motion.div
@@ -85,27 +86,19 @@ export const HowItWorksSection = () => {
               className="group"
             >
               <div className="relative h-full">
-                {/* Card */}
                 <div className="h-full bg-card border border-border rounded-3xl overflow-hidden shadow-organic transition-all duration-300 group-hover:shadow-organic-elevated group-hover:-translate-y-1">
-                  {/* Video/Visual area */}
+                  {/* Image area */}
                   <div className={`aspect-video bg-gradient-to-br ${step.color} relative overflow-hidden`}>
-                    {/* Step number badge */}
-                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center border border-border">
+                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center border border-border z-10">
                       <span className="font-serif text-lg text-foreground">{step.number}</span>
                     </div>
                     
-                    {/* Placeholder for video/animation */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <motion.div
-                        className="w-20 h-20 rounded-2xl bg-background/80 backdrop-blur-sm flex items-center justify-center shadow-lg"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <step.icon className="w-8 h-8 text-primary" />
-                      </motion.div>
-                    </div>
+                    <img
+                      src={step.image}
+                      alt={step.title}
+                      className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                    />
 
-                    {/* Animated decoration */}
                     <motion.div
                       className="absolute bottom-0 left-0 right-0 h-1 bg-primary/30"
                       initial={{ scaleX: 0 }}
@@ -115,18 +108,21 @@ export const HowItWorksSection = () => {
                     />
                   </div>
 
-                  {/* Content */}
                   <div className="p-6 lg:p-8">
-                    <h3 className="text-xl lg:text-2xl font-serif text-foreground mb-3">
-                      {step.title}
-                    </h3>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                        <step.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h3 className="text-xl lg:text-2xl font-serif text-foreground">
+                        {step.title}
+                      </h3>
+                    </div>
                     <p className="text-muted-foreground font-sans leading-relaxed">
                       {step.description}
                     </p>
                   </div>
                 </div>
 
-                {/* Connector line (hidden on last item and on mobile) */}
                 {index < steps.length - 1 && index % 2 === 0 && (
                   <div className="hidden lg:block absolute top-1/2 -right-6 w-12 h-0.5 bg-border" />
                 )}
@@ -135,7 +131,6 @@ export const HowItWorksSection = () => {
           ))}
         </div>
 
-        {/* CTA */}
         <motion.div
           className="text-center mt-16"
           initial={{ opacity: 0, y: 20 }}
