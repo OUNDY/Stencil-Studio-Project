@@ -84,10 +84,20 @@ export const FeaturesSection = () => {
               <div className="h-full rounded-3xl bg-card border border-border shadow-organic transition-all duration-300 group-hover:shadow-organic-elevated group-hover:-translate-y-1 overflow-hidden">
                 {/* Image area */}
                 <div className="aspect-[4/3] bg-muted/30 overflow-hidden flex items-center justify-center p-4">
-                  <img
+                  <motion.img
                     src={feature.image}
                     alt={feature.title}
-                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-contain"
+                    animate={{ 
+                      y: [0, -6, 0],
+                      rotate: [0, index % 2 === 0 ? 1 : -1, 0]
+                    }}
+                    transition={{ 
+                      duration: 4 + index * 0.5, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                    whileHover={{ scale: 1.08 }}
                   />
                 </div>
 
