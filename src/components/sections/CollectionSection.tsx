@@ -6,12 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const collections = [
-  { id: "botanical", name: "Botanik Serisi", description: "Doğanın zarif çizgileri duvarlarınızda", image: "🌿", itemCount: 24, popular: true },
-  { id: "geometric", name: "Geometrik", description: "Modern çizgiler, sonsuz kombinasyonlar", image: "◇", itemCount: 18, popular: false },
-  { id: "mandala", name: "Mandala", description: "Meditasyonu duvarlarınıza taşıyın", image: "✿", itemCount: 15, popular: true },
-  { id: "minimal", name: "Minimal", description: "Az çok demektir", image: "○", itemCount: 12, popular: false },
-  { id: "ethnic", name: "Etnik Motifler", description: "Geleneksel desenler, modern yorumlar", image: "◬", itemCount: 20, popular: false },
-  { id: "kids", name: "Çocuk Dünyası", description: "Küçük hayalperestler için", image: "★", itemCount: 30, popular: true },
+  { id: "tropik-yapraklar", name: "Tropik Yapraklar", description: "Monstera, palmiye ve egzotik yapraklar", image: "🌿", itemCount: 3, popular: true },
+  { id: "cicek-gul", name: "Çiçek & Gül", description: "Vintage güller, sakura ve yaban çiçekleri", image: "🌹", itemCount: 3, popular: true },
+  { id: "art-deco", name: "Art Deco & Gatsby", description: "1920'lerin ihtişamlı geometrik motifleri", image: "✦", itemCount: 2, popular: false },
+  { id: "boho-makrame", name: "Boho & Makrame", description: "Makrame düğümleri ve bohem ruh", image: "🪢", itemCount: 2, popular: true },
+  { id: "mandala", name: "Mandala", description: "Lotus ve tavan mandalaları", image: "❀", itemCount: 2, popular: false },
+  { id: "japon-zen", name: "Japon & Zen", description: "Enso dairesi ve Kanagawa dalgası", image: "🌊", itemCount: 2, popular: true },
+  { id: "islami-geometri", name: "İslami Geometri", description: "Selçuklu yıldızları ve arabesk desenler", image: "✸", itemCount: 2, popular: false },
+  { id: "hayvan-siluet", name: "Hayvan Silüetleri", description: "Kuşlar, kelebekler ve doğa", image: "🦋", itemCount: 2, popular: false },
+  { id: "cocuk-uzay", name: "Çocuk: Uzay", description: "Roketler, gezegenler ve yıldızlar", image: "🚀", itemCount: 2, popular: true },
+  { id: "modern-soyut", name: "Modern Soyut", description: "Matisse kesikleri ve akışkan formlar", image: "🎨", itemCount: 2, popular: false },
+  { id: "kaligrafi", name: "Kaligrafi & Yazı", description: "Osmanlı hat sanatı ve modern tipografi", image: "✍", itemCount: 2, popular: false },
+  { id: "bordur-cerceve", name: "Bordür & Çerçeve", description: "Defne dalı bordürleri ve Viktoryen çerçeveler", image: "🖼", itemCount: 2, popular: false },
 ];
 
 export const CollectionSection = () => {
@@ -48,14 +54,14 @@ export const CollectionSection = () => {
           </Button>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {collections.map((collection, index) => (
             <motion.div
               key={collection.id}
               className="group relative"
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
               onMouseEnter={() => setHoveredId(collection.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -63,7 +69,7 @@ export const CollectionSection = () => {
                 <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-gradient-to-br from-muted to-accent/30 border border-border shadow-organic transition-all duration-500 group-hover:shadow-organic-elevated">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <motion.span
-                      className="text-7xl opacity-30 group-hover:opacity-50 transition-opacity"
+                      className="text-6xl opacity-30 group-hover:opacity-50 transition-opacity"
                       animate={hoveredId === collection.id ? { scale: [1, 1.1, 1], rotate: [0, 5, 0] } : {}}
                       transition={{ duration: 2, repeat: Infinity }}
                     >
@@ -71,29 +77,29 @@ export const CollectionSection = () => {
                     </motion.span>
                   </div>
                   {collection.popular && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-sans">
-                      <Heart className="w-3 h-3 fill-current" />
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-sans">
+                      <Heart className="w-2.5 h-2.5 fill-current" />
                       Popüler
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-xl font-serif text-foreground mb-1">
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h3 className="text-base font-serif text-foreground mb-0.5">
                       {collection.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground font-sans mb-3">
+                    <p className="text-xs text-muted-foreground font-sans mb-2 line-clamp-1">
                       {collection.description}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-[10px] text-muted-foreground">
                         {collection.itemCount} şablon
                       </span>
                       <motion.span
-                        className="flex items-center gap-1 text-sm text-primary font-sans"
+                        className="flex items-center gap-1 text-xs text-primary font-sans"
                         whileHover={{ x: 5 }}
                       >
                         Keşfet
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </motion.span>
                     </div>
                   </div>

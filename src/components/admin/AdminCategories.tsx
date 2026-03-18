@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Tag, Plus, Edit2, Trash2, GripVertical } from "lucide-react";
+import { Tag, Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -17,12 +17,19 @@ interface Category {
 }
 
 const initialCategories: Category[] = [
-  { id: "1", name: "Botanik", slug: "botanik", count: 2, emoji: "🌿", description: "Doğa ve bitki motifleri" },
-  { id: "2", name: "Geometrik", slug: "geometrik", count: 2, emoji: "◇", description: "Modern geometrik desenler" },
-  { id: "3", name: "Mandala", slug: "mandala", count: 2, emoji: "✿", description: "Mandala ve meditasyon desenleri" },
-  { id: "4", name: "Minimal", slug: "minimal", count: 3, emoji: "〰", description: "Sade ve minimalist desenler" },
-  { id: "5", name: "Etnik", slug: "etnik", count: 1, emoji: "◬", description: "Geleneksel ve etnik motifler" },
-  { id: "6", name: "Çocuk", slug: "cocuk", count: 2, emoji: "🦋", description: "Çocuk odası desenleri" },
+  { id: "1", name: "Tropik Yapraklar", slug: "tropik-yapraklar", count: 3, emoji: "🌿", description: "Monstera, palmiye ve egzotik yapraklar" },
+  { id: "2", name: "Çiçek & Gül", slug: "cicek-gul", count: 3, emoji: "🌹", description: "Vintage güller, sakura ve yaban çiçekleri" },
+  { id: "3", name: "Art Deco & Gatsby", slug: "art-deco", count: 2, emoji: "✦", description: "1920'lerin ihtişamlı geometrik motifleri" },
+  { id: "4", name: "Boho & Makrame", slug: "boho-makrame", count: 2, emoji: "🪢", description: "Makrame düğümleri ve bohem detaylar" },
+  { id: "5", name: "Mandala", slug: "mandala", count: 2, emoji: "❀", description: "Lotus ve tavan mandalaları" },
+  { id: "6", name: "Japon & Zen", slug: "japon-zen", count: 2, emoji: "🌊", description: "Enso dairesi ve Kanagawa dalgası" },
+  { id: "7", name: "İslami Geometri", slug: "islami-geometri", count: 2, emoji: "✸", description: "Selçuklu yıldızları ve arabesk desenler" },
+  { id: "8", name: "Hayvan Silüetleri", slug: "hayvan-siluet", count: 2, emoji: "🦋", description: "Kuşlar, kelebekler ve doğa" },
+  { id: "9", name: "Çocuk: Uzay", slug: "cocuk-uzay", count: 2, emoji: "🚀", description: "Roketler, gezegenler ve yıldızlar" },
+  { id: "10", name: "Çocuk: Hayvanlar", slug: "cocuk-hayvan", count: 2, emoji: "🦁", description: "Safari ve deniz altı hayvanları" },
+  { id: "11", name: "Bordür & Çerçeve", slug: "bordur-cerceve", count: 2, emoji: "🖼", description: "Defne dalı bordürleri ve çerçeveler" },
+  { id: "12", name: "Modern Soyut", slug: "modern-soyut", count: 2, emoji: "🎨", description: "Matisse kesikleri ve akışkan formlar" },
+  { id: "13", name: "Kaligrafi & Yazı", slug: "kaligrafi", count: 2, emoji: "✍", description: "Hat sanatı ve modern tipografi" },
 ];
 
 export const AdminCategories = () => {
