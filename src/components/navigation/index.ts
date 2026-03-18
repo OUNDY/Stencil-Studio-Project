@@ -5,3 +5,4 @@ export { ProfileDropdown } from "./ProfileDropdown";
 export { ChatbotWidget } from "./ChatbotWidget";
 export { GlobalWidgets } from "./GlobalWidgets";
 export { DarkModeToggle } from "./DarkModeToggle";
+export { ThemeSwitcher } from "./ThemeSwitcher";
