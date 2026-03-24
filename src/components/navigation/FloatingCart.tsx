@@ -126,7 +126,7 @@ export const FloatingCart = () => {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center relative"
+        className="w-11 h-11 sm:w-14 sm:h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center relative"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >

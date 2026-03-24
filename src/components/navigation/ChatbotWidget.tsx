@@ -224,7 +224,7 @@ export const ChatbotWidget = () => {
       {/* Floating Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 bg-secondary text-secondary-foreground rounded-full shadow-lg flex items-center justify-center"
+        className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary text-secondary-foreground rounded-full shadow-lg flex items-center justify-center"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
