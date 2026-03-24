@@ -105,7 +105,7 @@ export const ChatbotWidget = () => {
   };
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-24 z-50">
+    <div ref={containerRef} className="fixed bottom-6 right-[3.75rem] sm:right-24 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
