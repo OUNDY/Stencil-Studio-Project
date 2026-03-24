@@ -93,7 +93,7 @@ export const ThemeSwitcher = () => {
   };
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-[10.5rem] z-50">
+    <div ref={containerRef} className="fixed bottom-6 right-[7rem] sm:right-[10.5rem] z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -101,7 +101,7 @@ export const ThemeSwitcher = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-14 right-0 bg-card border border-border rounded-2xl shadow-2xl p-3 min-w-[180px]"
+            className="absolute bottom-14 right-0 sm:right-0 bg-card border border-border rounded-2xl shadow-2xl p-3 min-w-[180px]"
           >
             <p className="text-xs font-medium text-muted-foreground mb-2 px-1">
               Renk Teması
@@ -144,7 +144,7 @@ export const ThemeSwitcher = () => {
 
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 bg-card border border-border text-foreground rounded-full shadow-lg flex items-center justify-center"
+        className="w-10 h-10 sm:w-12 sm:h-12 bg-card border border-border text-foreground rounded-full shadow-lg flex items-center justify-center"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Renk temasını değiştir"
