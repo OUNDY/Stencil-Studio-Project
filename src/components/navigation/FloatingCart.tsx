@@ -22,7 +22,7 @@ export const FloatingCart = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-6 z-50">
+    <div ref={containerRef} className="fixed bottom-6 right-4 sm:right-6 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
