@@ -93,7 +93,7 @@ export const ThemeSwitcher = () => {
   };
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-[10.5rem] z-50">
+    <div ref={containerRef} className="fixed bottom-6 right-[7rem] sm:right-[10.5rem] z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
