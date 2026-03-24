@@ -101,7 +101,7 @@ export const ThemeSwitcher = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-14 right-0 bg-card border border-border rounded-2xl shadow-2xl p-3 min-w-[180px]"
+            className="absolute bottom-14 right-0 sm:right-0 bg-card border border-border rounded-2xl shadow-2xl p-3 min-w-[180px]"
           >
             <p className="text-xs font-medium text-muted-foreground mb-2 px-1">
               Renk Teması
