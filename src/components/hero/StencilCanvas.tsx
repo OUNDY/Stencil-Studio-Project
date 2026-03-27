@@ -38,6 +38,7 @@ const FADE_DURATION = 25000;
 const FADE_START_DELAY = 5000;
 
 export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: StencilCanvasProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const brushTextureRef = useRef<HTMLCanvasElement | null>(null);
@@ -310,23 +311,32 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     paintedImg.src = wallPainted;
 
     const resize = () => {
+      const container = containerRef.current;
+      if (!container) return;
+
       const dpr = window.devicePixelRatio || 1;
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      
+
       if (maskCanvasRef.current) {
         maskCanvasRef.current.width = canvas.width;
         maskCanvasRef.current.height = canvas.height;
       }
     };
 
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+
     const startAnimation = () => {
-      window.addEventListener("resize", resize);
+      if (containerRef.current) {
+        resizeObserver.observe(containerRef.current);
+      }
       canvas.addEventListener("mouseenter", handleMouseEnter);
       canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseleave", handleMouseLeave);
@@ -442,7 +452,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     };
 
     return () => {
-      window.removeEventListener("resize", resize);
+      resizeObserver.disconnect();
       canvas.removeEventListener("mouseenter", handleMouseEnter);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
@@ -457,11 +467,13 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
   return (
     <>
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 z-[2]"
-        style={{ cursor: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"12\" fill=\"none\" stroke=\"%23666\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/></svg>') 16 16, crosshair" }}
-      />
+      <div ref={containerRef} className="fixed inset-0 z-[2]">
+        <canvas
+          ref={canvasRef}
+          className="block w-full h-full"
+          style={{ cursor: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"12\" fill=\"none\" stroke=\"%23666\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/></svg>') 16 16, crosshair" }}
+        />
+      </div>
 
       {/* Loading state */}
       {!isReady && (
