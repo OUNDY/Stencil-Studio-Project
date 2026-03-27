@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { Palette } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 type ThemeColor = "terracotta" | "ocean" | "forest" | "lavender";
 
@@ -44,33 +42,18 @@ const themes: ThemeOption[] = [
 ];
 
 export const ThemeSwitcher = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [activeTheme, setActiveTheme] = useState<ThemeColor>(() => {
     if (typeof window !== "undefined") {
       return (localStorage.getItem("stencil_color_theme") as ThemeColor) || "terracotta";
     }
     return "terracotta";
   });
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const isDark = typeof window !== "undefined" && document.documentElement.classList.contains("dark");
 
   useEffect(() => {
-    // Apply saved theme on mount
     const saved = localStorage.getItem("stencil_color_theme") as ThemeColor;
     if (saved) {
       applyTheme(saved);
     }
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const applyTheme = (themeId: ThemeColor) => {
@@ -93,64 +76,28 @@ export const ThemeSwitcher = () => {
   };
 
   return (
-    <div ref={containerRef} className="fixed bottom-6 right-[7rem] sm:right-[10.5rem] z-50">
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="absolute bottom-14 right-0 sm:right-0 bg-card border border-border rounded-2xl shadow-2xl p-3 min-w-[180px]"
-          >
-            <p className="text-xs font-medium text-muted-foreground mb-2 px-1">
-              Renk Teması
-            </p>
-            <div className="space-y-1">
-              {themes.map((theme) => (
-                <button
-                  key={theme.id}
-                  onClick={() => selectTheme(theme.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm ${
-                    activeTheme === theme.id
-                      ? "bg-primary/10 text-foreground"
-                      : "hover:bg-accent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {/* Color preview dots - light & dark */}
-                  <div className="flex items-center gap-1">
-                    <div
-                      className="w-4 h-4 rounded-full border border-border/50"
-                      style={{ backgroundColor: theme.lightPreview }}
-                    />
-                    <div
-                      className="w-4 h-4 rounded-full border border-border/50"
-                      style={{ backgroundColor: theme.darkPreview }}
-                    />
-                  </div>
-                  <span className="flex-1 text-left">{theme.label}</span>
-                  {activeTheme === theme.id && (
-                    <motion.div
-                      layoutId="theme-check"
-                      className="w-2 h-2 rounded-full bg-primary"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 sm:w-12 sm:h-12 bg-card border border-border text-foreground rounded-full shadow-lg flex items-center justify-center"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        aria-label="Renk temasını değiştir"
-      >
-        <Palette className="w-5 h-5 text-muted-foreground" />
-      </motion.button>
+    <div className="fixed bottom-6 right-[7rem] sm:right-[10.5rem] z-50 flex items-center gap-2">
+      {themes.map((theme) => (
+        <button
+          key={theme.id}
+          onClick={() => selectTheme(theme.id)}
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden flex transition-all ${
+            activeTheme === theme.id
+              ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+              : "ring-1 ring-border hover:ring-2 hover:ring-muted-foreground"
+          }`}
+          aria-label={theme.label}
+        >
+          <div
+            className="w-1/2 h-full"
+            style={{ backgroundColor: theme.lightPreview }}
+          />
+          <div
+            className="w-1/2 h-full"
+            style={{ backgroundColor: theme.darkPreview }}
+          />
+        </button>
+      ))}
     </div>
   );
 };
