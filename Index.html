@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yiğit — 8 Haftalık Yol Haritası</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0c;--bg2:#141414;--bg3:#1c1c1c;--bg4:#242424;
+  --txt:#edeae5;--txt2:#7a7672;--txt3:#444240;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --purple:#b49ffc;--purple-bg:rgba(180,159,252,0.1);
+  --teal:#3ecf8e;--teal-bg:rgba(62,207,142,0.1);
+  --coral:#f97c5a;--coral-bg:rgba(249,124,90,0.1);
+  --blue:#5aabf9;--blue-bg:rgba(90,171,249,0.1);
+  --amber:#f5c842;--amber-bg:rgba(245,200,66,0.1);
+  --gray:#8a8580;--gray-bg:rgba(138,133,128,0.1);
+  --green:#4ade80;--red:#f87171;
+  --r:8px;--rl:12px;
+}
+body{background:var(--bg);color:var(--txt);min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;}
+
+/* ── Sidebar + Main ── */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:20px 0 20px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+.main{flex:1;padding:32px 28px 80px;overflow-y:auto;}
+@media(max-width:640px){
+  .app{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);padding:12px 0;}
+  .sb-logo{display:none;}
+  .sb-stats{display:none;}
+  .sb-nav{flex-direction:row;padding:0 12px;gap:6px;}
+  .sb-item{white-space:nowrap;padding:6px 12px;}
+  .main{padding:20px 16px 60px;}
+}
+
+/* ── Sidebar logo ── */
+.sb-logo{padding:0 16px 20px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.sb-logo-title{font-size:13px;font-weight:600;color:var(--txt);letter-spacing:-0.3px;}
+.sb-logo-sub{font-size:11px;color:var(--txt3);margin-top:2px;}
+
+/* ── Sidebar stats ── */
+.sb-stats{padding:12px 16px;margin-bottom:8px;}
+.sb-stat{display:flex;justify-content:space-between;align-items:center;padding:4px 0;}
+.sb-stat-label{font-size:11px;color:var(--txt3);}
+.sb-stat-val{font-size:12px;font-weight:600;color:var(--txt);}
+
+/* ── Sidebar nav ── */
+.sb-nav{display:flex;flex-direction:column;gap:1px;padding:0 8px;flex:1;}
+.sb-item{padding:7px 10px;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;gap:8px;border:none;background:transparent;color:var(--txt2);font-size:12px;width:100%;text-align:left;transition:all .15s;}
+.sb-item:hover{background:var(--bg3);color:var(--txt);}
+.sb-item.active{background:var(--bg4);color:var(--txt);font-weight:500;}
+.sb-item.done-week{color:var(--teal);}
+.sb-item.done-week.active{background:rgba(62,207,142,0.08);}
+.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sb-check{font-size:10px;color:var(--teal);margin-left:auto;}
+
+/* ── Connection status ── */
+.conn-bar{display:flex;align-items:center;gap:6px;padding:0 16px;margin-top:auto;margin-bottom:0;padding-top:16px;border-top:1px solid var(--border);}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:var(--txt3);}
+.conn-dot.ok{background:var(--green);}
+.conn-dot.err{background:var(--red);}
+.conn-txt{font-size:10px;color:var(--txt3);}
+
+/* ── Main header ── */
+.page-header{margin-bottom:28px;}
+.page-week{font-size:11px;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.page-title{font-size:22px;font-weight:600;letter-spacing:-.5px;margin-bottom:6px;}
+.page-desc{font-size:13px;color:var(--txt2);line-height:1.6;max-width:520px;}
+
+/* ── Progress cards ── */
+.cs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px;}
+@media(max-width:500px){.cs-grid{grid-template-columns:1fr;}}
+.cs-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;}
+.cs-top{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.cs-dot{width:6px;height:6px;border-radius:50%;}
+.cs-name{font-size:11px;font-weight:500;}
+.cs-pct{font-size:24px;font-weight:600;margin-bottom:6px;letter-spacing:-1px;}
+.cs-bar-bg{background:var(--bg4);border-radius:2px;height:2px;overflow:hidden;}
+.cs-bar-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+.cs-sub{font-size:11px;color:var(--txt3);margin-top:6px;}
+
+/* ── Task list ── */
+.section-label{font-size:11px;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.task-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:24px;}
+.task-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);transition:background .1s;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{background:var(--bg3);}
+.task-cb{width:17px;height:17px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;background:transparent;}
+.task-cb.on{background:var(--green);border-color:var(--green);}
+.task-cb.on::after{content:'✓';font-size:10px;color:#000;font-weight:800;}
+.task-body{flex:1;}
+.task-label{font-size:13px;color:var(--txt);line-height:1.5;transition:color .15s;}
+.task-label.done{color:var(--txt3);text-decoration:line-through;}
+.task-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;margin-top:5px;}
+.tag-prompt{background:var(--purple-bg);color:var(--purple);}
+.tag-mcp{background:var(--teal-bg);color:var(--teal);}
+.tag-trendyol{background:var(--coral-bg);color:var(--coral);}
+.tag-stencil{background:var(--blue-bg);color:var(--blue);}
+.tag-portfolio{background:var(--amber-bg);color:var(--amber);}
+.tag-sistem{background:var(--gray-bg);color:var(--gray);}
+
+/* ── Notes ── */
+.notes-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:24px;}
+.notes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.notes-area{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--txt);font-size:13px;padding:12px;resize:vertical;min-height:90px;line-height:1.6;font-family:inherit;outline:none;transition:border-color .15s;}
+.notes-area:focus{border-color:var(--border2);}
+.notes-area::placeholder{color:var(--txt3);}
+.save-txt{font-size:11px;color:var(--txt3);height:14px;transition:opacity .3s;}
+
+/* ── Nav buttons ── */
+.nav-row{display:flex;justify-content:space-between;gap:8px;}
+.nav-btn{padding:9px 16px;border:1px solid var(--border);background:transparent;color:var(--txt2);font-size:12px;border-radius:var(--r);cursor:pointer;transition:all .15s;}
+.nav-btn:hover:not(:disabled){border-color:var(--border2);color:var(--txt);}
+.nav-btn:disabled{opacity:.25;cursor:default;}
+
+/* ── Loading ── */
+.loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--txt3);font-size:13px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title">Yiğit</div>
+      <div class="sb-logo-sub">24 Mar – 11 May 2026</div>
+    </div>
+    <div class="sb-stats">
+      <div class="sb-stat"><span class="sb-stat-label">Tamamlanan</span><span class="sb-stat-val" id="s-done">—</span></div>
+      <div class="sb-stat"><span class="sb-stat-label">İlerleme</span><span class="sb-stat-val" id="s-pct">—</span></div>
+    </div>
+    <div class="sb-nav" id="sb-nav"></div>
+    <div class="conn-bar">
+      <div class="conn-dot" id="conn-dot"></div>
+      <div class="conn-txt" id="conn-txt">Bağlanıyor...</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main" id="main">
+    <div class="loading">Veriler yükleniyor...</div>
+  </div>
+
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────
+const SUPABASE_URL = 'https://ywezobvcnjlslcghcznq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_iAyFzp-KKb-xfbC1VF10uw_8kbMorsn';
+const USER_ID = 'yigit';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── Hafta Verisi ─────────────────────────────────────────
+const WEEKS = [
+  {id:1,date:'24 Mar',title:'Zemin',
+   desc:'Ritmi kur. Prompt temellerini öğrenmeye başla, Trendyol\'u bir kullanıcı olarak gözlemle. Bu hafta çıktı değil, alışkanlık kurmak öncelik.',
+   tasks:[
+    {id:'t1-1',label:'Anthropic Interactive Tutorial — Bölüm 1–4',tag:'prompt'},
+    {id:'t1-2',label:'Trendyol & Hepsiburada\'yı günlük kullan, ilk gözlem notunu yaz',tag:'trendyol'},
+    {id:'t1-3',label:'Haftalık ritual kur: Pazartesi plan, Cuma değerlendirme (15 dk)',tag:'sistem'},
+    {id:'t1-4',label:'Stencil Studio için UX case study çerçevesini düşün',tag:'stencil'},
+  ]},
+  {id:2,date:'31 Mar',title:'Araştırma',
+   desc:'Trendyol için kullanıcı araştırmasına gir. Prompt tutorial\'ı tamamla. İlk sertifikayı al.',
+   tasks:[
+    {id:'t2-1',label:'Anthropic Interactive Tutorial — Bölüm 5–9 tamamla',tag:'prompt'},
+    {id:'t2-2',label:'DeepLearning.AI 90 dk kursunu tamamla (sertifika al)',tag:'prompt'},
+    {id:'t2-3',label:'Trendyol: 3–5 kişiyle 15 dk kullanıcı görüşmesi yap',tag:'trendyol'},
+    {id:'t2-4',label:'Trendyol: Heuristic analiz (10 Nielsen ilkesi)',tag:'trendyol'},
+  ]},
+  {id:3,date:'7 Nis',title:'Analiz',
+   desc:'Araştırmadan anlam çıkar. Problem statement\'ini netleştir. MCP\'ye ilk adımı at.',
+   tasks:[
+    {id:'t3-1',label:'Trendyol: Affinity map yap, temel problemleri çıkar',tag:'trendyol'},
+    {id:'t3-2',label:'Trendyol: "How Might We" soruları ve problem statement',tag:'trendyol'},
+    {id:'t3-3',label:'FreeAcademy.ai sertifikasını tamamla (LinkedIn\'e ekle)',tag:'prompt'},
+    {id:'t3-4',label:'Stencil Studio: Hero section kararlarını case study formatına dök',tag:'stencil'},
+    {id:'t3-5',label:'Hugging Face MCP Course — Unit 1 başla',tag:'mcp'},
+  ]},
+  {id:4,date:'14 Nis',title:'Tasarım I',
+   desc:'Trendyol wireframe\'leri Figma\'ya giriyor. Stencil Studio\'nun interaction kararları yazıya dönüşüyor.',
+   tasks:[
+    {id:'t4-1',label:'Trendyol: Low-fi wireframe (kritik 3 akış — Figma)',tag:'trendyol'},
+    {id:'t4-2',label:'Trendyol: Wireframe\'leri 2–3 kişiyle test et',tag:'trendyol'},
+    {id:'t4-3',label:'Stencil Studio: Interaction kararları bölümü — case study yazısı',tag:'stencil'},
+    {id:'t4-4',label:'Hugging Face MCP Course — Unit 2',tag:'mcp'},
+  ]},
+  {id:5,date:'21 Nis',title:'Tasarım II',
+   desc:'Trendyol high-fi\'ya geçiyor. Stencil Studio teknik stack\'i case study\'ye ekleniyor.',
+   tasks:[
+    {id:'t5-1',label:'Trendyol: High-fidelity prototype (Figma)',tag:'trendyol'},
+    {id:'t5-2',label:'Trendyol: Usability test — 3 kullanıcı, kaydet',tag:'trendyol'},
+    {id:'t5-3',label:'Stencil Studio: Technical stack kararları bölümü',tag:'stencil'},
+    {id:'t5-4',label:'Hugging Face MCP Course — Unit 3–4',tag:'mcp'},
+    {id:'t5-5',label:'Anthropic Academy — Introduction to MCP tamamla',tag:'mcp'},
+  ]},
+  {id:6,date:'28 Nis',title:'Yazım I',
+   desc:'Case study\'ler yazıya dönüşüyor. MCP pratik kullanımı başlıyor.',
+   tasks:[
+    {id:'t6-1',label:'Trendyol: Case study taslağı — Problem → Araştırma → Çözüm',tag:'trendyol'},
+    {id:'t6-2',label:'Stencil Studio: Süreç ve kararlar bölümünü tamamla',tag:'stencil'},
+    {id:'t6-3',label:'Claude\'daki MCP bağlantılarını aktif iş akışına entegre et',tag:'mcp'},
+    {id:'t6-4',label:'Prompt & MCP öğrenim sürecini case study olarak taslakla',tag:'prompt'},
+  ]},
+  {id:7,date:'5 May',title:'Yazım II',
+   desc:'Üç case study\'nin de taslakları tamamlanıyor. Portfolio hazırlığı başlıyor.',
+   tasks:[
+    {id:'t7-1',label:'Trendyol: Case study finalize + görseller',tag:'trendyol'},
+    {id:'t7-2',label:'Stencil Studio: Case study tamamla + kapak görseli',tag:'stencil'},
+    {id:'t7-3',label:'Prompt & MCP: Case study yaz — ne öğrendim, nasıl uyguladım',tag:'prompt'},
+    {id:'t7-4',label:'Portfolio sitesine case study\'leri eklemeye başla',tag:'portfolio'},
+  ]},
+  {id:8,date:'12 May',title:'Lansman',
+   desc:'Portfolio hazır, CV güncel, LinkedIn aktif. İlk başvurular yapılıyor.',
+   tasks:[
+    {id:'t8-1',label:'Portfolio — tüm case study\'ler canlıda',tag:'portfolio'},
+    {id:'t8-2',label:'CV güncelle (EN + TR) — yeni case study\'lerle',tag:'portfolio'},
+    {id:'t8-3',label:'LinkedIn: sertifikalar + yeni proje bölümü güncelle',tag:'portfolio'},
+    {id:'t8-4',label:'İlk 5 iş başvurusunu gönder',tag:'portfolio'},
+  ]},
+];
+
+const TAG_LABELS = {prompt:'Prompt Müh.',mcp:'MCP & Ajanlar',trendyol:'Trendyol',stencil:'Stencil Studio',portfolio:'Portfolio',sistem:'Sistem'};
+const CS_TAGS = {trendyol:['trendyol'],stencil:['stencil'],prompt:['prompt','mcp']};
+
+// ── State ─────────────────────────────────────────────────
+let completed = {};
+let notes = {};
+let currentWeek = 1;
+let connected = false;
+
+// ── Supabase ─────────────────────────────────────────────
+async function loadFromDB(){
+  try {
+    const [tRes, nRes] = await Promise.all([
+      sb.from('tasks').select('id,completed').eq('user_id', USER_ID),
+      sb.from('notes').select('week_id,content').eq('user_id', USER_ID),
+    ]);
+    if(tRes.error || nRes.error) throw new Error('fetch failed');
+    tRes.data.forEach(r => { completed[r.id] = r.completed; });
+    nRes.data.forEach(r => { notes[r.week_id] = r.content; });
+    connected = true;
+    setConn(true);
+  } catch(e){
+    setConn(false);
+  }
+}
+
+async function saveTask(id, val){
+  if(!connected) return;
+  await sb.from('tasks').upsert({id, user_id:USER_ID, completed:val, updated_at:new Date().toISOString()}, {onConflict:'id'});
+}
+
+async function saveNote(weekId, content){
+  if(!connected) return;
+  await sb.from('notes').upsert({week_id:weekId, user_id:USER_ID, content, updated_at:new Date().toISOString()}, {onConflict:'week_id'});
+}
+
+function setConn(ok){
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-txt');
+  dot.className = 'conn-dot ' + (ok ? 'ok' : 'err');
+  txt.textContent = ok ? 'Supabase bağlı' : 'Bağlantı yok';
+}
+
+// ── Hesaplamalar ──────────────────────────────────────────
+function allTasks(){ return WEEKS.flatMap(w=>w.tasks); }
+function doneTasks(){ return allTasks().filter(t=>completed[t.id]); }
+function weekAllDone(w){ return w.tasks.every(t=>completed[t.id]); }
+
+function csPct(key){
+  const tags = CS_TAGS[key];
+  const all = WEEKS.flatMap(w=>w.tasks).filter(t=>tags.includes(t.tag));
+  if(!all.length) return 0;
+  return Math.round(all.filter(t=>completed[t.id]).length / all.length * 100);
+}
+
+// ── Render ────────────────────────────────────────────────
+function render(){
+  renderSidebar();
+  renderMain();
+}
+
+function renderSidebar(){
+  const done = doneTasks().length;
+  const total = allTasks().length;
+  document.getElementById('s-done').textContent = done + '/' + total;
+  document.getElementById('s-pct').textContent = Math.round(done/total*100) + '%';
+
+  document.getElementById('sb-nav').innerHTML = WEEKS.map(w => {
+    const isDone = weekAllDone(w);
+    const isActive = w.id === currentWeek;
+    return `<button class="sb-item${isActive?' active':''}${isDone?' done-week':''}" onclick="selectWeek(${w.id})">
+      <span class="sb-dot" style="background:${weekColor(w.id)}"></span>
+      H${w.id} · ${w.title}
+      ${isDone ? '<span class="sb-check">✓</span>' : ''}
+    </button>`;
+  }).join('');
+}
+
+function weekColor(id){
+  const colors = ['#f97c5a','#f5c842','#3ecf8e','#5aabf9','#b49ffc','#f97c5a','#3ecf8e','#f5c842'];
+  return colors[(id-1) % colors.length];
+}
+
+function renderMain(){
+  const w = WEEKS.find(x => x.id === currentWeek);
+  const note = notes[w.id] || '';
+  const doneCount = w.tasks.filter(t=>completed[t.id]).length;
+
+  document.getElementById('main').innerHTML = `
+    <div class="page-header">
+      <div class="page-week">Hafta ${w.id} · ${w.date}</div>
+      <div class="page-title">${w.title}</div>
+      <div class="page-desc">${w.desc}</div>
+    </div>
+
+    <div class="cs-grid">
+      ${['trendyol','stencil','prompt'].map(k=>{
+        const pct = csPct(k);
+        const colors = {trendyol:'var(--coral)',stencil:'var(--blue)',prompt:'var(--purple)'};
+        const names = {trendyol:'Trendyol Redesign',stencil:'Stencil Studio',prompt:'Prompt & MCP'};
+        return `<div class="cs-card">
+          <div class="cs-top"><div class="cs-dot" style="background:${colors[k]}"></div><div class="cs-name" style="color:${colors[k]}">${names[k]}</div></div>
+          <div class="cs-pct" style="color:${colors[k]}">${pct}%</div>
+          <div class="cs-bar-bg"><div class="cs-bar-fill" style="width:${pct}%;background:${colors[k]}"></div></div>
+          <div class="cs-sub">${csDoneCount(k)} görev tamamlandı</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="section-label">Bu haftanın görevleri — ${doneCount}/${w.tasks.length}</div>
+    <div class="task-list">
+      ${w.tasks.map(t => `
+        <div class="task-item" onclick="toggleTask('${t.id}')">
+          <div class="task-cb${completed[t.id]?' on':''}"></div>
+          <div class="task-body">
+            <div class="task-label${completed[t.id]?' done':''}">${t.label}</div>
+            <span class="task-tag tag-${t.tag}">${TAG_LABELS[t.tag]}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-label">Notlar & Çıktılar</div>
+    <div class="notes-wrap">
+      <div class="notes-header">
+        <span style="font-size:12px;color:var(--txt2)">Hafta ${w.id} notları</span>
+        <div class="save-txt" id="save-txt"></div>
+      </div>
+      <textarea class="notes-area" id="notes-area" placeholder="Gözlemler, kararlar, takılınan noktalar, linkler...">${note}</textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="selectWeek(${w.id-1})" ${w.id===1?'disabled':''}>← Önceki hafta</button>
+      <button class="nav-btn" onclick="selectWeek(${w.id+1})" ${w.id===8?'disabled':''}>Sonraki hafta →</button>
+    </div>
+  `;
+
+  // Note listener
+  const area = document.getElementById('notes-area');
+  if(area){
+    area.addEventListener('input', e => {
+      notes[currentWeek] = e.target.value;
+      clearTimeout(window._noteT);
+      window._noteT = setTimeout(async () => {
+        await saveNote(currentWeek, e.target.value);
+        flashSave();
+      }, 900);
+    });
+  }
+}
+
+function csDoneCount(key){
+  const tags = CS_TAGS[key];
+  return WEEKS.flatMap(w=>w.tasks).filter(t=>tags.includes(t.tag)&&completed[t.id]).length;
+}
+
+function flashSave(){
+  const el = document.getElementById('save-txt');
+  if(!el) return;
+  el.textContent = 'Kaydedildi';
+  el.style.opacity='1';
+  el.style.color='var(--teal)';
+  setTimeout(()=>{ el.style.opacity='0'; }, 2000);
+}
+
+// ── Etkileşim ─────────────────────────────────────────────
+async function toggleTask(id){
+  completed[id] = !completed[id];
+  await saveTask(id, completed[id]);
+  render();
+}
+
+function selectWeek(id){
+  if(id<1||id>8) return;
+  currentWeek = id;
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Boot ──────────────────────────────────────────────────
+(async () => {
+  await loadFromDB();
+  render();
+})();
+</script>
+</body>
+</html>
