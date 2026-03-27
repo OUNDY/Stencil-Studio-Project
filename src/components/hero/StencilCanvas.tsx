@@ -2,6 +2,7 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
 import wallPainted from "@/assets/wall-painted.png";
+import { drawImageCover } from "@/lib/canvas-utils";
 
 const useDarkMode = () => {
   const [isDark, setIsDark] = useState(() =>
@@ -374,16 +375,16 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
       // Composite final image
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw painted image
-      ctx.drawImage(paintedImageRef.current, 0, 0, canvas.width, canvas.height);
+      // Draw painted image (cover-fit to preserve aspect ratio)
+      drawImageCover(ctx, paintedImageRef.current, canvas.width, canvas.height);
       
       // Apply mask
       ctx.globalCompositeOperation = "destination-in";
       ctx.drawImage(maskCanvasRef.current, 0, 0);
       
-      // Draw empty wall underneath
+      // Draw empty wall underneath (cover-fit to preserve aspect ratio)
       ctx.globalCompositeOperation = "destination-over";
-      ctx.drawImage(emptyImageRef.current, 0, 0, canvas.width, canvas.height);
+      drawImageCover(ctx, emptyImageRef.current, canvas.width, canvas.height);
       ctx.globalCompositeOperation = "source-over";
 
       // Night overlay for dark mode
