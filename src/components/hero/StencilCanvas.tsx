@@ -2,7 +2,6 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
 import wallPainted from "@/assets/wall-painted.png";
-import { drawImageCover } from "@/lib/canvas-utils";
 
 const useDarkMode = () => {
   const [isDark, setIsDark] = useState(() =>
@@ -38,7 +37,6 @@ const FADE_DURATION = 25000;
 const FADE_START_DELAY = 5000;
 
 export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: StencilCanvasProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const brushTextureRef = useRef<HTMLCanvasElement | null>(null);
@@ -311,32 +309,23 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     paintedImg.src = wallPainted;
 
     const resize = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
       const dpr = window.devicePixelRatio || 1;
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-
+      
       if (maskCanvasRef.current) {
         maskCanvasRef.current.width = canvas.width;
         maskCanvasRef.current.height = canvas.height;
       }
     };
 
-    const resizeObserver = new ResizeObserver(() => {
-      resize();
-    });
-
     const startAnimation = () => {
-      if (containerRef.current) {
-        resizeObserver.observe(containerRef.current);
-      }
+      window.addEventListener("resize", resize);
       canvas.addEventListener("mouseenter", handleMouseEnter);
       canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseleave", handleMouseLeave);
@@ -385,16 +374,16 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
       // Composite final image
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw painted image (cover-fit to preserve aspect ratio)
-      drawImageCover(ctx, paintedImageRef.current, canvas.width, canvas.height);
+      // Draw painted image
+      ctx.drawImage(paintedImageRef.current, 0, 0, canvas.width, canvas.height);
       
       // Apply mask
       ctx.globalCompositeOperation = "destination-in";
       ctx.drawImage(maskCanvasRef.current, 0, 0);
       
-      // Draw empty wall underneath (cover-fit to preserve aspect ratio)
+      // Draw empty wall underneath
       ctx.globalCompositeOperation = "destination-over";
-      drawImageCover(ctx, emptyImageRef.current, canvas.width, canvas.height);
+      ctx.drawImage(emptyImageRef.current, 0, 0, canvas.width, canvas.height);
       ctx.globalCompositeOperation = "source-over";
 
       // Night overlay for dark mode
@@ -452,7 +441,7 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
     };
 
     return () => {
-      resizeObserver.disconnect();
+      window.removeEventListener("resize", resize);
       canvas.removeEventListener("mouseenter", handleMouseEnter);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
@@ -467,13 +456,11 @@ export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: Ste
 
   return (
     <>
-      <div ref={containerRef} className="fixed inset-0 z-[2]">
-        <canvas
-          ref={canvasRef}
-          className="block w-full h-full"
-          style={{ cursor: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"12\" fill=\"none\" stroke=\"%23666\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/></svg>') 16 16, crosshair" }}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 z-[2]"
+        style={{ cursor: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\"><circle cx=\"16\" cy=\"16\" r=\"12\" fill=\"none\" stroke=\"%23666\" stroke-width=\"1\" stroke-dasharray=\"3,3\"/></svg>') 16 16, crosshair" }}
+      />
 
       {/* Loading state */}
       {!isReady && (

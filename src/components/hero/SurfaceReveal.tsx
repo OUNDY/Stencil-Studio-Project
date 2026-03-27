@@ -1,7 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import wallEmpty from "@/assets/wall-empty.png";
-import { drawImageCover } from "@/lib/canvas-utils";
 import { motifs, type Motif } from "./motifs";
 
 interface MotifState {
@@ -86,9 +85,9 @@ export const SurfaceReveal = ({ onFirstInteraction, onExplorationComplete }: Sur
       const dpr = window.devicePixelRatio || 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw background (cover-fit to preserve aspect ratio)
+      // Draw background
       if (bgImageRef.current) {
-        drawImageCover(ctx, bgImageRef.current, canvas.width, canvas.height);
+        ctx.drawImage(bgImageRef.current, 0, 0, canvas.width, canvas.height);
       }
 
       // Draw subtle gradient trace at cursor
