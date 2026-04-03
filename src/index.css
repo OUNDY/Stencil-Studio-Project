@@ -475,3 +475,31 @@
     display: none;
   }
 }
+/* Magic UI - Shimmer Button animations */
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@layer utilities {
+  .animate-shimmer-slide {
+    animation: shimmer-slide var(--speed, 3s) linear infinite;
+  }
+
+  .animate-spin-around {
+    animation: spin-around var(--speed, 3s) linear infinite;
+  }
+}

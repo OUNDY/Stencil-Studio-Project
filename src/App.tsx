@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import ComponentShowcase from "./pages/ComponentShowcase";
 
 // Account pages
 import AccountDashboard from "./pages/account/Dashboard";
@@ -63,6 +64,8 @@ const App = () => (
               <Route path="/profil" element={<AccountDashboard />} />
               <Route path="/siparislerim" element={<AccountOrders />} />
               <Route path="/favorilerim" element={<AccountFavorites />} />
+
+              <Route path="/showcase" element={<ComponentShowcase />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

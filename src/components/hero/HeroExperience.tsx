@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { motion, AnimatePresence } from "framer-motion";
 import { StencilCanvas } from "./StencilCanvas";
 

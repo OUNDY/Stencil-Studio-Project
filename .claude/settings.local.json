@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -h \"^export function\\\\|^export const\\\\|^export default function\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/*.tsx)",
+      "Bash(grep -rh \"^import\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/*.tsx)",
+      "Bash(node:*)",
+      "Bash(grep -l \"motion/react\\\\|from \"\"motion\"\"\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/*.tsx)",
+      "Bash(grep -h \"from \"\"motion/react\"\"\\\\|from \"\"motion\"\"\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/*.tsx)",
+      "Bash(grep \"^export\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/bento-grid.tsx echo \"---\" grep \"^export\" F:/projects/Stencil-Studio/magicui-temp/apps/www/registry/magicui/dock.tsx)",
+      "Bash(npm run:*)",
+      "Bash(node -e \":*)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); hooks=d.get\\(''''hooks'''',{}\\); [print\\(k,''''→'''',len\\(v\\),''''entries''''\\) for k,v in hooks.items\\(\\)]\")"
+    ]
+  }
+}

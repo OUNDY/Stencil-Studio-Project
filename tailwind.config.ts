@@ -106,7 +106,22 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)',
-  			organic: '60% 40% 30% 70% / 60% 30% 70% 40%'
+  			organic: '60% 40% 30% 70% / 60% 30% 70% 40%',
+  			xl:    '1.25rem',
+  			'2xl': '1.5rem',
+  			'3xl': '2rem',
+  		},
+  		transitionTimingFunction: {
+  			spring:  'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  			organic: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+  			bounce:  'cubic-bezier(0.68, -0.55, 0.27, 1.55)',
+  		},
+  		transitionDuration: {
+  			fast:    '150ms',
+  			base:    '200ms',
+  			slow:    '300ms',
+  			slower:  '500ms',
+  			slowest: '800ms',
   		},
   		keyframes: {
   			'accordion-down': {

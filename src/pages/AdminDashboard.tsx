@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import {
   BarChart3, Package, Users, ShoppingCart, TrendingUp, Eye, Settings, Bell, Search,
   ChevronRight, ArrowUpRight, ArrowDownRight, LayoutDashboard, FileText, Tag,
-  MessageSquare, Image, LogOut, Menu, X,
+  MessageSquare, Image, LogOut, Menu, X, Layers, Palette,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,9 @@ import { AdminMedia } from "@/components/admin/AdminMedia";
 import { AdminPages } from "@/components/admin/AdminPages";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 import { AdminSettings } from "@/components/admin/AdminSettings";
+import { AdminComponentLibrary } from "@/components/admin/AdminComponentLibrary";
+import { ComponentLibraryManager } from "@/components/admin/ComponentLibraryManager";
+import { AdminDesignSystem } from "@/components/admin/AdminDesignSystem";
 
 /* Mock data */
 const stats = [
@@ -46,7 +49,9 @@ const sidebarItems = [
   { icon: Image, label: "Medya", id: "media" },
   { icon: FileText, label: "Sayfalar", id: "pages" },
   { icon: BarChart3, label: "Analitik", id: "analytics" },
-  { icon: Settings, label: "Ayarlar", id: "settings" },
+  { icon: Layers,   label: "Bileşenler",    id: "components"    },
+  { icon: Palette,  label: "Tasarım Sistemi", id: "design-system" },
+  { icon: Settings, label: "Ayarlar",       id: "settings"      },
 ];
 
 const topProducts = [
@@ -148,8 +153,10 @@ const tabComponents: Record<string, React.ComponentType<any>> = {
   messages: AdminMessages,
   media: AdminMedia,
   pages: AdminPages,
-  analytics: AdminAnalytics,
-  settings: AdminSettings,
+  analytics:  AdminAnalytics,
+  components:       ComponentLibraryManager,
+  "design-system":  AdminDesignSystem,
+  settings:         AdminSettings,
 };
 
 const AdminDashboard = () => {
