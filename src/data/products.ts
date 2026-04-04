@@ -6,7 +6,6 @@ export interface Product {
   description: string;
   details: string[];
   sizes: string[];
-  materials: string[];
   emoji: string;
   popular?: boolean;
 }
@@ -21,7 +20,6 @@ export const products: Product[] = [
     description: "İkonik Monstera deliciosa yaprağının delikli silüeti ile tropikal bir atmosfer yaratın.",
     details: ["Tekrar kullanılabilir", "Kolay temizlenir", "Profesyonel kesim"],
     sizes: ["30x30 cm", "50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🌿",
     popular: true,
   },
@@ -33,7 +31,6 @@ export const products: Product[] = [
     description: "Uzun ve zarif palmiye yaprakları ile sahil esintisi hissedin.",
     details: ["Uzun format", "Dikey uygulama", "Tekrar kullanılabilir"],
     sizes: ["30x70 cm", "50x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🌴",
   },
   {
@@ -44,7 +41,6 @@ export const products: Product[] = [
     description: "Büyük muz yaprağı deseni ile duvarlarınıza dramatik bir dokunuş.",
     details: ["Büyük boyut", "Tek parça desen", "Profesyonel sonuç"],
     sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🍃",
     popular: true,
   },
@@ -57,7 +53,6 @@ export const products: Product[] = [
     description: "Klasik İngiliz bahçe güllerinin romantik bir araya gelişi.",
     details: ["İnce detay", "Çok katmanlı", "Profesyonel sonuç"],
     sizes: ["30x30 cm", "50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🌹",
     popular: true,
   },
@@ -69,7 +64,6 @@ export const products: Product[] = [
     description: "Kır çiçeklerinin doğal ve dağınık güzelliği duvarlarınızda.",
     details: ["Organik desen", "Serbest kompozisyon", "Kolay uygulama"],
     sizes: ["50x50 cm", "70x70 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🌸",
   },
   {
@@ -80,7 +74,6 @@ export const products: Product[] = [
     description: "Japon kiraz çiçeklerinin zarif dalları ile huzurlu bir ortam.",
     details: ["Yatay uygulama", "Dal detayı", "Premium kesim"],
     sizes: ["30x70 cm", "50x100 cm", "70x150 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🌺",
   },
   // Art Deco & Gatsby
@@ -92,7 +85,6 @@ export const products: Product[] = [
     description: "1920'lerin ihtişamlı yelpaze motifi ile altın çağın zarafeti.",
     details: ["Premium kalınlık", "Detaylı kesim", "Çoklu katman desteği"],
     sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "✦",
     popular: true,
   },
@@ -104,7 +96,6 @@ export const products: Product[] = [
     description: "Dikey simetrik Art Deco sütun deseni, kapı kenarları ve köşeler için ideal.",
     details: ["Dikey format", "Simetrik desen", "Bordür uyumlu"],
     sizes: ["20x100 cm", "30x150 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🏛",
   },
   // Boho & Makrame
@@ -116,7 +107,6 @@ export const products: Product[] = [
     description: "El yapımı makrame görünümlü düğüm desenleri ile boho şıklığı.",
     details: ["Organik dokular", "Dikey uygulama", "Tekrar kullanılabilir"],
     sizes: ["30x70 cm", "50x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🪢",
     popular: true,
   },
@@ -128,7 +118,6 @@ export const products: Product[] = [
     description: "Hilal ay ve yıldız motifleriyle mistik bir boho atmosferi.",
     details: ["Kompakt boyut", "Kolay uygulama", "Çoklu kullanım"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🌙",
   },
   // Mandala & Meditasyon
@@ -140,7 +129,6 @@ export const products: Product[] = [
     description: "Lotus çiçeği merkezli detaylı mandala ile ruhani bir atmosfer yaratın.",
     details: ["Ultra ince detay", "Merkez hizalama", "Çok katmanlı seçenek"],
     sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "❀",
     popular: true,
   },
@@ -152,7 +140,6 @@ export const products: Product[] = [
     description: "Tavan uygulaması için özel tasarlanmış büyük boy mandala deseni.",
     details: ["Tavan uygulaması", "Büyük boy", "Merkez montaj kılavuzu"],
     sizes: ["100x100 cm", "150x150 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "✿",
   },
   // Japon & Zen
@@ -164,7 +151,6 @@ export const products: Product[] = [
     description: "Zen felsefesinin sembolü enso dairesi ile minimalist huzur.",
     details: ["Fırça darbesi etkisi", "Minimal tasarım", "Kolay uygulama"],
     sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "⭕",
   },
   {
@@ -175,7 +161,6 @@ export const products: Product[] = [
     description: "Hokusai'nin ikonik büyük dalgasından esinlenen dramatik desen.",
     details: ["Detaylı kesim", "Çok katmanlı", "Sanat eseri kalitesi"],
     sizes: ["50x70 cm", "70x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🌊",
     popular: true,
   },
@@ -188,7 +173,6 @@ export const products: Product[] = [
     description: "Selçuklu döneminin 8 kollu yıldız motifi ile geleneksel zarafet.",
     details: ["Simetrik desen", "Modüler tekrar", "Hassas kesim"],
     sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "✸",
     popular: true,
   },
@@ -200,7 +184,6 @@ export const products: Product[] = [
     description: "İç içe geçen geometrik formlarla sonsuzluk hissi veren arabesk desen.",
     details: ["Sonsuz tekrar deseni", "Bordür uyumlu", "Premium malzeme"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "◬",
   },
   // Hayvan Silüetleri
@@ -212,7 +195,6 @@ export const products: Product[] = [
     description: "Uçan kuş silüetleri ile duvarlarınıza özgürlük katın.",
     details: ["Çoklu parça", "Esnek yerleşim", "Kolay uygulama"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🕊",
   },
   {
@@ -223,7 +205,6 @@ export const products: Product[] = [
     description: "Farklı kelebek türlerinin detaylı kanat desenleri.",
     details: ["6 farklı kelebek", "Detaylı kanat deseni", "Serbestçe yerleştirme"],
     sizes: ["15x15 cm", "30x30 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🦋",
     popular: true,
   },
@@ -236,7 +217,6 @@ export const products: Product[] = [
     description: "Roket, gezegen ve yıldızlarla küçük astronotların odası için.",
     details: ["Fosforlu boya uyumlu", "Tavan uygulaması", "Geniş kapsama"],
     sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🚀",
   },
   {
@@ -247,7 +227,6 @@ export const products: Product[] = [
     description: "Yıldız ve ay desenleriyle büyülü bir gece gökyüzü oluşturun.",
     details: ["Fosforlu boya uyumlu", "Kolay uygulama", "Küçük boyut"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "⭐",
     popular: true,
   },
@@ -260,7 +239,6 @@ export const products: Product[] = [
     description: "Aslan, zürafa, fil ve zebra ile mini safari odası yaratın.",
     details: ["4 hayvan seti", "Yuvarlak köşeler", "Güvenli malzeme"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🦁",
   },
   {
@@ -271,7 +249,6 @@ export const products: Product[] = [
     description: "Balıklar, denizatı ve ahtapot ile su altı macerası.",
     details: ["5 deniz canlısı", "Baloncuk detayı", "Kolay uygulama"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🐙",
   },
   // Bordür & Çerçeve
@@ -283,7 +260,6 @@ export const products: Product[] = [
     description: "Klasik defne dalı motifli sürekli bordür deseni.",
     details: ["Sürekli desen", "Kolay hizalama", "Bordür için ideal"],
     sizes: ["15x100 cm", "20x150 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🌿",
   },
   {
@@ -294,7 +270,6 @@ export const products: Product[] = [
     description: "Ayna veya tablo etrafına Viktoryen tarzı dekoratif çerçeve.",
     details: ["Köşe parçaları dahil", "4 köşe seti", "Modüler kullanım"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🖼",
   },
   // Modern Soyut
@@ -306,7 +281,6 @@ export const products: Product[] = [
     description: "Organik ve akışkan soyut şekillerle çağdaş bir duvar estetiği.",
     details: ["Büyük boyut seçenekleri", "Modüler tasarım", "Kolay uygulama"],
     sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🫧",
   },
   {
@@ -317,7 +291,6 @@ export const products: Product[] = [
     description: "Henri Matisse'in ikonik kağıt kesiklerinden ilham alan canlı formlar.",
     details: ["Çoklu parça", "Renkli katmanlar", "Sanatsal sonuç"],
     sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "🎨",
     popular: true,
   },
@@ -330,7 +303,6 @@ export const products: Product[] = [
     description: "Osmanlı hat sanatı esinli dekoratif yazı desenleri.",
     details: ["Detaylı kesim", "Kültürel değer", "Premium malzeme"],
     sizes: ["50x50 cm", "70x70 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)"],
     emoji: "✍",
   },
   {
@@ -341,7 +313,6 @@ export const products: Product[] = [
     description: "Motivasyon sözleri ve modern yazı karakterleri ile kişisel dokunuş.",
     details: ["Özelleştirilebilir", "Latin alfabe", "Kolay uygulama"],
     sizes: ["30x30 cm", "50x50 cm"],
-    materials: ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"],
     emoji: "🔤",
   },
 ];

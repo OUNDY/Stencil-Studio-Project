@@ -54,7 +54,7 @@ export const AdminProducts = () => {
       toast.success("Ürün güncellendi");
     } else {
       const newP: AdminProduct = {
-        ...form, id: Date.now().toString(), details: [], sizes: ["50x50 cm"], materials: ["Mylar (0.25mm)"], active: true,
+        ...form, id: Date.now().toString(), details: [], sizes: ["50x50 cm"], active: true,
       };
       setProducts((prev) => [newP, ...prev]);
       toast.success("Ürün eklendi");

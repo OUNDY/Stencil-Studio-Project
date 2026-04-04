@@ -1,10 +1,11 @@
+import { type ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from "@/context/CartContext";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Index from "./pages/Index";
 import Collection from "./pages/Collection";
 import ProductDetail from "./pages/ProductDetail";
@@ -15,9 +16,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import ComponentShowcase from "./pages/ComponentShowcase";
-
 // Account pages
 import AccountDashboard from "./pages/account/Dashboard";
 import AccountOrders from "./pages/account/AccountOrders";
@@ -29,6 +30,12 @@ import Notifications from "./pages/account/Notifications";
 import AccountSettings from "./pages/account/AccountSettings";
 
 const queryClient = new QueryClient();
+
+const ProtectedAdminRoute = ({ children }: { children: ReactNode }) => {
+  const { isLoggedIn, user } = useAuth();
+  if (!isLoggedIn || user?.role !== "admin") return <Navigate to="/admin-login" replace />;
+  return <>{children}</>;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -48,7 +55,8 @@ const App = () => (
               <Route path="/giris" element={<Login />} />
               <Route path="/kayit" element={<Register />} />
               <Route path="/odeme" element={<Checkout />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin-login" element={<AdminLogin />} />
+              <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
 
               {/* User Account */}
               <Route path="/hesabim" element={<AccountDashboard />} />

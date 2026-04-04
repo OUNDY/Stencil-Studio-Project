@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/navigation";
 import { Footer } from "@/components/sections";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -13,7 +13,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -22,10 +21,10 @@ const Login = () => {
     setIsLoading(true);
     setTimeout(() => {
       const name = email.split("@")[0];
-      login(email, name, isAdmin ? "admin" : "user");
+      login(email, name, "user");
       toast.success("Başarıyla giriş yapıldı!");
       setIsLoading(false);
-      navigate(isAdmin ? "/admin" : "/hesabim");
+      navigate("/hesabim");
     }, 1000);
   };
 
@@ -109,22 +108,6 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Admin checkpoint */}
-              <div className="flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsAdmin(!isAdmin)}
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                    isAdmin
-                      ? "bg-primary text-primary-foreground shadow-organic"
-                      : "text-muted-foreground/30 hover:text-muted-foreground/50"
-                  }`}
-                  title=""
-                >
-                  <Shield className="w-4 h-4" />
-                </button>
-              </div>
-
               <Button
                 type="submit"
                 className="w-full py-6 text-base"
@@ -173,6 +156,12 @@ const Login = () => {
               Hesabınız yok mu?{" "}
               <Link to="/kayit" className="text-primary font-medium hover:underline">
                 Hesap oluşturun
+              </Link>
+            </p>
+
+            <p className="text-center mt-4">
+              <Link to="/admin-login" className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+                Admin Girişi
               </Link>
             </p>
           </div>

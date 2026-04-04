@@ -13,7 +13,6 @@ const ProductDetail = () => {
   const { addItem } = useCart();
   const product = products.find((p) => p.id === id);
   const [selectedSize, setSelectedSize] = useState(0);
-  const [selectedMaterial, setSelectedMaterial] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
   if (!product) {
@@ -139,28 +138,6 @@ const ProductDetail = () => {
                       }`}
                     >
                       {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Material selector */}
-              <div className="mb-8">
-                <label className="text-sm font-sans font-medium text-foreground mb-3 block">
-                  Malzeme
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {product.materials.map((mat, i) => (
-                    <button
-                      key={mat}
-                      onClick={() => setSelectedMaterial(i)}
-                      className={`px-4 py-2 rounded-xl text-sm font-sans border transition-all ${
-                        selectedMaterial === i
-                          ? "border-primary bg-primary/10 text-foreground"
-                          : "border-border text-muted-foreground hover:border-primary/50"
-                      }`}
-                    >
-                      {mat}
                     </button>
                   ))}
                 </div>

@@ -16,7 +16,6 @@ const priceRanges = [
 ];
 
 const sizeOptions = ["30x30 cm", "50x50 cm", "70x70 cm", "100x100 cm"];
-const materialOptions = ["Mylar (0.25mm)", "PET Plastik (0.5mm)", "Karton (Tek kullanım)"];
 
 const Collection = () => {
   const { addItem } = useCart();
@@ -25,12 +24,10 @@ const Collection = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [priceRange, setPriceRange] = useState("all");
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [expandedFilters, setExpandedFilters] = useState<Record<string, boolean>>({
     category: true,
     price: true,
     size: false,
-    material: false,
   });
 
   const toggleFilter = (key: string) =>
@@ -41,18 +38,12 @@ const Collection = () => {
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
 
-  const toggleMaterial = (mat: string) =>
-    setSelectedMaterials((prev) =>
-      prev.includes(mat) ? prev.filter((m) => m !== mat) : [...prev, mat]
-    );
-
   const currentPriceRange = priceRanges.find((r) => r.id === priceRange) || priceRanges[0];
 
   const filtered = products
     .filter((p) => activeCategory === "all" || p.category === activeCategory)
     .filter((p) => p.price >= currentPriceRange.min && p.price <= currentPriceRange.max)
     .filter((p) => selectedSizes.length === 0 || p.sizes.some((s) => selectedSizes.includes(s)))
-    .filter((p) => selectedMaterials.length === 0 || p.materials.some((m) => selectedMaterials.includes(m)))
     .sort((a, b) => {
       if (sortBy === "price-asc") return a.price - b.price;
       if (sortBy === "price-desc") return b.price - a.price;
@@ -64,12 +55,11 @@ const Collection = () => {
     setActiveCategory("all");
     setPriceRange("all");
     setSelectedSizes([]);
-    setSelectedMaterials([]);
     setSortBy("default");
   };
 
   const hasActiveFilters =
-    activeCategory !== "all" || priceRange !== "all" || selectedSizes.length > 0 || selectedMaterials.length > 0;
+    activeCategory !== "all" || priceRange !== "all" || selectedSizes.length > 0;
 
   /* Shared filter panel content */
   const FilterContent = () => (
@@ -143,31 +133,6 @@ const Collection = () => {
                 }`}
               >
                 {size}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Material */}
-      <div>
-        <button onClick={() => toggleFilter("material")} className="flex items-center justify-between w-full text-sm font-medium text-foreground mb-2">
-          Malzeme
-          <ChevronDown className={`w-4 h-4 transition-transform ${expandedFilters.material ? "rotate-180" : ""}`} />
-        </button>
-        {expandedFilters.material && (
-          <div className="space-y-1">
-            {materialOptions.map((mat) => (
-              <button
-                key={mat}
-                onClick={() => toggleMaterial(mat)}
-                className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                  selectedMaterials.includes(mat)
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                }`}
-              >
-                {mat}
               </button>
             ))}
           </div>
