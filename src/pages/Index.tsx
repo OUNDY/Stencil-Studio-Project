@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { HeroPaintingCanvas } from "@/components/hero";
+import TuvalCanvas from "@/components/hero/TuvalCanvas";
 import {
   FeaturesSection,
   CollectionSection,
@@ -52,30 +53,28 @@ const Index = () => (
     <GlobalWidgets />
 
     <main>
-      {/* ── Hero: interactive stencil painting demo ──────── */}
-      <section className="pt-20 pb-4 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          {/* Eyebrow + headline */}
-          <motion.div
-            className="mb-6 text-center"
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-          >
-            <p className="text-xs font-medium uppercase tracking-widest text-primary/70">
-              stencil studio
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-              Boyamayı hemen dene
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Bir motif seç, rengi ayarla, tıkla ve sürükle.
-            </p>
-          </motion.div>
+      {/* ── Hero: Stencil Tuval — tam genişlik ──────────────── */}
+      <section className="w-full pt-16">
+        {/* Eyebrow + headline */}
+        <motion.div
+          className="py-8 text-center px-4"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+        >
+          <p className="text-xs font-medium uppercase tracking-widest text-primary/70">
+            stencil studio
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Boyamayı hemen dene
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Bir motif seç, rengi ayarla, tuval üzerine uygula ve boya.
+          </p>
+        </motion.div>
 
-          {/* Interactive canvas — the star of the page */}
-          <HeroPaintingCanvas />
-        </div>
+        {/* Tuval — sayfanın tamamını kaplayan genişlik */}
+        <TuvalCanvas embedded />
       </section>
 
       <MicroPause delay={0.1}>keşfet</MicroPause>

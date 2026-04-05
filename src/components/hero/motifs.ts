@@ -1,101 +1,175 @@
-// SVG path data for decorative motifs that appear on the wall surface
-// These are stencil-style patterns matching the brand's product categories
-
 export interface Motif {
   id: string;
-  paths: string[];
-  viewBox: string;
-  label: string;
+  name: string;
+  description: string;
+  svg: string;
+  pngDataUrl?: string;
 }
 
 export const motifs: Motif[] = [
   {
-    id: "leaf",
-    label: "Yaprak",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M60 10 C30 30 20 60 25 90 C30 70 40 50 60 40 C80 50 90 70 95 90 C100 60 90 30 60 10Z",
-      "M60 40 L60 95",
-      "M45 55 Q60 50 75 55",
-      "M40 70 Q60 62 80 70",
-    ],
+    id: "damask",
+    name: "Damask",
+    description: "Klasik Osmanlı damask deseni, simetrik çiçek ve yaprak motifleriyle",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <ellipse cx="50" cy="50" rx="8" ry="18"/>
+        <ellipse cx="50" cy="50" rx="18" ry="8"/>
+        <ellipse cx="50" cy="50" rx="5" ry="12" transform="rotate(45 50 50)"/>
+        <ellipse cx="50" cy="50" rx="5" ry="12" transform="rotate(-45 50 50)"/>
+        <circle cx="50" cy="50" r="4"/>
+        <ellipse cx="50" cy="22" rx="4" ry="8"/>
+        <ellipse cx="50" cy="78" rx="4" ry="8"/>
+        <ellipse cx="22" cy="50" rx="8" ry="4"/>
+        <ellipse cx="78" cy="50" rx="8" ry="4"/>
+        <circle cx="50" cy="14" r="3"/>
+        <circle cx="50" cy="86" r="3"/>
+        <circle cx="14" cy="50" r="3"/>
+        <circle cx="86" cy="50" r="3"/>
+        <circle cx="28" cy="28" r="3"/>
+        <circle cx="72" cy="28" r="3"/>
+        <circle cx="28" cy="72" r="3"/>
+        <circle cx="72" cy="72" r="3"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "geometric-diamond",
-    label: "Geometrik",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M60 10 L100 60 L60 110 L20 60 Z",
-      "M60 25 L88 60 L60 95 L32 60 Z",
-      "M60 40 L76 60 L60 80 L44 60 Z",
-    ],
+    id: "tropikal",
+    name: "Tropikal Yaprak",
+    description: "Büyük tropikal yapraklar ve egzotik çiçeklerle dolu yaz deseni",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <path d="M50 10 Q65 30 60 55 Q55 70 50 75 Q45 70 40 55 Q35 30 50 10Z"/>
+        <path d="M50 75 Q35 60 20 65 Q10 68 8 75 Q15 70 30 72 Q42 74 50 85Z" opacity="0.8"/>
+        <path d="M50 75 Q65 60 80 65 Q90 68 92 75 Q85 70 70 72 Q58 74 50 85Z" opacity="0.8"/>
+        <line x1="50" y1="10" x2="50" y2="75" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        <line x1="50" y1="30" x2="40" y2="22" stroke="currentColor" stroke-width="0.8" fill="none"/>
+        <line x1="50" y1="40" x2="60" y2="32" stroke="currentColor" stroke-width="0.8" fill="none"/>
+        <line x1="50" y1="50" x2="38" y2="44" stroke="currentColor" stroke-width="0.8" fill="none"/>
+        <line x1="50" y1="60" x2="62" y2="54" stroke="currentColor" stroke-width="0.8" fill="none"/>
+        <circle cx="50" cy="85" r="5"/>
+        <circle cx="50" cy="85" r="2" fill="white"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "mandala-simple",
-    label: "Mandala",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M60 20 A40 40 0 1 1 59.99 20 Z",
-      "M60 30 A30 30 0 1 1 59.99 30 Z",
-      "M60 10 L60 20 M60 100 L60 110 M10 60 L20 60 M100 60 L110 60",
-      "M25 25 L33 33 M95 25 L87 33 M25 95 L33 87 M95 95 L87 87",
-      "M60 30 L65 45 L80 45 L68 55 L72 70 L60 60 L48 70 L52 55 L40 45 L55 45 Z",
-    ],
+    id: "geometrik",
+    name: "Geometrik",
+    description: "Modern geometrik şekiller ve tekrarlayan desenlerle minimal kompozisyon",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="50,10 90,32 90,68 50,90 10,68 10,32" fill="currentColor" opacity="0.15"/>
+        <polygon points="50,20 80,37 80,63 50,80 20,63 20,37" fill="none"/>
+        <polygon points="50,30 70,41 70,59 50,70 30,59 30,41" fill="currentColor" opacity="0.2"/>
+        <line x1="50" y1="10" x2="50" y2="90"/>
+        <line x1="10" y1="32" x2="90" y2="68"/>
+        <line x1="10" y1="68" x2="90" y2="32"/>
+        <circle cx="50" cy="50" r="8" fill="currentColor" opacity="0.5"/>
+        <circle cx="50" cy="50" r="3" fill="currentColor"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "wave",
-    label: "Dalga",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M10 50 Q30 30 50 50 Q70 70 90 50 Q100 40 110 50",
-      "M10 60 Q30 40 50 60 Q70 80 90 60 Q100 50 110 60",
-      "M10 70 Q30 50 50 70 Q70 90 90 70 Q100 60 110 70",
-    ],
+    id: "iznik",
+    name: "İznik",
+    description: "16. yüzyıl İznik çini sanatından ilham alan lale ve karanfil motifleri",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <path d="M50 15 C45 20 42 28 44 35 C46 42 50 45 50 45 C50 45 54 42 56 35 C58 28 55 20 50 15Z"/>
+        <path d="M50 45 L50 80" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M44 55 C38 52 32 54 28 58 C24 62 24 68 28 70 C32 72 38 70 42 66 C46 62 46 58 44 55Z"/>
+        <path d="M56 55 C62 52 68 54 72 58 C76 62 76 68 72 70 C68 72 62 70 58 66 C54 62 54 58 56 55Z"/>
+        <ellipse cx="50" cy="80" rx="6" ry="10"/>
+        <circle cx="50" cy="35" r="3"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "flower",
-    label: "Çiçek",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M60 20 Q70 40 60 50 Q50 40 60 20",
-      "M100 60 Q80 70 70 60 Q80 50 100 60",
-      "M60 100 Q50 80 60 70 Q70 80 60 100",
-      "M20 60 Q40 50 50 60 Q40 70 20 60",
-      "M85 25 Q75 45 65 45 Q75 35 85 25",
-      "M95 95 Q75 85 75 75 Q85 85 95 95",
-      "M25 95 Q45 85 45 75 Q35 85 25 95",
-      "M35 25 Q45 45 55 45 Q45 35 35 25",
-      "M60 45 A15 15 0 1 1 59.99 45 Z",
-    ],
+    id: "karo",
+    name: "Karo",
+    description: "Modern geometrik elmas—iç içe romblar, çapraz eksenler, mimari hassasiyet",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g>
+        <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="currentColor" stroke-width="3"/>
+        <polygon points="50,22 78,50 50,78 22,50" fill="none" stroke="currentColor" stroke-width="2"/>
+        <polygon points="50,37 63,50 50,63 37,50" fill="currentColor"/>
+        <rect x="47" y="5" width="6" height="90" fill="currentColor"/>
+        <rect x="5" y="47" width="90" height="6" fill="currentColor"/>
+        <circle cx="50" cy="5" r="6" fill="currentColor"/>
+        <circle cx="95" cy="50" r="6" fill="currentColor"/>
+        <circle cx="50" cy="95" r="6" fill="currentColor"/>
+        <circle cx="5" cy="50" r="6" fill="currentColor"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "ethnic-tile",
-    label: "Etnik",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M20 20 L100 20 L100 100 L20 100 Z",
-      "M30 30 L90 30 L90 90 L30 90 Z",
-      "M60 20 L60 30 M60 90 L60 100 M20 60 L30 60 M90 60 L100 60",
-      "M30 30 L60 50 L90 30 M30 90 L60 70 L90 90",
-      "M55 55 A5 5 0 1 1 54.99 55 Z",
-    ],
+    id: "botanika",
+    name: "Botanika",
+    description: "Art Nouveau botanik dal—alternatif yaprak dizisi, kıvrımlı gövde, organik akış",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <path d="M50 95 C46 72 54 52 50 35 C46 18 50 8 50 8"
+              fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M50 76 C65 68 80 54 74 40 C66 54 58 66 50 76 Z"/>
+        <path d="M50 62 C35 54 20 40 26 24 C35 36 43 50 50 62 Z"/>
+        <path d="M50 46 C63 38 72 22 64 12 C58 22 54 36 50 46 Z"/>
+        <path d="M50 30 C40 23 34 12 38 5 C44 13 47 23 50 30 Z"/>
+        <ellipse cx="50" cy="6" rx="4" ry="7"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "star",
-    label: "Yıldız",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M60 10 L70 45 L105 45 L78 65 L88 100 L60 80 L32 100 L42 65 L15 45 L50 45 Z",
-    ],
+    id: "kapi",
+    name: "Kapı",
+    description: "Neo-klasik kemer—yuvarlak kemer halkası, trefoil rozet, pilaster sütunlar",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <rect x="7" y="50" width="13" height="46"/>
+        <rect x="80" y="50" width="13" height="46"/>
+        <path d="M7 50 A43 43 0 0 1 93 50 L80 50 A30 30 0 0 0 20 50 Z"/>
+        <polygon points="50,4 43,17 57,17"/>
+        <circle cx="50" cy="36" r="11"/>
+        <circle cx="39" cy="48" r="11"/>
+        <circle cx="61" cy="48" r="11"/>
+        <rect x="5" y="92" width="90" height="5"/>
+      </g>
+    </svg>`,
   },
   {
-    id: "arch",
-    label: "Kemer",
-    viewBox: "0 0 120 120",
-    paths: [
-      "M25 100 L25 50 A35 35 0 0 1 95 50 L95 100",
-      "M35 100 L35 55 A25 25 0 0 1 85 55 L85 100",
-      "M45 100 L45 58 A15 15 0 0 1 75 58 L75 100",
-    ],
+    id: "mandala",
+    name: "Mandala",
+    description: "Merkezi simetrik mandala deseni, daireler ve taç yapraklarıyla huzur verici",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor" transform="translate(50,50)">
+        <circle r="5"/>
+        <circle r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle r="20" fill="none" stroke="currentColor" stroke-width="1"/>
+        <circle r="32" fill="none" stroke="currentColor" stroke-width="1"/>
+        <ellipse cx="0" cy="-15" rx="3" ry="6" transform="rotate(0 0 -15)"/>
+        <ellipse cx="10.6" cy="-10.6" rx="3" ry="6" transform="rotate(45 10.6 -10.6)"/>
+        <ellipse cx="15" cy="0" rx="3" ry="6" transform="rotate(90 15 0)"/>
+        <ellipse cx="10.6" cy="10.6" rx="3" ry="6" transform="rotate(135 10.6 10.6)"/>
+        <ellipse cx="0" cy="15" rx="3" ry="6" transform="rotate(180 0 15)"/>
+        <ellipse cx="-10.6" cy="10.6" rx="3" ry="6" transform="rotate(225 -10.6 10.6)"/>
+        <ellipse cx="-15" cy="0" rx="3" ry="6" transform="rotate(270 -15 0)"/>
+        <ellipse cx="-10.6" cy="-10.6" rx="3" ry="6" transform="rotate(315 -10.6 -10.6)"/>
+        <ellipse cx="0" cy="-26" rx="2.5" ry="5" transform="rotate(0 0 -26)"/>
+        <ellipse cx="18.4" cy="-18.4" rx="2.5" ry="5" transform="rotate(45 18.4 -18.4)"/>
+        <ellipse cx="26" cy="0" rx="2.5" ry="5" transform="rotate(90 26 0)"/>
+        <ellipse cx="18.4" cy="18.4" rx="2.5" ry="5" transform="rotate(135 18.4 18.4)"/>
+        <ellipse cx="0" cy="26" rx="2.5" ry="5" transform="rotate(180 0 26)"/>
+        <ellipse cx="-18.4" cy="18.4" rx="2.5" ry="5" transform="rotate(225 -18.4 18.4)"/>
+        <ellipse cx="-26" cy="0" rx="2.5" ry="5" transform="rotate(270 -26 0)"/>
+        <ellipse cx="-18.4" cy="-18.4" rx="2.5" ry="5" transform="rotate(315 -18.4 -18.4)"/>
+        <circle cx="0" cy="-20" r="2"/>
+        <circle cx="14.1" cy="-14.1" r="2"/>
+        <circle cx="20" cy="0" r="2"/>
+        <circle cx="14.1" cy="14.1" r="2"/>
+        <circle cx="0" cy="20" r="2"/>
+        <circle cx="-14.1" cy="14.1" r="2"/>
+        <circle cx="-20" cy="0" r="2"/>
+        <circle cx="-14.1" cy="-14.1" r="2"/>
+      </g>
+    </svg>`,
   },
 ];

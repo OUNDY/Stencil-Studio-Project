@@ -12,7 +12,10 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); hooks=d.get\\(''''hooks'''',{}\\); [print\\(k,''''→'''',len\\(v\\),''''entries''''\\) for k,v in hooks.items\\(\\)]\")",
       "Bash(git config:*)",
       "Bash(powershell -Command \"\\(Get-Content src/data/products.ts\\) | Where-Object { $_-notmatch ''^\\\\s*materials:'' } | Set-Content src/data/products.ts\")",
-      "Bash(powershell -Command \"\\(Get-Content 'F:\\\\Projects\\\\Stencil-Studio\\\\src\\\\data\\\\products.ts'\\) | Where-Object { $_ -notmatch '^\\\\s*materials:' } | Set-Content 'F:\\\\Projects\\\\Stencil-Studio\\\\src\\\\data\\\\products.ts'\")"
+      "Bash(powershell -Command \"\\(Get-Content 'F:\\\\Projects\\\\Stencil-Studio\\\\src\\\\data\\\\products.ts'\\) | Where-Object { $_ -notmatch '^\\\\s*materials:' } | Set-Content 'F:\\\\Projects\\\\Stencil-Studio\\\\src\\\\data\\\\products.ts'\")",
+      "Bash(npx vite:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8087/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8086/)"
     ]
   }
 }
