@@ -1,16 +1,21 @@
 import { useState } from "react";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { motion, AnimatePresence } from "framer-motion";
+import { SplineIntro } from "./SplineIntro";
 import { StencilCanvas } from "./StencilCanvas";
 
-type Phase = "curiosity" | "relief" | "confidence";
+type Phase = "intro" | "curiosity" | "relief" | "confidence";
 
 interface HeroExperienceProps {
-  onPhaseChange?: (phase: Phase) => void;
+  onPhaseChange?: (phase: Exclude<Phase, "intro">) => void;
 }
 
 export const HeroExperience = ({ onPhaseChange }: HeroExperienceProps) => {
-  const [phase, setPhase] = useState<Phase>("curiosity");
+  const [phase, setPhase] = useState<Phase>("intro");
+
+  const handleIntroComplete = () => {
+    setPhase("curiosity");
+    onPhaseChange?.("curiosity");
+  };
 
   const handleFirstInteraction = () => {
     setPhase("relief");
@@ -24,12 +29,34 @@ export const HeroExperience = ({ onPhaseChange }: HeroExperienceProps) => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      <StencilCanvas
-        onFirstInteraction={handleFirstInteraction}
-        onExplorationComplete={handleExplorationComplete}
-      />
 
-      {/* Scroll indicator - appears after exploration */}
+      {/* ── Spline Intro ── */}
+      <AnimatePresence>
+        {phase === "intro" && (
+          <SplineIntro onComplete={handleIntroComplete} autoSkipMs={4500} />
+        )}
+      </AnimatePresence>
+
+      {/* ── Canvas — intro biter bitmez mount olur, fade-in ile gelir ── */}
+      <AnimatePresence>
+        {phase !== "intro" && (
+          <motion.div
+            key="canvas-scene"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ position: "absolute", inset: 0 }}
+          >
+            <StencilCanvas
+              embedded
+              onFirstInteraction={handleFirstInteraction}
+              onExplorationComplete={handleExplorationComplete}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Scroll indicator — confidence aşamasında ── */}
       <AnimatePresence>
         {phase === "confidence" && (
           <motion.div
