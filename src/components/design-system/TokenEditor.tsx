@@ -27,18 +27,18 @@ function initState(): ChannelEditorState {
   const result = {} as ChannelEditorState;
 
   for (const { key, varName } of ORGANIC_COLOR_VARS) {
-    let h = colorRaw[key].h;
-    let s = colorRaw[key].s;
-    let l = colorRaw[key].l;
+    let h: number = colorRaw[key].h;
+    let s: number = colorRaw[key].s;
+    let l: number = colorRaw[key].l;
 
     if (style) {
       const val = style.getPropertyValue(varName).trim();
       if (val) {
         const parts = val.replace(/%/g, "").split(/\s+/);
         if (parts.length >= 3) {
-          h = (parseFloat(parts[0]) || h) as number;
-          s = (parseFloat(parts[1]) || s) as number;
-          l = (parseFloat(parts[2]) || l) as number;
+          h = parseFloat(parts[0]) || h;
+          s = parseFloat(parts[1]) || s;
+          l = parseFloat(parts[2]) || l;
         }
       }
     }

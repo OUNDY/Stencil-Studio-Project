@@ -214,12 +214,12 @@ export const TweetMedia = ({ tweet }: { tweet: EnrichedTweet }) => {
       )}
       {!tweet.video &&
         !tweet.photos &&
-        // @ts-expect-error package doesn't have type definitions
-        tweet?.card?.binding_values?.thumbnail_image_large?.image_value.url && (
+        (tweet as any)?.card?.binding_values?.thumbnail_image_large?.image_value
+          .url && (
           <img
             src={
-              // @ts-expect-error package doesn't have type definitions
-              tweet.card.binding_values.thumbnail_image_large.image_value.url
+              (tweet as any).card.binding_values.thumbnail_image_large
+                .image_value.url
             }
             className="h-64 rounded-xl border object-cover shadow-sm"
             alt={tweet.text}
