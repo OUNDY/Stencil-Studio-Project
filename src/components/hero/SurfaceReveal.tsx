@@ -294,19 +294,10 @@ export const SurfaceReveal = ({ onFirstInteraction, onExplorationComplete }: Sur
               exit={{ opacity: 0, scale: 0.9, transition: { duration: 1.5 } }}
               transition={{ duration: 1.2, ease: "easeOut" }}
             >
-              <svg
-                viewBox={m.motif.viewBox}
-                className="w-full h-full"
-                fill="none"
-                stroke="hsl(var(--foreground))"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {m.motif.paths.map((d, pi) => (
-                  <path key={pi} d={d} />
-                ))}
-              </svg>
+              <div
+                className="w-full h-full text-foreground"
+                dangerouslySetInnerHTML={{ __html: m.motif.svg }}
+              />
             </motion.div>
           ))}
         </AnimatePresence>

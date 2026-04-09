@@ -27,9 +27,9 @@ function initState(): ChannelEditorState {
   const result = {} as ChannelEditorState;
 
   for (const { key, varName } of ORGANIC_COLOR_VARS) {
-    let h = colorRaw[key].h;
-    let s = colorRaw[key].s;
-    let l = colorRaw[key].l;
+    let h: number = colorRaw[key].h;
+    let s: number = colorRaw[key].s;
+    let l: number = colorRaw[key].l;
 
     if (style) {
       const val = style.getPropertyValue(varName).trim();
