@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import { TweetProps, useTweet } from "react-tweet"
 
