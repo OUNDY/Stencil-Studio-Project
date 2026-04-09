@@ -36,9 +36,9 @@ function initState(): ChannelEditorState {
       if (val) {
         const parts = val.replace(/%/g, "").split(/\s+/);
         if (parts.length >= 3) {
-          h = parseFloat(parts[0]) || h;
-          s = parseFloat(parts[1]) || s;
-          l = parseFloat(parts[2]) || l;
+          h = (parseFloat(parts[0]) || h) as number;
+          s = (parseFloat(parts[1]) || s) as number;
+          l = (parseFloat(parts[2]) || l) as number;
         }
       }
     }

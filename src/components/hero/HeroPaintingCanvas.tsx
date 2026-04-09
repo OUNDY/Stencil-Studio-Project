@@ -4,7 +4,6 @@ import { motifs as ALL_MOTIFS } from "./motifs";
 
 // ── Public API ────────────────────────────────────────────────────────────────
 export type { CompositionId, SurfaceId, BlendMode, ControlState, CanvasLayoutMode };
-export type { HeroPaintingCanvasProps };
 
 export interface HeroPaintingCanvasProps {
   storagePrefix?:     string;

@@ -28,6 +28,7 @@ interface BrushStroke {
 }
 
 interface StencilCanvasProps {
+  embedded?: boolean;
   onFirstInteraction: () => void;
   onExplorationComplete: () => void;
 }
@@ -36,7 +37,7 @@ const BRUSH_WIDTH = 60;
 const FADE_DURATION = 25000;
 const FADE_START_DELAY = 5000;
 
-export const StencilCanvas = ({ onFirstInteraction, onExplorationComplete }: StencilCanvasProps) => {
+export const StencilCanvas = ({ embedded: _embedded, onFirstInteraction, onExplorationComplete }: StencilCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const brushTextureRef = useRef<HTMLCanvasElement | null>(null);
