@@ -2420,8 +2420,8 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   padding:"7px 22px",borderRadius:10,
                   border:"none",
                   background:C.primary,
-                  color:"#fff",cursor:"pointer",
-                  boxShadow:`0 3px 10px ${C.primary}55`,
+                  color:C.primaryFg,cursor:"pointer",
+                  boxShadow:"0 4px 14px -2px hsl(var(--primary) / 0.45)",
                   letterSpacing:"0.02em",
                 }}>Uygula ✓</button>
             )}
