@@ -1814,19 +1814,20 @@ export default function StencilCanvas({ embedded = false, className, style }: St
   // ─── Render ───────────────────────────────────────────────────────────────
   const accent = "#e8c56a"; // used by canvas ghost/outline tiles
 
-  // Studio design tokens (inline — no Tailwind)
+  // Site design tokens — HSL via CSS variables (theme + dark-mode aware)
   const C = {
-    bg:          "#f7f3ee",
-    card:        "#ffffff",
-    border:      "#e4d9ce",
-    text:        "#3d3028",
-    muted:       "#8a7868",
-    primary:     "#b5673e",
-    chipBg:      "#f4ede5",
-    chipActive:  "#b5673e",
-    chipActiveBg:"#fdf0e8",
-    shadow:      "0 4px 24px rgba(61,48,40,0.10)",
-    shadowSm:    "0 2px 8px rgba(61,48,40,0.07)",
+    bg:           "hsl(var(--background))",
+    card:         "hsl(var(--card))",
+    border:       "hsl(var(--border))",
+    text:         "hsl(var(--foreground))",
+    muted:        "hsl(var(--muted-foreground))",
+    primary:      "hsl(var(--primary))",
+    primaryFg:    "hsl(var(--primary-foreground))",
+    chipBg:       "hsl(var(--muted))",
+    chipActive:   "hsl(var(--primary))",
+    chipActiveBg: "hsl(var(--accent))",
+    shadow:       "0 10px 30px -12px hsl(var(--foreground) / 0.18)",
+    shadowSm:     "0 2px 8px -2px hsl(var(--foreground) / 0.10)",
   };
   const FF = {
     serif: "'Cormorant Garamond', Georgia, serif",
@@ -1891,16 +1892,17 @@ export default function StencilCanvas({ embedded = false, className, style }: St
   const chipBtnSt = (active: boolean, size: "sm"|"md" = "md"): React.CSSProperties => ({
     fontFamily:FF.sans,
     fontSize: size==="sm" ? 11 : 12,
-    fontWeight: active ? 600 : 400,
-    padding: size==="sm" ? "3px 10px" : "5px 14px",
-    borderRadius: 20,
+    fontWeight: active ? 600 : 450,
+    padding: size==="sm" ? "4px 11px" : "6px 15px",
+    borderRadius: 999,
     cursor: "pointer",
-    transition: "all 0.15s",
-    border: `2px solid ${active ? C.primary : C.border}`,
+    transition: "all 0.18s ease",
+    border: `1px solid ${active ? "transparent" : C.border}`,
     background: active ? C.primary : C.chipBg,
-    color: active ? "#fff" : C.text,
-    boxShadow: active ? `0 2px 8px ${C.primary}44` : "none",
+    color: active ? C.primaryFg : C.text,
+    boxShadow: active ? "0 2px 10px -2px hsl(var(--primary) / 0.35)" : "none",
     outline: "none",
+    letterSpacing: "0.01em",
   });
 
   return (
@@ -1915,15 +1917,18 @@ export default function StencilCanvas({ embedded = false, className, style }: St
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
-        .sc-chip:hover { filter: brightness(0.94); }
-        .sc-chip:focus-visible { outline: 2px solid #b5673e; outline-offset: 2px; }
-        .sc-swatch:hover { transform: scale(1.18); box-shadow: 0 2px 8px rgba(0,0,0,0.22) !important; }
-        .sc-swatch:focus-visible { outline: 2px solid #3d3028; outline-offset: 2px; }
-        .sc-action:hover { filter: brightness(0.93); }
-        .sc-action:focus-visible { outline: 2px solid #b5673e; outline-offset: 2px; }
+        .sc-chip { transition: all 0.18s ease; }
+        .sc-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
+        .sc-chip:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+        .sc-swatch { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .sc-swatch:hover { transform: scale(1.15); box-shadow: 0 3px 10px hsl(var(--foreground) / 0.18) !important; }
+        .sc-swatch:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+        .sc-action { transition: all 0.18s ease; }
+        .sc-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
+        .sc-action:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
         input[type=range].sc-slider { height: 4px; border-radius: 2px; cursor: pointer; }
-        input[type=range].sc-slider::-webkit-slider-thumb { width:16px; height:16px; border-radius:50%; background:#b5673e; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,0.18); cursor:pointer; }
-        input[type=range].sc-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:#b5673e; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,0.18); cursor:pointer; }
+        input[type=range].sc-slider::-webkit-slider-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
+        input[type=range].sc-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
       `}</style>
 
       {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
@@ -1970,7 +1975,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                 {customMotifs.some(c=>c.id===m.id) && (
                   <button onClick={()=>removeCustom(m.id)} style={{
                     position:"absolute",top:-4,right:-4,width:13,height:13,borderRadius:"50%",
-                    background:"#c86464",border:"1.5px solid #fff",color:"#fff",
+                    background:"hsl(var(--destructive))",border:"1.5px solid hsl(var(--card))",color:"hsl(var(--destructive-foreground))",
                     fontSize:8,cursor:"pointer",padding:0,
                     display:"flex",alignItems:"center",justifyContent:"center",
                   }}>×</button>
@@ -2058,7 +2063,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                     <input type="file" accept="image/*" onChange={handleSurfaceUpload} style={{display:"none"}}/>
                     {surface==="foto" && (
                       <span onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
-                        style={{color:"#c86464",fontWeight:"bold",cursor:"pointer",marginLeft:2}}>×</span>
+                        style={{color:"hsl(var(--destructive))",fontWeight:"bold",cursor:"pointer",marginLeft:2}}>×</span>
                     )}
                   </label>
                 </div>
@@ -2283,10 +2288,10 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                     aria-label={`Renk ${c}`}
                     style={{
                       width:26, height:26, borderRadius:"50%",
-                      border: active ? `3px solid ${C.text}` : `2px solid rgba(0,0,0,0.08)`,
+                      border: active ? `3px solid ${C.text}` : `2px solid hsl(var(--border))`,
                       background:c, cursor:"pointer", padding:0, flexShrink:0,
                       transition:"transform 0.1s, box-shadow 0.1s",
-                      boxShadow: active ? `0 0 0 2px #fff, 0 0 0 4px ${c}` : "0 1px 3px rgba(0,0,0,0.15)",
+                      boxShadow: active ? `0 0 0 2px hsl(var(--card)), 0 0 0 4px ${c}` : "0 1px 3px hsl(var(--foreground) / 0.15)",
                     }}/>
                 );
               })}
@@ -2329,7 +2334,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                 style={{
                   width:100, marginTop:2,
                   accentColor:C.primary,
-                  background:`linear-gradient(to right, ${C.primary} ${Math.round(brushOpacity*100)}%, #e4d9ce ${Math.round(brushOpacity*100)}%)`,
+                  background:`linear-gradient(to right, hsl(var(--primary)) ${Math.round(brushOpacity*100)}%, hsl(var(--muted)) ${Math.round(brushOpacity*100)}%)`,
                 }}/>
             </div>
           </div>
@@ -2392,8 +2397,8 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   role="button" aria-label="Fotoğrafı kaldır"
                   onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
                   style={{
-                    width:16,height:16,borderRadius:"50%",background:"#c86464",
-                    color:"#fff",fontSize:10,fontWeight:"bold",cursor:"pointer",
+                    width:16,height:16,borderRadius:"50%",background:"hsl(var(--destructive))",
+                    color:"hsl(var(--destructive-foreground))",fontSize:10,fontWeight:"bold",cursor:"pointer",
                     display:"flex",alignItems:"center",justifyContent:"center",
                     marginLeft:2,flexShrink:0,
                   }}>×</span>
@@ -2415,8 +2420,8 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   padding:"7px 22px",borderRadius:10,
                   border:"none",
                   background:C.primary,
-                  color:"#fff",cursor:"pointer",
-                  boxShadow:`0 3px 10px ${C.primary}55`,
+                  color:C.primaryFg,cursor:"pointer",
+                  boxShadow:"0 4px 14px -2px hsl(var(--primary) / 0.45)",
                   letterSpacing:"0.02em",
                 }}>Uygula ✓</button>
             )}
@@ -2438,7 +2443,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   style={{
                     fontFamily:FF.sans,fontSize:12,fontWeight:500,
                     padding:"6px 14px",borderRadius:8,
-                    border:"1.5px solid #f0c4bb",background:"#fdf5f3",color:"#b94a3a",cursor:"pointer",
+                    border:"1px solid hsl(var(--destructive) / 0.35)",background:"hsl(var(--destructive) / 0.08)",color:"hsl(var(--destructive))",cursor:"pointer",
                   }}>Temizle</button>
               </>
             )}
