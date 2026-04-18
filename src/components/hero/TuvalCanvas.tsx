@@ -2288,10 +2288,10 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                     aria-label={`Renk ${c}`}
                     style={{
                       width:26, height:26, borderRadius:"50%",
-                      border: active ? `3px solid ${C.text}` : `2px solid rgba(0,0,0,0.08)`,
+                      border: active ? `3px solid ${C.text}` : `2px solid hsl(var(--border))`,
                       background:c, cursor:"pointer", padding:0, flexShrink:0,
                       transition:"transform 0.1s, box-shadow 0.1s",
-                      boxShadow: active ? `0 0 0 2px #fff, 0 0 0 4px ${c}` : "0 1px 3px rgba(0,0,0,0.15)",
+                      boxShadow: active ? `0 0 0 2px hsl(var(--card)), 0 0 0 4px ${c}` : "0 1px 3px hsl(var(--foreground) / 0.15)",
                     }}/>
                 );
               })}
