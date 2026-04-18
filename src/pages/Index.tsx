@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { HeroPaintingCanvas } from "@/components/hero";
-import TuvalCanvas from "@/components/hero/TuvalCanvas";
 import {
   FeaturesSection,
   CollectionSection,
@@ -53,40 +52,19 @@ const Index = () => (
     <GlobalWidgets />
 
     <main>
-      {/* ── Hero: Stencil Tuval — tam genişlik ──────────────── */}
-      <section className="w-full pt-16">
-        {/* Eyebrow + headline */}
-        <motion.div
-          className="py-8 text-center px-4"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-        >
-          <p className="text-xs font-medium uppercase tracking-widest text-primary/70">
-            stencil studio
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Boyamayı hemen dene
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Bir motif seç, rengi ayarla, tuval üzerine uygula ve boya.
-          </p>
-        </motion.div>
-
-        {/* Tuval — sayfanın tamamını kaplayan genişlik */}
-        <TuvalCanvas embedded />
-      </section>
+      {/* ── Hero: İnteraktif boyama deneyimi ──────────────── */}
+      <HeroPaintingCanvas />
 
       <MicroPause delay={0.1}>keşfet</MicroPause>
       <FeaturesSection />
+      <MicroPause delay={0}>kendi tarzını bul</MicroPause>
+      <CollectionSection />
       <MicroPause delay={0}>nasıl?</MicroPause>
       <HowItWorksSection />
       <MicroPause delay={0}>ilham al</MicroPause>
       <TestimonialsSection />
       <MicroPause delay={0} />
       <CTASection />
-      <MicroPause delay={0} />
-      <CollectionSection />
     </main>
 
     <Footer />

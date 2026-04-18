@@ -14,6 +14,7 @@ interface NavbarProps {
 
 const navLinks = [
   { label: "Koleksiyon", href: "/koleksiyon" },
+  { label: "Tuval", href: "/tuval" },
   { label: "Nasıl Çalışır", href: "/nasil-calisir" },
   { label: "Özel Tasarım", href: "/ozel-tasarim" },
   { label: "Hakkımızda", href: "/hakkimizda" },
