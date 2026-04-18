@@ -1917,15 +1917,18 @@ export default function StencilCanvas({ embedded = false, className, style }: St
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
-        .sc-chip:hover { filter: brightness(0.94); }
-        .sc-chip:focus-visible { outline: 2px solid #b5673e; outline-offset: 2px; }
-        .sc-swatch:hover { transform: scale(1.18); box-shadow: 0 2px 8px rgba(0,0,0,0.22) !important; }
-        .sc-swatch:focus-visible { outline: 2px solid #3d3028; outline-offset: 2px; }
-        .sc-action:hover { filter: brightness(0.93); }
-        .sc-action:focus-visible { outline: 2px solid #b5673e; outline-offset: 2px; }
+        .sc-chip { transition: all 0.18s ease; }
+        .sc-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
+        .sc-chip:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+        .sc-swatch { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .sc-swatch:hover { transform: scale(1.15); box-shadow: 0 3px 10px hsl(var(--foreground) / 0.18) !important; }
+        .sc-swatch:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+        .sc-action { transition: all 0.18s ease; }
+        .sc-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
+        .sc-action:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
         input[type=range].sc-slider { height: 4px; border-radius: 2px; cursor: pointer; }
-        input[type=range].sc-slider::-webkit-slider-thumb { width:16px; height:16px; border-radius:50%; background:#b5673e; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,0.18); cursor:pointer; }
-        input[type=range].sc-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:#b5673e; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,0.18); cursor:pointer; }
+        input[type=range].sc-slider::-webkit-slider-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
+        input[type=range].sc-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
       `}</style>
 
       {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
