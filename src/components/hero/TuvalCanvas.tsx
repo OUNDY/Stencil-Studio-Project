@@ -2397,8 +2397,8 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   role="button" aria-label="Fotoğrafı kaldır"
                   onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
                   style={{
-                    width:16,height:16,borderRadius:"50%",background:"#c86464",
-                    color:"#fff",fontSize:10,fontWeight:"bold",cursor:"pointer",
+                    width:16,height:16,borderRadius:"50%",background:"hsl(var(--destructive))",
+                    color:"hsl(var(--destructive-foreground))",fontSize:10,fontWeight:"bold",cursor:"pointer",
                     display:"flex",alignItems:"center",justifyContent:"center",
                     marginLeft:2,flexShrink:0,
                   }}>×</span>
