@@ -1892,16 +1892,17 @@ export default function StencilCanvas({ embedded = false, className, style }: St
   const chipBtnSt = (active: boolean, size: "sm"|"md" = "md"): React.CSSProperties => ({
     fontFamily:FF.sans,
     fontSize: size==="sm" ? 11 : 12,
-    fontWeight: active ? 600 : 400,
-    padding: size==="sm" ? "3px 10px" : "5px 14px",
-    borderRadius: 20,
+    fontWeight: active ? 600 : 450,
+    padding: size==="sm" ? "4px 11px" : "6px 15px",
+    borderRadius: 999,
     cursor: "pointer",
-    transition: "all 0.15s",
-    border: `2px solid ${active ? C.primary : C.border}`,
+    transition: "all 0.18s ease",
+    border: `1px solid ${active ? "transparent" : C.border}`,
     background: active ? C.primary : C.chipBg,
-    color: active ? "#fff" : C.text,
-    boxShadow: active ? `0 2px 8px ${C.primary}44` : "none",
+    color: active ? C.primaryFg : C.text,
+    boxShadow: active ? "0 2px 10px -2px hsl(var(--primary) / 0.35)" : "none",
     outline: "none",
+    letterSpacing: "0.01em",
   });
 
   return (
