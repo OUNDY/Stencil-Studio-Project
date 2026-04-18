@@ -2334,7 +2334,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                 style={{
                   width:100, marginTop:2,
                   accentColor:C.primary,
-                  background:`linear-gradient(to right, ${C.primary} ${Math.round(brushOpacity*100)}%, #e4d9ce ${Math.round(brushOpacity*100)}%)`,
+                  background:`linear-gradient(to right, hsl(var(--primary)) ${Math.round(brushOpacity*100)}%, hsl(var(--muted)) ${Math.round(brushOpacity*100)}%)`,
                 }}/>
             </div>
           </div>
