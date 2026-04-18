@@ -2063,7 +2063,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                     <input type="file" accept="image/*" onChange={handleSurfaceUpload} style={{display:"none"}}/>
                     {surface==="foto" && (
                       <span onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
-                        style={{color:"#c86464",fontWeight:"bold",cursor:"pointer",marginLeft:2}}>×</span>
+                        style={{color:"hsl(var(--destructive))",fontWeight:"bold",cursor:"pointer",marginLeft:2}}>×</span>
                     )}
                   </label>
                 </div>
