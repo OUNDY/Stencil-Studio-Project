@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
-import { HeroPaintingCanvas } from "@/components/hero";
+import { ClassicHero } from "@/components/hero/ClassicHero";
 import {
   FeaturesSection,
   CollectionSection,
@@ -52,8 +52,8 @@ const Index = () => (
     <GlobalWidgets />
 
     <main>
-      {/* ── Hero: İnteraktif boyama deneyimi ──────────────── */}
-      <HeroPaintingCanvas />
+      {/* ── Hero: Klasik tanıtım ──────────────── */}
+      <ClassicHero />
 
       <MicroPause delay={0.1}>keşfet</MicroPause>
       <FeaturesSection />
