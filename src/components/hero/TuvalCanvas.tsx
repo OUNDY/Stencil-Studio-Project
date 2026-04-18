@@ -1814,19 +1814,20 @@ export default function StencilCanvas({ embedded = false, className, style }: St
   // ─── Render ───────────────────────────────────────────────────────────────
   const accent = "#e8c56a"; // used by canvas ghost/outline tiles
 
-  // Studio design tokens (inline — no Tailwind)
+  // Site design tokens — HSL via CSS variables (theme + dark-mode aware)
   const C = {
-    bg:          "#f7f3ee",
-    card:        "#ffffff",
-    border:      "#e4d9ce",
-    text:        "#3d3028",
-    muted:       "#8a7868",
-    primary:     "#b5673e",
-    chipBg:      "#f4ede5",
-    chipActive:  "#b5673e",
-    chipActiveBg:"#fdf0e8",
-    shadow:      "0 4px 24px rgba(61,48,40,0.10)",
-    shadowSm:    "0 2px 8px rgba(61,48,40,0.07)",
+    bg:           "hsl(var(--background))",
+    card:         "hsl(var(--card))",
+    border:       "hsl(var(--border))",
+    text:         "hsl(var(--foreground))",
+    muted:        "hsl(var(--muted-foreground))",
+    primary:      "hsl(var(--primary))",
+    primaryFg:    "hsl(var(--primary-foreground))",
+    chipBg:       "hsl(var(--muted))",
+    chipActive:   "hsl(var(--primary))",
+    chipActiveBg: "hsl(var(--accent))",
+    shadow:       "0 10px 30px -12px hsl(var(--foreground) / 0.18)",
+    shadowSm:     "0 2px 8px -2px hsl(var(--foreground) / 0.10)",
   };
   const FF = {
     serif: "'Cormorant Garamond', Georgia, serif",
