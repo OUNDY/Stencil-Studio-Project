@@ -2443,7 +2443,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                   style={{
                     fontFamily:FF.sans,fontSize:12,fontWeight:500,
                     padding:"6px 14px",borderRadius:8,
-                    border:"1.5px solid #f0c4bb",background:"#fdf5f3",color:"#b94a3a",cursor:"pointer",
+                    border:"1px solid hsl(var(--destructive) / 0.35)",background:"hsl(var(--destructive) / 0.08)",color:"hsl(var(--destructive))",cursor:"pointer",
                   }}>Temizle</button>
               </>
             )}
