@@ -1975,7 +1975,7 @@ export default function StencilCanvas({ embedded = false, className, style }: St
                 {customMotifs.some(c=>c.id===m.id) && (
                   <button onClick={()=>removeCustom(m.id)} style={{
                     position:"absolute",top:-4,right:-4,width:13,height:13,borderRadius:"50%",
-                    background:"#c86464",border:"1.5px solid #fff",color:"#fff",
+                    background:"hsl(var(--destructive))",border:"1.5px solid hsl(var(--card))",color:"hsl(var(--destructive-foreground))",
                     fontSize:8,cursor:"pointer",padding:0,
                     display:"flex",alignItems:"center",justifyContent:"center",
                   }}>×</button>
