@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import ComponentShowcase from "./pages/ComponentShowcase";
+import Tuval from "./pages/Tuval";
 // Account pages
 import AccountDashboard from "./pages/account/Dashboard";
 import AccountOrders from "./pages/account/AccountOrders";
@@ -74,6 +75,7 @@ const App = () => (
               <Route path="/favorilerim" element={<AccountFavorites />} />
 
               <Route path="/showcase" element={<ComponentShowcase />} />
+              <Route path="/tuval" element={<Tuval />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
