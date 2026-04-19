@@ -20,6 +20,15 @@ import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import ComponentShowcase from "./pages/ComponentShowcase";
 import Tuval from "./pages/Tuval";
+import ForgotPassword from "./pages/ForgotPassword";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfUse from "./pages/TermsOfUse";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
+import Shipping from "./pages/Shipping";
+import Returns from "./pages/Returns";
+import Blog from "./pages/Blog";
+import Careers from "./pages/Careers";
 // Account pages
 import AccountDashboard from "./pages/account/Dashboard";
 import AccountOrders from "./pages/account/AccountOrders";
@@ -76,6 +85,20 @@ const App = () => (
 
               <Route path="/showcase" element={<ComponentShowcase />} />
               <Route path="/tuval" element={<Tuval />} />
+
+              {/* Legal & info pages */}
+              <Route path="/sifremi-unuttum" element={<ForgotPassword />} />
+              <Route path="/gizlilik-politikasi" element={<PrivacyPolicy />} />
+              <Route path="/kullanim-kosullari" element={<TermsOfUse />} />
+              <Route path="/sss" element={<FAQ />} />
+              <Route path="/iletisim" element={<Contact />} />
+              <Route path="/kargo-bilgisi" element={<Shipping />} />
+              <Route path="/iade-politikasi" element={<Returns />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/kariyer" element={<Careers />} />
+
+              {/* Aliases */}
+              <Route path="/tasarla" element={<Navigate to="/ozel-tasarim" replace />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
