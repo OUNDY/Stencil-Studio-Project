@@ -12,8 +12,8 @@ export const ClassicHero = () => (
         alt="Stencil ile boyanmış duvar"
         className="h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      <div className="absolute inset-0 bg-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/30" />
     </div>
 
     <div className="container mx-auto px-6 lg:px-12 py-12 flex justify-center">
