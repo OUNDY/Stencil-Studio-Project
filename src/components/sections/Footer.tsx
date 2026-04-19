@@ -1,31 +1,33 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Instagram, Twitter, Youtube, Mail, MapPin, Phone } from "lucide-react";
 
 const footerLinks = {
   products: [
-    { label: "Fiziksel Şablonlar", href: "#" },
-    { label: "Dijital Dosyalar", href: "#" },
-    { label: "Özel Tasarım", href: "#" },
-    { label: "Setler & Paketler", href: "#" },
+    { label: "Koleksiyon", to: "/koleksiyon" },
+    { label: "Tuval Alanı", to: "/tuval" },
+    { label: "Özel Tasarım", to: "/ozel-tasarim" },
+    { label: "Nasıl Çalışır", to: "/nasil-calisir" },
   ],
   company: [
-    { label: "Hakkımızda", href: "#about" },
-    { label: "Nasıl Çalışır", href: "#how-it-works" },
-    { label: "Blog", href: "#" },
-    { label: "Kariyer", href: "#" },
+    { label: "Hakkımızda", to: "/hakkimizda" },
+    { label: "Blog", to: "/blog" },
+    { label: "Kariyer", to: "/kariyer" },
+    { label: "İletişim", to: "/iletisim" },
   ],
   support: [
-    { label: "SSS", href: "#" },
-    { label: "Kargo Bilgisi", href: "#" },
-    { label: "İade Politikası", href: "#" },
-    { label: "İletişim", href: "#" },
+    { label: "SSS", to: "/sss" },
+    { label: "Kargo Bilgisi", to: "/kargo-bilgisi" },
+    { label: "İade Politikası", to: "/iade-politikasi" },
+    { label: "Gizlilik Politikası", to: "/gizlilik-politikasi" },
+    { label: "Kullanım Koşulları", to: "/kullanim-kosullari" },
   ],
 };
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Youtube, href: "#", label: "Youtube" },
+  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Youtube, href: "https://youtube.com", label: "Youtube" },
 ];
 
 export const Footer = () => {
@@ -36,12 +38,12 @@ export const Footer = () => {
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-8 mb-12">
           {/* Brand column */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-6">
+            <Link to="/" className="flex items-center gap-2 mb-6 w-fit">
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-serif text-lg">S</span>
               </div>
               <span className="font-serif text-xl text-foreground">Stencil Studio</span>
-            </div>
+            </Link>
             <p className="text-muted-foreground font-sans text-sm leading-relaxed mb-6 max-w-sm">
               Yaratıcılığınızı duvarlarınıza taşıyın. Profesyonel şablonlar,
               kolay uygulama, sınırsız olasılıklar.
@@ -49,14 +51,14 @@ export const Footer = () => {
 
             {/* Contact info */}
             <div className="space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-3">
+              <a href="mailto:merhaba@stencilstudio.com" className="flex items-center gap-3 hover:text-foreground transition-colors">
                 <Mail className="w-4 h-4" />
                 <span>merhaba@stencilstudio.com</span>
-              </div>
-              <div className="flex items-center gap-3">
+              </a>
+              <a href="tel:+902125550000" className="flex items-center gap-3 hover:text-foreground transition-colors">
                 <Phone className="w-4 h-4" />
                 <span>+90 (212) 555 00 00</span>
-              </div>
+              </a>
               <div className="flex items-center gap-3">
                 <MapPin className="w-4 h-4" />
                 <span>İstanbul, Türkiye</span>
@@ -70,12 +72,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.products.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -86,12 +88,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -102,12 +104,12 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -127,6 +129,8 @@ export const Footer = () => {
               <motion.a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}

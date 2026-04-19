@@ -81,7 +81,7 @@ const Tuval = () => (
                 <Link to="/koleksiyon">Koleksiyona göz at</Link>
               </Button>
               <Button asChild className="rounded-full">
-                <Link to="/tasarla">Özel tasarım iste</Link>
+                <Link to="/ozel-tasarim">Özel tasarım iste</Link>
               </Button>
             </motion.div>
           </div>
