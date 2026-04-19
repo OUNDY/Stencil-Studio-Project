@@ -1909,553 +1909,526 @@ export default function StencilCanvas({ embedded = false, className, style }: St
     <div
       className={className}
       style={{
-        display:"flex", flexDirection:"column", alignItems:"center", gap:0,
-        background:C.bg, fontFamily:FF.sans,
-        ...(embedded ? { width:"100%", height:"100%" } : { minHeight:"100vh" }),
+        display: "flex", flexDirection: "column",
+        background: "hsl(var(--background))", fontFamily: FF.sans,
+        ...(embedded ? { width: "100%", height: "100%" } : { minHeight: "100vh" }),
         ...style,
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        .sc-tool { transition: all 0.18s ease; }
+        .sc-tool:hover { background: hsl(var(--accent)); }
+        .sc-tool:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; }
         .sc-chip { transition: all 0.18s ease; }
-        .sc-chip:hover { filter: brightness(0.96); transform: translateY(-1px); }
+        .sc-chip:hover { filter: brightness(0.96); }
         .sc-chip:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
         .sc-swatch { transition: transform 0.15s ease, box-shadow 0.15s ease; }
-        .sc-swatch:hover { transform: scale(1.15); box-shadow: 0 3px 10px hsl(var(--foreground) / 0.18) !important; }
+        .sc-swatch:hover { transform: scale(1.12); }
         .sc-swatch:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
-        .sc-action { transition: all 0.18s ease; }
-        .sc-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
-        .sc-action:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
-        input[type=range].sc-slider { height: 4px; border-radius: 2px; cursor: pointer; }
-        input[type=range].sc-slider::-webkit-slider-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
-        input[type=range].sc-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
+        input[type=range].sc-slider { -webkit-appearance: none; height: 4px; border-radius: 2px; cursor: pointer; background: hsl(var(--muted)); }
+        input[type=range].sc-slider::-webkit-slider-thumb { -webkit-appearance: none; width:14px; height:14px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
+        input[type=range].sc-slider::-moz-range-thumb { width:14px; height:14px; border-radius:50%; background:hsl(var(--primary)); border:2px solid hsl(var(--card)); box-shadow:0 1px 4px hsl(var(--foreground) / 0.18); cursor:pointer; }
       `}</style>
 
-      {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
-      <div style={{
-        width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",
-        padding:"10px 20px",background:C.card,borderBottom:`1px solid ${C.border}`,
-        boxShadow:C.shadowSm,
-        position: embedded ? "relative" : "sticky", top:0, zIndex:30,
-        boxSizing:"border-box",
-      }}>
-        {/* Logo + Mode toggle */}
-        <div style={{display:"flex",alignItems:"center",gap:14,flexShrink:0}}>
-          <span style={{fontFamily:FF.serif,fontSize:18,fontWeight:600,color:C.text,letterSpacing:"0.04em",whiteSpace:"nowrap"}}>
-            Stencil Canvas
+      {/* ─────────── TOP HEADER ─────────── */}
+      <header className="flex items-center justify-between gap-4 px-5 py-3 bg-card border-b border-border">
+        <div className="flex items-center gap-4 min-w-0">
+          <span className="font-serif text-base lg:text-lg font-medium text-foreground tracking-wide whitespace-nowrap">
+            Stencil Studio
           </span>
-          <div style={{display:"flex",background:C.chipBg,borderRadius:24,padding:3,gap:1,border:`1px solid ${C.border}`}}>
+          <div className="hidden sm:flex items-center bg-muted rounded-full p-0.5 border border-border">
             {(["grid","tekli"] as PlacementMode[]).map(m => {
               const a = placementMode===m;
               return (
-                <button key={m} onClick={()=>{setPlacementMode(m);modeRef.current=m;}} style={{
-                  fontFamily:FF.sans,fontSize:12,fontWeight:a?500:400,
-                  padding:"3px 13px",borderRadius:20,cursor:"pointer",transition:"all 0.2s",
-                  border:"none",background:a?C.card:"transparent",
-                  color:a?C.primary:C.muted,
-                  boxShadow:a?C.shadowSm:"none",
-                }}>{m==="grid"?"Grid":"Tekli"}</button>
+                <button
+                  key={m}
+                  onClick={()=>{setPlacementMode(m);modeRef.current=m;}}
+                  className={`px-3 py-1 text-[11px] font-medium rounded-full transition-all ${
+                    a ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {m==="grid" ? "Grid" : "Tekli"}
+                </button>
               );
             })}
           </div>
         </div>
 
-        {/* Motif chips */}
-        <div style={{display:"flex",gap:5,flexWrap:"wrap",alignItems:"center",justifyContent:"center",flex:1,padding:"0 12px"}}>
-          {allMotifs.map(m => {
-            const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
-            return (
-              <div key={m.id} style={{position:"relative"}}>
-                <button
-                  className="sc-chip"
-                  onClick={()=>placementMode==="grid" ? toggleGridMotif(m.id) : toggleTekliMotif(m.id)}
-                  style={chipBtnSt(isActive,"sm")} title={m.description}>
-                  {m.name}
+        <div className="flex items-center gap-2">
+          {/* Mode chip mobile */}
+          <div className="flex sm:hidden items-center bg-muted rounded-full p-0.5 border border-border">
+            {(["grid","tekli"] as PlacementMode[]).map(m => {
+              const a = placementMode===m;
+              return (
+                <button key={m} onClick={()=>{setPlacementMode(m);modeRef.current=m;}}
+                  className={`px-2.5 py-0.5 text-[10px] font-medium rounded-full ${a?"bg-card text-primary":"text-muted-foreground"}`}>
+                  {m==="grid"?"Grid":"Tekli"}
                 </button>
-                {customMotifs.some(c=>c.id===m.id) && (
-                  <button onClick={()=>removeCustom(m.id)} style={{
-                    position:"absolute",top:-4,right:-4,width:13,height:13,borderRadius:"50%",
-                    background:"hsl(var(--destructive))",border:"1.5px solid hsl(var(--card))",color:"hsl(var(--destructive-foreground))",
-                    fontSize:8,cursor:"pointer",padding:0,
-                    display:"flex",alignItems:"center",justifyContent:"center",
-                  }}>×</button>
-                )}
-              </div>
-            );
-          })}
-          <label style={{...chipBtnSt(false),display:"flex",alignItems:"center",gap:3,border:`1.5px dashed ${C.border}`,color:C.muted,userSelect:"none"}}>
-            + SVG
-            <input type="file" accept=".svg,image/svg+xml" onChange={handleSvgUpload} style={{display:"none"}}/>
-          </label>
-          <label style={{...chipBtnSt(false),display:"flex",alignItems:"center",gap:3,border:`1.5px dashed ${C.border}`,color:C.muted,userSelect:"none"}}>
-            + PNG
-            <input type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg" onChange={handlePngUpload} style={{display:"none"}}/>
-          </label>
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Advanced dropdown */}
-        <div ref={advancedRef} style={{position:"relative",flexShrink:0}}>
-          <button onClick={()=>setShowAdvanced(v=>!v)} style={{
-            fontFamily:FF.sans,fontSize:12,fontWeight:500,
-            padding:"5px 13px",borderRadius:8,cursor:"pointer",transition:"all 0.15s",
-            border:`1.5px solid ${showAdvanced?C.primary:C.border}`,
-            background:showAdvanced?C.chipActiveBg:C.card,
-            color:showAdvanced?C.primary:C.text,
-            display:"flex",alignItems:"center",gap:5,whiteSpace:"nowrap",
-          }}>
-            Gelişmiş
-            <span style={{
-              fontSize:8,display:"inline-block",marginTop:1,
-              transform:showAdvanced?"rotate(180deg)":"none",transition:"transform 0.2s",
-            }}>▼</span>
-          </button>
+          {/* Phase indicator */}
+          <span className="hidden md:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-medium">
+            <span className={`w-1.5 h-1.5 rounded-full ${isPlacing ? "bg-amber-500" : "bg-emerald-500"}`} />
+            {isPlacing ? "Yerleştirme" : "Boyama"}
+          </span>
 
-          {/* Advanced dropdown panel */}
-          {showAdvanced && (
-            <div style={{
-              position:"absolute",top:"calc(100% + 8px)",right:0,
-              background:C.card,border:`1px solid ${C.border}`,
-              borderRadius:12,boxShadow:C.shadow,
-              padding:16,minWidth:290,zIndex:100,
-              display:"flex",flexDirection:"column",gap:14,
-            }}>
-              {/* Header */}
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{fontFamily:FF.serif,fontSize:15,color:C.text,fontWeight:500}}>Gelişmiş Ayarlar</span>
-                <button onClick={()=>setShowAdvanced(false)} style={{
-                  background:"none",border:"none",cursor:"pointer",color:C.muted,fontSize:16,padding:2,lineHeight:1,
-                }}>×</button>
-              </div>
+          {/* Advanced */}
+          <div ref={advancedRef} className="relative">
+            <button
+              onClick={()=>setShowAdvanced(v=>!v)}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all flex items-center gap-1.5 ${
+                showAdvanced
+                  ? "border-primary bg-accent text-primary"
+                  : "border-border bg-card text-foreground hover:bg-accent"
+              }`}
+            >
+              Gelişmiş
+              <span className={`text-[8px] transition-transform ${showAdvanced ? "rotate-180" : ""}`}>▼</span>
+            </button>
 
-              {/* Blend mode */}
-              <div>
-                <span style={labelSt}>Karışım Modu</span>
-                <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-                  {([
-                    {id:"multiply"  as GlobalCompositeOperation, label:"Çarp"},
-                    {id:"overlay"   as GlobalCompositeOperation, label:"Katman"},
-                    {id:"screen"    as GlobalCompositeOperation, label:"Ekran"},
-                    {id:"source-over" as GlobalCompositeOperation, label:"Normal"},
-                  ]).map(bm=>(
-                    <button key={bm.id} onClick={()=>{setBlendMode(bm.id);blendModeRef.current=bm.id;redraw();}}
-                      style={{...chipBtnSt(blendMode===bm.id),fontSize:11,padding:"3px 9px"}}>
-                      {bm.label}
-                    </button>
-                  ))}
+            {showAdvanced && (
+              <div className="absolute top-[calc(100%+8px)] right-0 z-50 w-[290px] bg-popover border border-border rounded-xl shadow-lg p-4 flex flex-col gap-3.5">
+                <div className="flex justify-between items-center">
+                  <span className="font-serif text-sm font-medium text-foreground">Gelişmiş Ayarlar</span>
+                  <button onClick={()=>setShowAdvanced(false)} className="text-muted-foreground hover:text-foreground text-base leading-none">×</button>
                 </div>
-              </div>
 
-              {/* Surface */}
-              <div>
-                <span style={labelSt}>Zemin</span>
-                <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-                  {([...SURFACES,{id:"beyaz" as SurfaceId,name:"Beyaz"}]).map(s=>(
-                    <button key={s.id} onClick={()=>setSurface(s.id)}
-                      style={{...chipBtnSt(surface===s.id),fontSize:11,padding:"3px 9px"}}>
-                      {s.name}
-                    </button>
-                  ))}
-                  <label style={{
-                    ...chipBtnSt(surface==="foto"),fontSize:11,padding:"3px 9px",
-                    display:"flex",alignItems:"center",gap:3,userSelect:"none",
-                  }}>
-                    📷 Foto
-                    <input type="file" accept="image/*" onChange={handleSurfaceUpload} style={{display:"none"}}/>
-                    {surface==="foto" && (
-                      <span onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
-                        style={{color:"hsl(var(--destructive))",fontWeight:"bold",cursor:"pointer",marginLeft:2}}>×</span>
-                    )}
-                  </label>
-                </div>
-              </div>
-
-              {/* Brush size — painting only */}
-              {isPaintingPhase && (
+                {/* Blend mode */}
                 <div>
-                  <span style={labelSt}>Fırça Boyutu — <b style={{color:C.text,fontWeight:500}}>{brushSize}px</b></span>
-                  <input type="range" min={8} max={120} step={1} value={brushSize}
-                    onChange={e=>setBrushSize(Number(e.target.value))}
-                    style={{width:"100%",accentColor:C.primary}}/>
-                </div>
-              )}
-
-              {/* Rotation — grid mode */}
-              {placementMode==="grid" && gridActiveList.length>0 && (
-                <div>
-                  <span style={labelSt}>Rotasyon</span>
-                  {gridActiveList.map(m => {
-                    const tRot = gridTileRotations[m.id] ?? 0;
-                    const pRot = gridPatternRotations[m.id] ?? 0;
-                    return (
-                      <div key={m.id} style={{marginBottom:8}}>
-                        <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted,display:"block",marginBottom:3}}>
-                          {m.name}
-                        </span>
-                        {([["Motif", tRot, (v:number)=>setGridTileRotations(p=>({...p,[m.id]:v}))],
-                           ["Desen", pRot, (v:number)=>setGridPatternRotations(p=>({...p,[m.id]:v}))]] as [string,number,(v:number)=>void][])
-                          .map(([lbl,val,fn])=>(
-                          <div key={lbl} style={{display:"flex",gap:6,alignItems:"center",marginBottom:3}}>
-                            <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted,width:44}}>{lbl}</span>
-                            <input type="range" min={0} max={360} step={1} value={val}
-                              onChange={e=>fn(Number(e.target.value))}
-                              style={{flex:1,accentColor:C.primary}}/>
-                            <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted,minWidth:26}}>{val}°</span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Rotation — tekli selected instance */}
-              {placementMode==="tekli" && selectedInstId && (()=>{
-                const rot    = instanceRotations[selectedInstId] ?? 0;
-                const patRot = instancePatRotations[selectedInstId] ?? 0;
-                return (
-                  <div>
-                    <span style={labelSt}>Rotasyon (Seçili)</span>
-                    {([["Motif", rot, (v:number)=>{
-                        setInstanceRotations(p=>({...p,[selectedInstId]:v}));
-                        instanceRotationsRef.current={...instanceRotationsRef.current,[selectedInstId]:v};
-                        if (phaseRef.current==="painting") rebuildStencilOnly(selectedInstId);
-                      }],
-                      ["Desen", patRot, (v:number)=>{
-                        setInstancePatRotations(p=>({...p,[selectedInstId]:v}));
-                        instancePatRotationsRef.current={...instancePatRotationsRef.current,[selectedInstId]:v};
-                        if (phaseRef.current==="painting") rebuildStencilOnly(selectedInstId);
-                      }]] as [string,number,(v:number)=>void][])
-                      .map(([lbl,val,fn])=>(
-                      <div key={lbl} style={{display:"flex",gap:6,alignItems:"center",marginBottom:3}}>
-                        <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted,width:44}}>{lbl}</span>
-                        <input type="range" min={0} max={360} step={1} value={val}
-                          onChange={e=>fn(Number(e.target.value))}
-                          style={{flex:1,accentColor:C.primary}}/>
-                        <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted,minWidth:26}}>{val}°</span>
-                      </div>
+                  <span style={labelSt}>Karışım Modu</span>
+                  <div className="flex gap-1 flex-wrap">
+                    {([
+                      {id:"multiply"  as GlobalCompositeOperation, label:"Çarp"},
+                      {id:"overlay"   as GlobalCompositeOperation, label:"Katman"},
+                      {id:"screen"    as GlobalCompositeOperation, label:"Ekran"},
+                      {id:"source-over" as GlobalCompositeOperation, label:"Normal"},
+                    ]).map(bm=>(
+                      <button key={bm.id} onClick={()=>{setBlendMode(bm.id);blendModeRef.current=bm.id;redraw();}}
+                        style={{...chipBtnSt(blendMode===bm.id),fontSize:11,padding:"3px 9px"}}>
+                        {bm.label}
+                      </button>
                     ))}
                   </div>
-                );
-              })()}
+                </div>
 
-              {/* Perspektif warp */}
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{...labelSt,marginBottom:0}}>Perspektif Warp</span>
-                <button onClick={()=>{
-                  setShowPerspWarp(v=>!v);
-                  if (!showPerspWarp) {
-                    const d: PerspQuad = [[0,0],[CANVAS_W,0],[CANVAS_W,CANVAS_H],[0,CANVAS_H]];
-                    setPerspCorners(d); perspCornersRef.current=d;
-                  }
-                }} style={{...chipBtnSt(showPerspWarp),fontSize:11,padding:"3px 12px"}}>
-                  {showPerspWarp ? "Açık ✓" : "Kapalı"}
-                </button>
-              </div>
+                {/* Surface */}
+                <div>
+                  <span style={labelSt}>Zemin</span>
+                  <div className="flex gap-1 flex-wrap">
+                    {([...SURFACES,{id:"beyaz" as SurfaceId,name:"Beyaz"}]).map(s=>(
+                      <button key={s.id} onClick={()=>setSurface(s.id)}
+                        style={{...chipBtnSt(surface===s.id),fontSize:11,padding:"3px 9px"}}>
+                        {s.name}
+                      </button>
+                    ))}
+                    <label style={{...chipBtnSt(surface==="foto"),fontSize:11,padding:"3px 9px",display:"flex",alignItems:"center",gap:3,userSelect:"none"}}>
+                      📷 Foto
+                      <input type="file" accept="image/*" onChange={handleSurfaceUpload} style={{display:"none"}}/>
+                      {surface==="foto" && (
+                        <span onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
+                          className="ml-0.5 text-destructive font-bold cursor-pointer">×</span>
+                      )}
+                    </label>
+                  </div>
+                </div>
 
-              {/* Tekli: commit transform */}
-              {placementMode==="tekli" && tekliPhase==="painting" && selectedInstId && (
-                <button onClick={()=>commitTransformToInstance(selectedInstId)} style={{
-                  width:"100%",padding:"7px 0",borderRadius:8,
-                  border:`1.5px solid ${C.primary}`,background:C.chipActiveBg,
-                  color:C.primary,fontFamily:FF.sans,fontSize:12,fontWeight:500,cursor:"pointer",
-                }}>Transformu Uygula</button>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+                {/* Brush size */}
+                {isPaintingPhase && (
+                  <div>
+                    <span style={labelSt}>Fırça Boyutu — <b className="text-foreground font-medium">{brushSize}px</b></span>
+                    <input type="range" min={8} max={120} step={1} value={brushSize}
+                      onChange={e=>setBrushSize(Number(e.target.value))}
+                      className="w-full" style={{accentColor:"hsl(var(--primary))"}}/>
+                  </div>
+                )}
 
-      {/* ── CANVAS + BOTTOM PANEL ──────────────────────────────────────────── */}
-      <div style={{
-        display:"flex", flexDirection:"column", alignItems:"center",
-        padding: embedded ? "0" : "20px 20px 0",
-        width:"100%", maxWidth: embedded ? "100%" : 920,
-        boxSizing:"border-box",
-      }}>
+                {/* Rotation grid */}
+                {placementMode==="grid" && gridActiveList.length>0 && (
+                  <div>
+                    <span style={labelSt}>Rotasyon</span>
+                    {gridActiveList.map(m => {
+                      const tRot = gridTileRotations[m.id] ?? 0;
+                      const pRot = gridPatternRotations[m.id] ?? 0;
+                      return (
+                        <div key={m.id} className="mb-2">
+                          <span className="block text-[10px] text-muted-foreground mb-1">{m.name}</span>
+                          {([["Motif", tRot, (v:number)=>setGridTileRotations(p=>({...p,[m.id]:v}))],
+                             ["Desen", pRot, (v:number)=>setGridPatternRotations(p=>({...p,[m.id]:v}))]] as [string,number,(v:number)=>void][])
+                            .map(([lbl,val,fn])=>(
+                            <div key={lbl} className="flex gap-1.5 items-center mb-0.5">
+                              <span className="text-[10px] text-muted-foreground w-11">{lbl}</span>
+                              <input type="range" min={0} max={360} step={1} value={val}
+                                onChange={e=>fn(Number(e.target.value))}
+                                className="flex-1" style={{accentColor:"hsl(var(--primary))"}}/>
+                              <span className="text-[10px] text-muted-foreground min-w-[26px]">{val}°</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
-        {/* Tekli: instance navigator */}
-        {placementMode==="tekli" && tekliPhase==="painting" && instances.length>1 && (()=>{
-          const idx = instances.findIndex(i=>i.id===selectedInstId);
-          const si  = idx>=0 ? instances[idx] : instances[0];
-          const mName = allMotifs.find(m=>m.id===si?.motifId)?.name ?? "?";
-          const nav = (lbl:string, ti:number) => (
-            <button onClick={()=>{const t=instances[ti];setSelectedInstId(t.id);selIdRef.current=t.id;}}
-              style={{fontFamily:FF.sans,padding:"3px 12px",borderRadius:6,
-                border:`1px solid ${C.border}`,background:C.card,color:C.text,cursor:"pointer",fontSize:13}}>
-              {lbl}
-            </button>
-          );
-          return (
-            <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
-              {nav("←",(idx-1+instances.length)%instances.length)}
-              <span style={{fontFamily:FF.serif,color:C.primary,fontSize:13,minWidth:80,textAlign:"center"}}>
-                {mName} {idx+1}/{instances.length}
-              </span>
-              {nav("→",(idx+1)%instances.length)}
-            </div>
-          );
-        })()}
-
-        {/* Canvas wrapper */}
-        <div style={{
-          position:"relative",
-          borderRadius: embedded ? 0 : "12px 12px 0 0",
-          overflow:"hidden",
-          boxShadow: embedded ? "none" : "0 8px 40px rgba(61,48,40,0.12)",
-          border: embedded ? "none" : `1px solid ${C.border}`,
-          borderBottom:"none", width:"100%",
-        }}>
-          <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-            style={{display:"block",width:"100%",maxHeight:"54vh",cursor:isPlacing?"grab":"crosshair"}}
-          />
-          {showPerspWarp && perspCorners.map((c,i)=>(
-            <div key={i}
-              onMouseDown={e=>{e.preventDefault();e.stopPropagation();dragCornerRef.current=i;}}
-              onTouchStart={e=>{e.stopPropagation();dragCornerRef.current=i;}}
-              style={{
-                position:"absolute",
-                left:`calc(${(c[0]/CANVAS_W)*100}% - 7px)`,
-                top:`calc(${(c[1]/CANVAS_H)*100}% - 7px)`,
-                width:14,height:14,borderRadius:"50%",
-                background:"#e8c56a",border:"2px solid rgba(255,255,255,0.9)",
-                cursor:"grab",zIndex:10,touchAction:"none",
-                boxShadow:"0 1px 6px rgba(0,0,0,0.5)",
-              }}
-            />
-          ))}
-        </div>
-
-        {/* ── Bottom panel ── */}
-        <div style={{
-          width:"100%", background:C.card,
-          border: embedded ? "none" : `1px solid ${C.border}`,
-          borderTop: `1px solid ${C.border}`,
-          borderRadius: embedded ? 0 : "0 0 12px 12px",
-          boxShadow: embedded ? "none" : "0 8px 20px rgba(61,48,40,0.09)",
-          padding:"12px 16px",
-          display:"flex", gap:0, alignItems:"center", flexWrap:"wrap", rowGap:10,
-          boxSizing:"border-box",
-        }}>
-
-          {/* ── Size chips ── */}
-          <div style={{display:"flex",flexDirection:"column",gap:5,paddingRight:16,marginRight:16,borderRight:`1px solid ${C.border}`}}>
-            <span style={labelSt} id="size-label">Boyut</span>
-            <div role="radiogroup" aria-labelledby="size-label" style={{display:"flex",gap:5}}>
-              {SIZES.map(({label,px})=>{
-                const active = selSizePx===px;
-                return (
-                  <button key={label}
-                    role="radio" aria-checked={active}
-                    className="sc-chip"
-                    onClick={()=>setAllSizes(px)}
-                    style={{
-                      ...chipBtnSt(active),
-                      minWidth:52, textAlign:"center",
-                      position:"relative",
-                    }}>
-                    {label}
-                    {active && (
-                      <span style={{
-                        position:"absolute",bottom:-7,left:"50%",transform:"translateX(-50%)",
-                        width:4,height:4,borderRadius:"50%",background:C.primary,display:"block",
-                      }}/>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* ── Color swatches + custom ── */}
-          <div style={{display:"flex",flexDirection:"column",gap:5,paddingRight:16,marginRight:16,borderRight:`1px solid ${C.border}`}}>
-            <span style={labelSt} id="color-label">
-              Renk
-              <span style={{
-                display:"inline-block",width:10,height:10,borderRadius:"50%",
-                background:activeColor,marginLeft:5,verticalAlign:"middle",
-                border:"1.5px solid rgba(0,0,0,0.15)",
-              }}/>
-            </span>
-            <div role="radiogroup" aria-labelledby="color-label" style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
-              {PRESET_COLORS.map(c=>{
-                const active = activeColor===c;
-                return (
-                  <button key={c}
-                    role="radio" aria-checked={active}
-                    className="sc-swatch"
-                    onClick={()=>setActiveColor(c)}
-                    title={c}
-                    aria-label={`Renk ${c}`}
-                    style={{
-                      width:26, height:26, borderRadius:"50%",
-                      border: active ? `3px solid ${C.text}` : `2px solid hsl(var(--border))`,
-                      background:c, cursor:"pointer", padding:0, flexShrink:0,
-                      transition:"transform 0.1s, box-shadow 0.1s",
-                      boxShadow: active ? `0 0 0 2px hsl(var(--card)), 0 0 0 4px ${c}` : "0 1px 3px hsl(var(--foreground) / 0.15)",
-                    }}/>
-                );
-              })}
-              {/* Custom color — show current color + picker on click */}
-              <label
-                title="Özel renk seç"
-                aria-label="Özel renk seç"
-                style={{
-                  width:26,height:26,borderRadius:"50%",overflow:"hidden",
-                  cursor:"pointer",flexShrink:0,position:"relative",display:"block",
-                  border:`2px solid ${C.border}`,
-                  background:`conic-gradient(from 0deg, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)`,
-                  boxShadow:"0 1px 3px rgba(0,0,0,0.15)",
-                }}>
-                <input type="color" value={activeColor} onChange={e=>setActiveColor(e.target.value)}
-                  style={{opacity:0,position:"absolute",inset:0,width:"100%",height:"100%",cursor:"pointer"}}/>
-              </label>
-            </div>
-          </div>
-
-          {/* ── Opacity ── */}
-          <div style={{display:"flex",flexDirection:"column",gap:5,paddingRight:16,marginRight:16,borderRight:`1px solid ${C.border}`}}>
-            <span style={labelSt}>
-              Opaklık
-              <b style={{
-                color:C.primary, fontWeight:600, fontStyle:"normal",
-                marginLeft:5, fontSize:11,
-                background:C.chipActiveBg, padding:"1px 6px",
-                borderRadius:8, border:`1px solid ${C.border}`,
-              }}>{Math.round(brushOpacity*100)}%</b>
-            </span>
-            <div style={{display:"flex",gap:8,alignItems:"center"}}>
-              <input type="range"
-                className="sc-slider"
-                min={10} max={100} step={5}
-                value={Math.round(brushOpacity*100)}
-                aria-label="Fırça opaklığı"
-                aria-valuetext={`${Math.round(brushOpacity*100)}%`}
-                onChange={e=>{const v=Number(e.target.value)/100;setBrushOpacity(v);brushOpacityRef.current=v;}}
-                style={{
-                  width:100, marginTop:2,
-                  accentColor:C.primary,
-                  background:`linear-gradient(to right, hsl(var(--primary)) ${Math.round(brushOpacity*100)}%, hsl(var(--muted)) ${Math.round(brushOpacity*100)}%)`,
-                }}/>
-            </div>
-          </div>
-
-          {/* ── Tekli: instance count ── */}
-          {placementMode==="tekli" && tekliPhase==="placing" && (
-            <div style={{display:"flex",flexDirection:"column",gap:5,paddingRight:16,marginRight:16,borderRight:`1px solid ${C.border}`}}>
-              <span style={labelSt}>Adet</span>
-              <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                {allMotifs.filter(m=>tekliActiveIds.has(m.id)).map(m=>{
-                  const cnt = motifCounts[m.id]??1;
+                {/* Rotation tekli */}
+                {placementMode==="tekli" && selectedInstId && (()=>{
+                  const rot    = instanceRotations[selectedInstId] ?? 0;
+                  const patRot = instancePatRotations[selectedInstId] ?? 0;
                   return (
-                    <div key={m.id} style={{display:"flex",alignItems:"center",gap:4}}>
-                      <span style={{fontFamily:FF.sans,fontSize:10,color:C.muted}}>{m.name.slice(0,6)}</span>
-                      <button onClick={()=>adjustCount(m.id,-1)} disabled={cnt<=1}
-                        aria-label={`${m.name} azalt`}
-                        className="sc-action"
-                        style={{
-                          width:24,height:24,borderRadius:6,border:`1px solid ${C.border}`,
-                          background:C.chipBg,color:cnt<=1?C.muted:C.text,
-                          cursor:cnt<=1?"not-allowed":"pointer",fontSize:15,padding:0,lineHeight:1,
-                          fontFamily:FF.sans,
-                        }}>−</button>
-                      <span style={{
-                        fontFamily:FF.sans,fontSize:13,fontWeight:600,color:C.text,
-                        minWidth:18,textAlign:"center",
-                        background:C.chipActiveBg,borderRadius:6,padding:"1px 4px",
-                      }}>{cnt}</span>
-                      <button onClick={()=>adjustCount(m.id,1)} disabled={cnt>=9}
-                        aria-label={`${m.name} artır`}
-                        className="sc-action"
-                        style={{
-                          width:24,height:24,borderRadius:6,border:`1px solid ${C.border}`,
-                          background:C.chipBg,color:cnt>=9?C.muted:C.text,
-                          cursor:cnt>=9?"not-allowed":"pointer",fontSize:15,padding:0,lineHeight:1,
-                          fontFamily:FF.sans,
-                        }}>+</button>
+                    <div>
+                      <span style={labelSt}>Rotasyon (Seçili)</span>
+                      {([["Motif", rot, (v:number)=>{
+                          setInstanceRotations(p=>({...p,[selectedInstId]:v}));
+                          instanceRotationsRef.current={...instanceRotationsRef.current,[selectedInstId]:v};
+                          if (phaseRef.current==="painting") rebuildStencilOnly(selectedInstId);
+                        }],
+                        ["Desen", patRot, (v:number)=>{
+                          setInstancePatRotations(p=>({...p,[selectedInstId]:v}));
+                          instancePatRotationsRef.current={...instancePatRotationsRef.current,[selectedInstId]:v};
+                          if (phaseRef.current==="painting") rebuildStencilOnly(selectedInstId);
+                        }]] as [string,number,(v:number)=>void][])
+                        .map(([lbl,val,fn])=>(
+                        <div key={lbl} className="flex gap-1.5 items-center mb-0.5">
+                          <span className="text-[10px] text-muted-foreground w-11">{lbl}</span>
+                          <input type="range" min={0} max={360} step={1} value={val}
+                            onChange={e=>fn(Number(e.target.value))}
+                            className="flex-1" style={{accentColor:"hsl(var(--primary))"}}/>
+                          <span className="text-[10px] text-muted-foreground min-w-[26px]">{val}°</span>
+                        </div>
+                      ))}
                     </div>
+                  );
+                })()}
+
+                {/* Perspective */}
+                <div className="flex justify-between items-center">
+                  <span style={{...labelSt,marginBottom:0}}>Perspektif Warp</span>
+                  <button onClick={()=>{
+                    setShowPerspWarp(v=>!v);
+                    if (!showPerspWarp) {
+                      const d: PerspQuad = [[0,0],[CANVAS_W,0],[CANVAS_W,CANVAS_H],[0,CANVAS_H]];
+                      setPerspCorners(d); perspCornersRef.current=d;
+                    }
+                  }} style={{...chipBtnSt(showPerspWarp),fontSize:11,padding:"3px 12px"}}>
+                    {showPerspWarp ? "Açık ✓" : "Kapalı"}
+                  </button>
+                </div>
+
+                {placementMode==="tekli" && tekliPhase==="painting" && selectedInstId && (
+                  <button onClick={()=>commitTransformToInstance(selectedInstId)}
+                    className="w-full py-1.5 rounded-md border-[1.5px] border-primary bg-accent text-primary text-xs font-medium">
+                    Transformu Uygula
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ─────────── MAIN GRID: SIDEBAR | CANVAS | INSPECTOR ─────────── */}
+      <div className="flex flex-1 min-h-0 bg-muted/20">
+
+        {/* ── LEFT: Motif Library ── */}
+        <aside className="hidden lg:flex flex-col w-[220px] flex-shrink-0 bg-card border-r border-border">
+          <div className="px-4 py-3 border-b border-border">
+            <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Motif Kütüphanesi</span>
+          </div>
+          <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5">
+            {allMotifs.map(m => {
+              const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
+              return (
+                <div key={m.id} className="relative group">
+                  <button
+                    onClick={()=>placementMode==="grid" ? toggleGridMotif(m.id) : toggleTekliMotif(m.id)}
+                    className={`sc-tool w-full text-left px-3 py-2 rounded-md border text-xs font-medium ${
+                      isActive
+                        ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                        : "bg-background text-foreground border-border"
+                    }`}
+                    title={m.description}
+                  >
+                    {m.name}
+                  </button>
+                  {customMotifs.some(c=>c.id===m.id) && (
+                    <button onClick={()=>removeCustom(m.id)}
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[8px] flex items-center justify-center border border-card opacity-0 group-hover:opacity-100 transition-opacity">
+                      ×
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="p-3 border-t border-border flex flex-col gap-1.5">
+            <label className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+              + SVG Yükle
+              <input type="file" accept=".svg,image/svg+xml" onChange={handleSvgUpload} className="hidden"/>
+            </label>
+            <label className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+              + PNG Yükle
+              <input type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg" onChange={handlePngUpload} className="hidden"/>
+            </label>
+          </div>
+        </aside>
+
+        {/* ── CENTER: Canvas Stage ── */}
+        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+          {/* Mobile motif strip */}
+          <div className="lg:hidden flex gap-1.5 overflow-x-auto px-3 py-2 bg-card border-b border-border">
+            {allMotifs.map(m => {
+              const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
+              return (
+                <button key={m.id}
+                  onClick={()=>placementMode==="grid" ? toggleGridMotif(m.id) : toggleTekliMotif(m.id)}
+                  className={`flex-shrink-0 px-3 py-1 rounded-full text-[11px] font-medium border ${
+                    isActive ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border"
+                  }`}>
+                  {m.name}
+                </button>
+              );
+            })}
+            <label className="flex-shrink-0 px-3 py-1 rounded-full text-[11px] border border-dashed border-border text-muted-foreground cursor-pointer">
+              + SVG
+              <input type="file" accept=".svg,image/svg+xml" onChange={handleSvgUpload} className="hidden"/>
+            </label>
+          </div>
+
+          {/* Tekli navigator */}
+          {placementMode==="tekli" && tekliPhase==="painting" && instances.length>1 && (()=>{
+            const idx = instances.findIndex(i=>i.id===selectedInstId);
+            const si  = idx>=0 ? instances[idx] : instances[0];
+            const mName = allMotifs.find(m=>m.id===si?.motifId)?.name ?? "?";
+            const nav = (lbl:string, ti:number) => (
+              <button onClick={()=>{const t=instances[ti];setSelectedInstId(t.id);selIdRef.current=t.id;}}
+                className="px-3 py-1 rounded border border-border bg-card text-foreground text-xs hover:bg-accent">
+                {lbl}
+              </button>
+            );
+            return (
+              <div className="flex justify-center gap-2 items-center py-2 bg-card/50 border-b border-border">
+                {nav("←",(idx-1+instances.length)%instances.length)}
+                <span className="font-serif text-primary text-sm min-w-[80px] text-center">
+                  {mName} {idx+1}/{instances.length}
+                </span>
+                {nav("→",(idx+1)%instances.length)}
+              </div>
+            );
+          })()}
+
+          {/* Canvas */}
+          <div className="flex-1 flex items-center justify-center p-4 lg:p-8 overflow-auto bg-[radial-gradient(ellipse_at_center,hsl(var(--background)),hsl(var(--muted)))]">
+            <div className="relative rounded-lg overflow-hidden shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.3)] border border-border bg-card max-w-full">
+              <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
+                className="block max-w-full h-auto"
+                style={{maxHeight:"min(70vh, 600px)", cursor:isPlacing?"grab":"crosshair"}}
+              />
+              {showPerspWarp && perspCorners.map((c,i)=>(
+                <div key={i}
+                  onMouseDown={e=>{e.preventDefault();e.stopPropagation();dragCornerRef.current=i;}}
+                  onTouchStart={e=>{e.stopPropagation();dragCornerRef.current=i;}}
+                  style={{
+                    position:"absolute",
+                    left:`calc(${(c[0]/CANVAS_W)*100}% - 7px)`,
+                    top:`calc(${(c[1]/CANVAS_H)*100}% - 7px)`,
+                    width:14,height:14,borderRadius:"50%",
+                    background:"hsl(var(--primary))",border:"2px solid hsl(var(--card))",
+                    cursor:"grab",zIndex:10,touchAction:"none",
+                    boxShadow:"0 1px 6px hsl(var(--foreground) / 0.4)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Status bar */}
+          <div className="px-4 py-2 bg-card border-t border-border text-center">
+            <p className="text-[11px] text-muted-foreground">
+              {isPlacing
+                ? (placementMode==="grid" ? "Motif sürükleyin → sağdan Uygula" : "Şablonları sürükleyin → sağdan Uygula")
+                : "Fırça ile boyayın · Renk değişimi anlık uygulanır"}
+            </p>
+          </div>
+        </main>
+
+        {/* ── RIGHT: Inspector ── */}
+        <aside className="hidden md:flex flex-col w-[260px] flex-shrink-0 bg-card border-l border-border overflow-y-auto">
+          <div className="px-4 py-3 border-b border-border">
+            <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Özellikler</span>
+          </div>
+
+          <div className="p-4 flex flex-col gap-5">
+
+            {/* Size */}
+            <div>
+              <span style={labelSt} id="size-label">Boyut</span>
+              <div role="radiogroup" aria-labelledby="size-label" className="grid grid-cols-4 gap-1">
+                {SIZES.map(({label,px})=>{
+                  const active = selSizePx===px;
+                  return (
+                    <button key={label} role="radio" aria-checked={active}
+                      onClick={()=>setAllSizes(px)}
+                      className={`py-1.5 rounded-md text-[11px] font-medium border transition-all ${
+                        active
+                          ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                          : "bg-background text-foreground border-border hover:bg-accent"
+                      }`}>
+                      {label}
+                    </button>
                   );
                 })}
               </div>
             </div>
-          )}
 
-          {/* ── Photo surface shortcut ── */}
-          <div style={{display:"flex",flexDirection:"column",gap:5,paddingRight:16,marginRight:16,borderRight:`1px solid ${C.border}`}}>
-            <span style={labelSt}>Yüzey</span>
-            <label
-              className="sc-chip"
-              title={surface==="foto" ? "Fotoğraf yüklü — kaldırmak için × tıkla" : "Yüzey fotoğrafı yükle"}
-              style={{
-                ...chipBtnSt(surface==="foto"),
-                display:"flex",alignItems:"center",gap:5,cursor:"pointer",userSelect:"none",
-              }}>
-              <span style={{fontSize:15,lineHeight:1}}>📷</span>
-              <span>{surface==="foto" ? "Aktif" : "Fotoğraf"}</span>
-              <input type="file" accept="image/*" onChange={handleSurfaceUpload} style={{display:"none"}}/>
-              {surface==="foto" && (
-                <span
-                  role="button" aria-label="Fotoğrafı kaldır"
-                  onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
-                  style={{
-                    width:16,height:16,borderRadius:"50%",background:"hsl(var(--destructive))",
-                    color:"hsl(var(--destructive-foreground))",fontSize:10,fontWeight:"bold",cursor:"pointer",
-                    display:"flex",alignItems:"center",justifyContent:"center",
-                    marginLeft:2,flexShrink:0,
-                  }}>×</span>
-              )}
-            </label>
+            {/* Color */}
+            <div>
+              <span style={labelSt} id="color-label">
+                Renk
+                <span className="inline-block w-2.5 h-2.5 rounded-full ml-1.5 align-middle border border-border"
+                  style={{background:activeColor}}/>
+              </span>
+              <div role="radiogroup" aria-labelledby="color-label" className="grid grid-cols-5 gap-2">
+                {PRESET_COLORS.map(c=>{
+                  const active = activeColor===c;
+                  return (
+                    <button key={c} role="radio" aria-checked={active}
+                      className="sc-swatch aspect-square rounded-full"
+                      onClick={()=>setActiveColor(c)} title={c} aria-label={`Renk ${c}`}
+                      style={{
+                        background:c,
+                        border: active ? `2px solid hsl(var(--foreground))` : `1px solid hsl(var(--border))`,
+                        boxShadow: active ? `0 0 0 2px hsl(var(--card)), 0 0 0 3px ${c}` : "0 1px 2px hsl(var(--foreground) / 0.12)",
+                      }}/>
+                  );
+                })}
+                <label title="Özel renk seç" aria-label="Özel renk seç"
+                  className="aspect-square rounded-full overflow-hidden cursor-pointer relative border border-border"
+                  style={{background:`conic-gradient(from 0deg, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)`}}>
+                  <input type="color" value={activeColor} onChange={e=>setActiveColor(e.target.value)}
+                    className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"/>
+                </label>
+              </div>
+            </div>
+
+            {/* Opacity */}
+            <div>
+              <span style={labelSt}>
+                Opaklık
+                <b className="ml-1.5 text-[11px] font-semibold text-primary not-italic px-1.5 py-0.5 rounded-md bg-accent border border-border">
+                  {Math.round(brushOpacity*100)}%
+                </b>
+              </span>
+              <input type="range" className="sc-slider w-full mt-1"
+                min={10} max={100} step={5}
+                value={Math.round(brushOpacity*100)}
+                aria-label="Fırça opaklığı"
+                onChange={e=>{const v=Number(e.target.value)/100;setBrushOpacity(v);brushOpacityRef.current=v;}}
+                style={{
+                  accentColor:"hsl(var(--primary))",
+                  background:`linear-gradient(to right, hsl(var(--primary)) ${Math.round(brushOpacity*100)}%, hsl(var(--muted)) ${Math.round(brushOpacity*100)}%)`,
+                }}/>
+            </div>
+
+            {/* Tekli adet */}
+            {placementMode==="tekli" && tekliPhase==="placing" && (
+              <div>
+                <span style={labelSt}>Adet</span>
+                <div className="flex flex-col gap-2">
+                  {allMotifs.filter(m=>tekliActiveIds.has(m.id)).map(m=>{
+                    const cnt = motifCounts[m.id]??1;
+                    return (
+                      <div key={m.id} className="flex items-center justify-between gap-2 px-2 py-1 rounded-md bg-muted/40 border border-border">
+                        <span className="text-[11px] text-foreground truncate">{m.name}</span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button onClick={()=>adjustCount(m.id,-1)} disabled={cnt<=1}
+                            className="w-5 h-5 rounded border border-border bg-card text-foreground text-sm leading-none disabled:opacity-40 hover:bg-accent">−</button>
+                          <span className="text-xs font-semibold text-foreground min-w-[18px] text-center">{cnt}</span>
+                          <button onClick={()=>adjustCount(m.id,1)} disabled={cnt>=9}
+                            className="w-5 h-5 rounded border border-border bg-card text-foreground text-sm leading-none disabled:opacity-40 hover:bg-accent">+</button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Surface shortcut */}
+            <div>
+              <span style={labelSt}>Yüzey</span>
+              <label
+                title={surface==="foto" ? "Fotoğraf yüklü — × ile kaldır" : "Yüzey fotoğrafı yükle"}
+                className={`flex items-center justify-between gap-1.5 px-3 py-2 rounded-md border cursor-pointer text-xs ${
+                  surface==="foto"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background text-foreground border-border hover:bg-accent"
+                }`}>
+                <span className="flex items-center gap-1.5">
+                  <span className="text-base leading-none">📷</span>
+                  <span>{surface==="foto" ? "Fotoğraf Aktif" : "Fotoğraf Yükle"}</span>
+                </span>
+                <input type="file" accept="image/*" onChange={handleSurfaceUpload} className="hidden"/>
+                {surface==="foto" && (
+                  <span role="button" aria-label="Fotoğrafı kaldır"
+                    onClick={e=>{e.preventDefault();e.stopPropagation();setSurface("beyaz");}}
+                    className="w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center flex-shrink-0">×</span>
+                )}
+              </label>
+            </div>
+
           </div>
 
-          <div style={{flex:1,minWidth:8}}/>
-
-          {/* ── Action buttons ── */}
-          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          {/* Action footer */}
+          <div className="mt-auto p-4 border-t border-border bg-muted/30 flex flex-col gap-2">
             {isPlacing && (
               <button
-                className="sc-action"
                 onClick={confirmFn}
                 aria-label="Stencil'i uygula ve boyama moduna geç"
-                style={{
-                  fontFamily:FF.sans,fontSize:13,fontWeight:600,
-                  padding:"7px 22px",borderRadius:10,
-                  border:"none",
-                  background:C.primary,
-                  color:C.primaryFg,cursor:"pointer",
-                  boxShadow:"0 4px 14px -2px hsl(var(--primary) / 0.45)",
-                  letterSpacing:"0.02em",
-                }}>Uygula ✓</button>
+                className="w-full py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold tracking-wide shadow-[0_4px_14px_-2px_hsl(var(--primary)/0.45)] hover:brightness-95 transition-all">
+                Uygula ✓
+              </button>
             )}
             {isPaintingPhase && (
               <>
                 <button
-                  className="sc-action"
                   onClick={resetFn}
                   aria-label="Yeniden yerleştirme moduna dön"
-                  style={{
-                    fontFamily:FF.sans,fontSize:12,fontWeight:500,
-                    padding:"6px 14px",borderRadius:8,
-                    border:`1.5px solid ${C.border}`,background:C.card,color:C.muted,cursor:"pointer",
-                  }}>↺ Yerleştir</button>
+                  className="w-full py-2 rounded-md border border-border bg-card text-muted-foreground text-xs font-medium hover:bg-accent transition-all">
+                  ↺ Yeniden Yerleştir
+                </button>
                 <button
-                  className="sc-action"
                   onClick={clearCanvas}
                   aria-label="Canvas'ı temizle"
-                  style={{
-                    fontFamily:FF.sans,fontSize:12,fontWeight:500,
-                    padding:"6px 14px",borderRadius:8,
-                    border:"1px solid hsl(var(--destructive) / 0.35)",background:"hsl(var(--destructive) / 0.08)",color:"hsl(var(--destructive))",cursor:"pointer",
-                  }}>Temizle</button>
+                  className="w-full py-2 rounded-md border border-destructive/40 bg-destructive/10 text-destructive text-xs font-medium hover:bg-destructive/20 transition-all">
+                  Temizle
+                </button>
               </>
             )}
           </div>
-        </div>
+        </aside>
+      </div>
 
-        <p style={{fontFamily:FF.sans,color:C.muted,fontSize:11,margin:"10px 0 20px",textAlign:"center"}}>
-          {isPlacing
-            ? (placementMode==="grid" ? "Motif sürükleyin → Uygula" : "Şablonları sürükleyin → Uygula")
-            : "Fırça ile boyayın · Renk değişimi anlık uygulanır"}
-        </p>
+      {/* Mobile bottom action bar */}
+      <div className="md:hidden border-t border-border bg-card p-3 flex gap-2">
+        {isPlacing ? (
+          <button onClick={confirmFn} className="flex-1 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold">
+            Uygula ✓
+          </button>
+        ) : (
+          <>
+            <button onClick={resetFn} className="flex-1 py-2 rounded-md border border-border bg-card text-muted-foreground text-xs font-medium">
+              ↺ Yerleştir
+            </button>
+            <button onClick={clearCanvas} className="flex-1 py-2 rounded-md border border-destructive/40 bg-destructive/10 text-destructive text-xs font-medium">
+              Temizle
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 }
+

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import wallPainted from "@/assets/wall-painted.png";
 
 export const ClassicHero = () => (
-  <section className="relative min-h-[92vh] w-full overflow-hidden flex items-center">
+  <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
     {/* Background image */}
     <div className="absolute inset-0 -z-10">
       <img
@@ -12,12 +12,12 @@ export const ClassicHero = () => (
         alt="Stencil ile boyanmış duvar"
         className="h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+      <div className="absolute inset-0 bg-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/30" />
     </div>
 
-    <div className="container mx-auto px-6 lg:px-12 py-24">
-      <div className="max-w-2xl">
+    <div className="container mx-auto px-6 lg:px-12 py-12 flex justify-center">
+      <div className="max-w-2xl w-full text-center mx-auto">
         <motion.p
           className="text-xs font-medium uppercase tracking-[0.25em] text-primary/80"
           initial={{ opacity: 0, y: 12 }}
@@ -39,7 +39,7 @@ export const ClassicHero = () => (
         </motion.h1>
 
         <motion.p
-          className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed"
+          className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
@@ -49,7 +49,7 @@ export const ClassicHero = () => (
         </motion.p>
 
         <motion.div
-          className="mt-10 flex flex-wrap gap-3"
+          className="mt-10 flex flex-wrap gap-3 justify-center"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}

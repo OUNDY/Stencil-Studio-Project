@@ -125,21 +125,21 @@ const Tuval = () => (
         </div>
       </section>
 
-      {/* Canvas frame */}
-      <section className="bg-gradient-to-b from-background to-muted/30 py-10 lg:py-14">
-        <div className="container mx-auto px-4 sm:px-6">
+      {/* Canvas stage — full editor */}
+      <section className="bg-background">
+        <div className="container mx-auto px-0 sm:px-4 lg:px-6 py-6 lg:py-10">
           <motion.div
-            className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.18)]"
+            className="overflow-hidden rounded-none sm:rounded-2xl border-y sm:border border-border bg-card shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.18)]"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ height: "min(82vh, 760px)" }}
           >
             <TuvalCanvas embedded />
           </motion.div>
 
-          {/* Footnote */}
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            İpucu: Üst barda <span className="text-foreground">Gelişmiş</span> menüsünden zemin, fırça ve perspektif ayarlarına ulaşabilirsin.
+            İpucu: Sağ üstteki <span className="text-foreground">Gelişmiş</span> menüsünden zemin, fırça ve perspektif ayarlarına ulaşabilirsin.
           </p>
         </div>
       </section>
