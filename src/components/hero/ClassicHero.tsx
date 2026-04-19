@@ -49,7 +49,7 @@ export const ClassicHero = () => (
         </motion.p>
 
         <motion.div
-          className="mt-10 flex flex-wrap gap-3"
+          className="mt-10 flex flex-wrap gap-3 justify-center"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
