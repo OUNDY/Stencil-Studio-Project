@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import wallPainted from "@/assets/wall-painted.png";
 
 export const ClassicHero = () => (
-  <section className="relative min-h-[92vh] w-full overflow-hidden flex items-center">
+  <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
     {/* Background image */}
     <div className="absolute inset-0 -z-10">
       <img
