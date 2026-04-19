@@ -16,8 +16,8 @@ export const ClassicHero = () => (
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
     </div>
 
-    <div className="container mx-auto px-6 lg:px-12 py-24">
-      <div className="max-w-2xl">
+    <div className="container mx-auto px-6 lg:px-12 py-12 flex justify-center">
+      <div className="max-w-2xl w-full text-center mx-auto">
         <motion.p
           className="text-xs font-medium uppercase tracking-[0.25em] text-primary/80"
           initial={{ opacity: 0, y: 12 }}
