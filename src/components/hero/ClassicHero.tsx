@@ -39,7 +39,7 @@ export const ClassicHero = () => (
         </motion.h1>
 
         <motion.p
-          className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed"
+          className="mt-6 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
