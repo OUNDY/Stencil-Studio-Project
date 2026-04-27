@@ -4,6 +4,7 @@ import { ChevronRight, Sparkles, MousePointerClick, Palette, Layers } from "luci
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import TuvalCanvas from "@/components/hero/TuvalCanvas";
 import { Footer } from "@/components/sections";
+import TuvalShowcase from "@/components/sections/TuvalShowcase";
 import { Button } from "@/components/ui/button";
 
 const steps = [
