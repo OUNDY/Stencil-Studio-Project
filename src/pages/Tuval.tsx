@@ -144,6 +144,9 @@ const Tuval = () => (
           </p>
         </div>
       </section>
+
+      {/* Tuval'e özgü zenginleştirici bölümler */}
+      <TuvalShowcase />
     </main>
 
     <Footer />
