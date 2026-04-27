@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 const TermsOfUse = () => (
@@ -41,7 +42,7 @@ const TermsOfUse = () => (
 
     <h2>6. İade ve İptal</h2>
     <p>
-      İade koşulları için <a href="/iade-politikasi">İade Politikası</a> sayfamızı inceleyiniz.
+      İade koşulları için <Link to="/iade-politikasi">İade Politikası</Link> sayfamızı inceleyiniz.
       Dijital indirilebilir ürünlerde, indirme gerçekleştikten sonra iade kabul edilmez.
     </p>
 

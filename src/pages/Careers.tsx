@@ -113,7 +113,7 @@ const Careers = () => (
                   </div>
                 </div>
                 <Button asChild variant="outline" className="rounded-full self-start lg:self-center">
-                  <a href="mailto:kariyer@stencilstudio.com?subject=Başvuru: {pos.title}">
+                  <a href={`mailto:kariyer@stencilstudio.com?subject=${encodeURIComponent(`Başvuru: ${pos.title}`)}`}>
                     Başvur
                   </a>
                 </Button>

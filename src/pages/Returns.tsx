@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 const Returns = () => (
@@ -43,8 +44,8 @@ const Returns = () => (
 
     <h2>Hasarlı veya Yanlış Ürün</h2>
     <p>
-      Yanlış veya hasarlı ürün ulaştıysa fotoğraflarla birlikte 24 saat içinde
-      <a href="/iletisim"> bize ulaşın</a>; size ücretsiz olarak doğru ürünü göndeririz.
+      Yanlış veya hasarlı ürün ulaştıysa fotoğraflarla birlikte 24 saat içinde{" "}
+      <Link to="/iletisim">bize ulaşın</Link>; size ücretsiz olarak doğru ürünü göndeririz.
     </p>
   </LegalLayout>
 );

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { LegalLayout } from "@/components/legal/LegalLayout";
 
 const Shipping = () => (
@@ -45,8 +46,8 @@ const Shipping = () => (
     <h2>Hasarlı Teslimat</h2>
     <p>
       Kargo paketi hasarlıysa <strong>kargoyu kabul etmeyin</strong>.
-      Eğer hasarı paketi açtıktan sonra fark ettiyseniz, 24 saat içinde fotoğrafla birlikte
-      <a href="/iletisim"> iletişim</a> sayfamızdan bize ulaşın; ücretsiz değişim yaparız.
+      Eğer hasarı paketi açtıktan sonra fark ettiyseniz, 24 saat içinde fotoğrafla birlikte{" "}
+      <Link to="/iletisim">iletişim</Link> sayfamızdan bize ulaşın; ücretsiz değişim yaparız.
     </p>
   </LegalLayout>
 );

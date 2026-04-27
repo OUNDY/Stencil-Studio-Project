@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { Footer } from "@/components/sections";
@@ -61,12 +62,12 @@ const CustomDesign = () => {
               transition={{ delay: 1, duration: 0.5 }}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-pointer group"
             >
-              <a href="/koleksiyon" className="flex items-center gap-1">
+              <Link to="/koleksiyon" className="flex items-center gap-1">
                 <span className="border-b border-transparent group-hover:border-muted-foreground/50 transition-colors">
                   hazır desenlere göz at
                 </span>
                 <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
 
