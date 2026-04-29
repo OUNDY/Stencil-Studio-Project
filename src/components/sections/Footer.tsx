@@ -40,8 +40,8 @@ export const Footer = () => {
           {/* Brand column */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-6 w-fit" aria-label="Stencil Studio anasayfa">
-              <div className="w-10 h-10 flex items-center justify-center text-primary">
-                <PeacockLogo className="w-10 h-10" />
+              <div className="h-12 flex items-center justify-center text-primary">
+                <PeacockLogo className="h-12 w-9" />
               </div>
               <span className="font-serif text-xl text-foreground">Stencil Studio</span>
             </Link>

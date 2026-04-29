@@ -1,45 +1,43 @@
-## Hedef
+## Sorun
+Önceki turda tavus kuşunu sıfırdan SVG olarak çizdim — bu yüzden orijinal görseldeki amblemden farklı çıktı. Sen birebir aynı silüetin sadece tema rengine boyanmış halini istiyorsun.
 
-Yüklenen Stencil Sepeti görselindeki **tavus kuşu amblemi**ni — yazı olmadan, sadece kuş figürü — siteye özgü "Soft Organic" estetiğine uyarlayıp mevcut "S" rozetinin yerine koymak.
+## Çözüm
 
-## Yaklaşım
+Orijinal görselden tavus kuşunu **piksel piksel ayıklayıp** (sarı zemin ve "Stencil Sepeti" yazısı kaldırıldı, kuyruk hem sarı banttaki hem siyah banttaki parçalardan birleştirildi) şeffaf arkaplanlı PNG'ye çevirdim. Sonuç: orijinalin **birebir aynısı** olan tek renkli silüet.
 
-Görseldeki tavus kuşu sarı zemin üzerinde siyah silüet halinde, dekoratif kuyruk tüyleriyle stencil estetiğine birebir uygun. Bunu **PNG olarak değil, yeniden çizilmiş bir SVG** olarak ekleyeceğim — böylece:
+Önizleme yukarıda görüldüğü gibi orijinaldeki tavus kuşunun aynısı.
 
-- Tema rengiyle otomatik uyumlu olur (`currentColor` / `fill="hsl(var(--primary))"`)
-- Karanlık/aydınlık modda doğru renklenir
-- Ölçeklendirme kayıpsız (navbar 36px, footer 40px)
-- Dosya boyutu küçük (~2-4 KB)
-
-Görseldeki sarı/siyah blok ve "Stencil Sepeti" yazısı **kullanılmayacak** — sadece amblem (kuş silüeti). Site kimliği "Stencil Studio" olarak kalır.
+Bu PNG'yi **CSS mask** olarak kullanacağım — şekil orijinalin aynısı kalır, renk ise `bg-current` üzerinden parent'tan gelir (ör. `text-primary`). Avantajları:
+- Şekil **birebir** orijinal görseldekiyle aynı
+- Renk tema ile değişir (light/dark mode + Soft Organic teması)
+- Tek varlık dosyası, küçük (~5KB)
 
 ## Yapılacaklar
 
-### 1. Yeni bileşen: `src/components/brand/PeacockLogo.tsx`
-- Tavus kuşu SVG'si: dik duruşlu gövde + taçlı baş + aşağı dökülen dekoratif kuyruk tüyleri (görseldeki kompozisyonun stilize hali)
-- Props: `className`, `size` — `currentColor` kullanır, böylece parent `text-primary` veriyorsa primary olur
-- Tek dosya, harici bağımlılık yok
+### 1. `src/assets/peacock-emblem.png` (zaten oluşturuldu)
+Orijinal görselden ayıklanmış, 4x ölçeklendirilmiş şeffaf silüet PNG.
 
-### 2. Navbar güncellemesi (`src/components/navigation/Navbar.tsx`, satır 65-67)
-Mevcut yuvarlak "S" rozeti yerine:
+### 2. `src/components/brand/PeacockLogo.tsx` — yeniden yaz
+Önceki SVG çizimini sil, yerine mask-image yaklaşımı:
+```tsx
+<span
+  className="inline-block bg-current"
+  style={{
+    WebkitMaskImage: `url(${emblemUrl})`,
+    maskImage: `url(${emblemUrl})`,
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  }}
+/>
 ```
-<div className="w-9 h-9 flex items-center justify-center text-primary">
-  <PeacockLogo className="w-9 h-9" />
-</div>
-```
-Arka plan dolgusu kaldırılır — amblem direkt görünür (görseldeki gibi sade silüet).
+`bg-current` sayesinde parent'taki `text-primary` rengini alır.
 
-### 3. Footer güncellemesi (`src/components/sections/Footer.tsx`, satır 42-44)
-Aynı şekilde "S" rozeti `<PeacockLogo />` ile değiştirilir, "Stencil Studio" yazısı kalır.
+### 3. Navbar & Footer — boyut ayarı
+Tavus kuşu silüeti dik dikdörtgen (oran ~100×143) olduğu için `w-9 h-9` (kare) yerine yüksekliği baz alan ölçü kullanılmalı. Navbar'da `h-10 w-7`, Footer'da `h-12 w-9` gibi dikey-dengeli boyutlar veririm ki silüet sıkışmadan otursun.
 
-### 4. (Opsiyonel) Favicon
-`index.html` favicon'u da yeni amblem PNG'siyle değiştirilebilir — onaylarsan yaparım, yoksa atlarım.
-
-## Tasarım notları
-
-- Renk: `hsl(var(--primary))` — Soft Organic temasında zaten markaya yakın bir ton
-- Stil: ince konturlar yerine dolu silüet (görseldeki gibi), ama aşırı detay olmadan stencil mantığında sade
-- Kuyruk tüyleri: 5-7 adet dekoratif "göz" motifi (tavus kuşu klasiği), simetrik
-
-## Onay sonrası
-İmplementasyonu yapacağım, ardından preview'da navbar + footer ekran görüntüsü alıp ambleminin tema renginde net göründüğünü doğrulayacağım.
+## Sonrası
+Uygulayacağım, ardından preview'da ekran görüntüsü alıp navbar/footer'da silüetin orijinaliyle aynı olduğunu ve tema rengini aldığını doğrulayacağım.
