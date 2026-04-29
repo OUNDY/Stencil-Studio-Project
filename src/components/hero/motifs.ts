@@ -182,5 +182,28 @@ export const motifs: Motif[] = [
         <circle cx="-14.1" cy="-14.1" r="2"/>
       </g>
     </svg>`,
+    pngDataUrl: mandalaPng,
+  },
+  {
+    id: "bambu",
+    name: "Bambu",
+    description: "Dikey bambu sapları, sade ve dingin Asya estetiği için ritmik bir desen",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <rect x="14" y="8" width="10" height="22" rx="2"/>
+        <rect x="14" y="34" width="10" height="22" rx="2"/>
+        <rect x="14" y="60" width="10" height="22" rx="2"/>
+        <rect x="38" y="14" width="10" height="22" rx="2"/>
+        <rect x="38" y="40" width="10" height="22" rx="2"/>
+        <rect x="38" y="66" width="10" height="22" rx="2"/>
+        <rect x="62" y="8" width="10" height="22" rx="2"/>
+        <rect x="62" y="34" width="10" height="22" rx="2"/>
+        <rect x="62" y="60" width="10" height="22" rx="2"/>
+        <rect x="86" y="14" width="10" height="22" rx="2"/>
+        <rect x="86" y="40" width="10" height="22" rx="2"/>
+        <rect x="86" y="66" width="10" height="22" rx="2"/>
+      </g>
+    </svg>`,
+    pngDataUrl: bambuPng,
   },
 ];
