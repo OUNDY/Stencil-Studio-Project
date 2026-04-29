@@ -38,9 +38,9 @@ export const Footer = () => {
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-8 mb-12">
           {/* Brand column */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-6 w-fit">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-serif text-lg">S</span>
+            <Link to="/" className="flex items-center gap-2 mb-6 w-fit" aria-label="Stencil Studio anasayfa">
+              <div className="w-10 h-10 flex items-center justify-center text-primary">
+                <PeacockLogo className="w-10 h-10" />
               </div>
               <span className="font-serif text-xl text-foreground">Stencil Studio</span>
             </Link>

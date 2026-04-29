@@ -61,9 +61,9 @@ export const Navbar = ({ isHeroComplete = false }: NavbarProps) => {
           <div className="relative flex items-center justify-between h-14 lg:h-16">
             {/* Logo */}
             <motion.div whileHover={{ scale: 1.02 }}>
-              <Link to="/" className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shadow-organic">
-                  <span className="text-primary-foreground font-serif text-base">S</span>
+              <Link to="/" className="flex items-center gap-2" aria-label="Stencil Studio anasayfa">
+                <div className="w-9 h-9 flex items-center justify-center text-primary">
+                  <PeacockLogo className="w-9 h-9" />
                 </div>
                 <span className="font-serif text-lg text-foreground">
                   Stencil
