@@ -82,7 +82,7 @@ export const motifs: Motif[] = [
   {
     id: "iznik",
     name: "İznik",
-    description: "16. yüzyıl İznik çini sanatından ilham alan lale ve karanfil motifleri",
+    description: "Endülüs ve Selçuklu yıldız geometrisinden esinlenen kare çerçeveli rozet deseni",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <path d="M50 15 C45 20 42 28 44 35 C46 42 50 45 50 45 C50 45 54 42 56 35 C58 28 55 20 50 15Z"/>
@@ -93,6 +93,7 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="35" r="3"/>
       </g>
     </svg>`,
+    pngDataUrl: iznikPng,
   },
   {
     id: "karo",
@@ -148,7 +149,7 @@ export const motifs: Motif[] = [
   {
     id: "mandala",
     name: "Mandala",
-    description: "Merkezi simetrik mandala deseni, daireler ve taç yapraklarıyla huzur verici",
+    description: "Çok katmanlı taç yapraklı mandala, lotüs ve güneş motifleriyle merkezi simetri",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor" transform="translate(50,50)">
         <circle r="5"/>
