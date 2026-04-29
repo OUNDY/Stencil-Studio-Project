@@ -44,7 +44,7 @@ export const motifs: Motif[] = [
   {
     id: "tropikal",
     name: "Tropikal Yaprak",
-    description: "Büyük tropikal yapraklar ve egzotik çiçeklerle dolu yaz deseni",
+    description: "Monstera ve palmiye yapraklarından oluşan zengin tropikal kompozisyon",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <path d="M50 10 Q65 30 60 55 Q55 70 50 75 Q45 70 40 55 Q35 30 50 10Z"/>
@@ -59,6 +59,7 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="85" r="2" fill="white"/>
       </g>
     </svg>`,
+    pngDataUrl: tropikalPng,
   },
   {
     id: "geometrik",
