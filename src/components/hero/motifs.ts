@@ -1,3 +1,10 @@
+import damaskPng from "@/assets/motifs/damask.png";
+import bambuPng from "@/assets/motifs/bambu.png";
+import geometrikPng from "@/assets/motifs/geometrik.png";
+import iznikPng from "@/assets/motifs/iznik.png";
+import mandalaPng from "@/assets/motifs/mandala.png";
+import tropikalPng from "@/assets/motifs/tropikal.png";
+
 export interface Motif {
   id: string;
   name: string;
@@ -10,7 +17,7 @@ export const motifs: Motif[] = [
   {
     id: "damask",
     name: "Damask",
-    description: "Klasik Osmanlı damask deseni, simetrik çiçek ve yaprak motifleriyle",
+    description: "Geleneksel Osmanlı damask deseni, dairesel filigran ve yoğun çiçek detaylarıyla",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <ellipse cx="50" cy="50" rx="8" ry="18"/>
@@ -32,11 +39,12 @@ export const motifs: Motif[] = [
         <circle cx="72" cy="72" r="3"/>
       </g>
     </svg>`,
+    pngDataUrl: damaskPng,
   },
   {
     id: "tropikal",
     name: "Tropikal Yaprak",
-    description: "Büyük tropikal yapraklar ve egzotik çiçeklerle dolu yaz deseni",
+    description: "Monstera ve palmiye yapraklarından oluşan zengin tropikal kompozisyon",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <path d="M50 10 Q65 30 60 55 Q55 70 50 75 Q45 70 40 55 Q35 30 50 10Z"/>
@@ -51,11 +59,12 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="85" r="2" fill="white"/>
       </g>
     </svg>`,
+    pngDataUrl: tropikalPng,
   },
   {
     id: "geometrik",
     name: "Geometrik",
-    description: "Modern geometrik şekiller ve tekrarlayan desenlerle minimal kompozisyon",
+    description: "Yoğun nokta ve daire dizilimleriyle ritmik geometrik tekstür",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="50,10 90,32 90,68 50,90 10,68 10,32" fill="currentColor" opacity="0.15"/>
@@ -68,11 +77,12 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="50" r="3" fill="currentColor"/>
       </g>
     </svg>`,
+    pngDataUrl: geometrikPng,
   },
   {
     id: "iznik",
     name: "İznik",
-    description: "16. yüzyıl İznik çini sanatından ilham alan lale ve karanfil motifleri",
+    description: "Endülüs ve Selçuklu yıldız geometrisinden esinlenen kare çerçeveli rozet deseni",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <path d="M50 15 C45 20 42 28 44 35 C46 42 50 45 50 45 C50 45 54 42 56 35 C58 28 55 20 50 15Z"/>
@@ -83,6 +93,7 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="35" r="3"/>
       </g>
     </svg>`,
+    pngDataUrl: iznikPng,
   },
   {
     id: "karo",
@@ -138,7 +149,7 @@ export const motifs: Motif[] = [
   {
     id: "mandala",
     name: "Mandala",
-    description: "Merkezi simetrik mandala deseni, daireler ve taç yapraklarıyla huzur verici",
+    description: "Çok katmanlı taç yapraklı mandala, lotüs ve güneş motifleriyle merkezi simetri",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor" transform="translate(50,50)">
         <circle r="5"/>
@@ -171,5 +182,28 @@ export const motifs: Motif[] = [
         <circle cx="-14.1" cy="-14.1" r="2"/>
       </g>
     </svg>`,
+    pngDataUrl: mandalaPng,
+  },
+  {
+    id: "bambu",
+    name: "Bambu",
+    description: "Dikey bambu sapları, sade ve dingin Asya estetiği için ritmik bir desen",
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <rect x="14" y="8" width="10" height="22" rx="2"/>
+        <rect x="14" y="34" width="10" height="22" rx="2"/>
+        <rect x="14" y="60" width="10" height="22" rx="2"/>
+        <rect x="38" y="14" width="10" height="22" rx="2"/>
+        <rect x="38" y="40" width="10" height="22" rx="2"/>
+        <rect x="38" y="66" width="10" height="22" rx="2"/>
+        <rect x="62" y="8" width="10" height="22" rx="2"/>
+        <rect x="62" y="34" width="10" height="22" rx="2"/>
+        <rect x="62" y="60" width="10" height="22" rx="2"/>
+        <rect x="86" y="14" width="10" height="22" rx="2"/>
+        <rect x="86" y="40" width="10" height="22" rx="2"/>
+        <rect x="86" y="66" width="10" height="22" rx="2"/>
+      </g>
+    </svg>`,
+    pngDataUrl: bambuPng,
   },
 ];
