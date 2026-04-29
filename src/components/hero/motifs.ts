@@ -64,7 +64,7 @@ export const motifs: Motif[] = [
   {
     id: "geometrik",
     name: "Geometrik",
-    description: "Modern geometrik şekiller ve tekrarlayan desenlerle minimal kompozisyon",
+    description: "Yoğun nokta ve daire dizilimleriyle ritmik geometrik tekstür",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="50,10 90,32 90,68 50,90 10,68 10,32" fill="currentColor" opacity="0.15"/>
@@ -77,6 +77,7 @@ export const motifs: Motif[] = [
         <circle cx="50" cy="50" r="3" fill="currentColor"/>
       </g>
     </svg>`,
+    pngDataUrl: geometrikPng,
   },
   {
     id: "iznik",
