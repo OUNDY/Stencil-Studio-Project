@@ -17,7 +17,7 @@ export const motifs: Motif[] = [
   {
     id: "damask",
     name: "Damask",
-    description: "Klasik Osmanlı damask deseni, simetrik çiçek ve yaprak motifleriyle",
+    description: "Geleneksel Osmanlı damask deseni, dairesel filigran ve yoğun çiçek detaylarıyla",
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <g fill="currentColor">
         <ellipse cx="50" cy="50" rx="8" ry="18"/>
@@ -39,6 +39,7 @@ export const motifs: Motif[] = [
         <circle cx="72" cy="72" r="3"/>
       </g>
     </svg>`,
+    pngDataUrl: damaskPng,
   },
   {
     id: "tropikal",
