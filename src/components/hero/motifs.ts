@@ -1,3 +1,10 @@
+import damaskPng from "@/assets/motifs/damask.png";
+import bambuPng from "@/assets/motifs/bambu.png";
+import geometrikPng from "@/assets/motifs/geometrik.png";
+import iznikPng from "@/assets/motifs/iznik.png";
+import mandalaPng from "@/assets/motifs/mandala.png";
+import tropikalPng from "@/assets/motifs/tropikal.png";
+
 export interface Motif {
   id: string;
   name: string;
