@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { SearchPopover } from "./SearchPopover";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { DarkModeToggle } from "./DarkModeToggle";
+import { PeacockLogo } from "@/components/brand/PeacockLogo";
 
 interface NavbarProps {
   isHeroComplete?: boolean;

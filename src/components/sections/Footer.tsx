@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Instagram, Twitter, Youtube, Mail, MapPin, Phone } from "lucide-react";
+import { PeacockLogo } from "@/components/brand/PeacockLogo";
 
 const footerLinks = {
   products: [
