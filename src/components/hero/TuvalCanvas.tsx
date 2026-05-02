@@ -359,9 +359,10 @@ function renderColorTile(motif: Motif, color: string, tileSize: number): Promise
         tctx.drawImage(img, p, p, tileSize-p*2, tileSize-p*2);
         const id2 = tctx.getImageData(0, 0, tileSize, tileSize);
         const d = id2.data;
+        // Motif shape is encoded in the PNG's alpha channel (opaque = stencil hole).
+        // Threshold to a hard binary mask so the stamp matches the SVG path behaviour.
         for (let i = 0; i < d.length; i += 4) {
-          const lum = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
-          d[i+3] = lum > 200 ? d[i+3] : 0;
+          d[i+3] = d[i+3] > 128 ? 255 : 0;
         }
         tctx.putImageData(id2, 0, 0);
         ctx.drawImage(tmp, 0, 0);
