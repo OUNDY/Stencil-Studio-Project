@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ChevronRight, Sparkles, MousePointerClick, Palette, Layers } from "lucide-react";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import TuvalCanvas from "@/components/hero/TuvalCanvas";
@@ -25,7 +25,10 @@ const steps = [
   },
 ];
 
-const Tuval = () => (
+const Tuval = () => {
+  const [searchParams] = useSearchParams();
+  const initialMotifId = searchParams.get("motif") ?? undefined;
+  return (
   <div className="min-h-screen bg-background">
     <Navbar isHeroComplete={true} />
     <GlobalWidgets />
