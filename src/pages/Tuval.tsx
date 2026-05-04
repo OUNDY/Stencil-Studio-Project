@@ -154,6 +154,7 @@ const Tuval = () => {
 
     <Footer />
   </div>
-);
+  );
+};
 
 export default Tuval;
