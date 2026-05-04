@@ -1,3 +1,10 @@
+import damaskImg from "@/assets/motifs/damask.png";
+import bambuImg from "@/assets/motifs/bambu.png";
+import geometrikImg from "@/assets/motifs/geometrik.png";
+import iznikImg from "@/assets/motifs/iznik.png";
+import mandalaImg from "@/assets/motifs/mandala.png";
+import tropikalImg from "@/assets/motifs/tropikal.png";
+
 export interface Product {
   id: string;
   name: string;
@@ -8,9 +15,89 @@ export interface Product {
   sizes: string[];
   emoji: string;
   popular?: boolean;
+  /** Optional product preview image (used instead of emoji when present). */
+  image?: string;
+  /** Links the product to a Tuval motif id so the user can try it on the canvas. */
+  motifId?: string;
 }
 
 export const products: Product[] = [
+  // ── Stencil Studio Koleksiyonu — Tuval'de denenebilir motifler ─────────
+  {
+    id: "ss-damask",
+    name: "Damask Stencil",
+    price: 245,
+    category: "stencil-koleksiyonu",
+    description: "Geleneksel Osmanlı damask deseni, dairesel filigran ve yoğun çiçek detaylarıyla. Tuvalde renk, zemin ve yerleşimini dene.",
+    details: ["Tuval uyumlu", "Tekrar kullanılabilir", "Premium kesim"],
+    sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
+    emoji: "❖",
+    image: damaskImg,
+    motifId: "damask",
+    popular: true,
+  },
+  {
+    id: "ss-tropikal",
+    name: "Tropikal Yaprak Stencil",
+    price: 220,
+    category: "stencil-koleksiyonu",
+    description: "Monstera ve palmiye yapraklarından oluşan zengin tropikal kompozisyon. Tuvalde tek motif veya tekrar deseni olarak uygula.",
+    details: ["Tuval uyumlu", "Büyük kompozisyon", "Tropikal estetik"],
+    sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
+    emoji: "🌿",
+    image: tropikalImg,
+    motifId: "tropikal",
+    popular: true,
+  },
+  {
+    id: "ss-geometrik",
+    name: "Geometrik Stencil",
+    price: 195,
+    category: "stencil-koleksiyonu",
+    description: "Yoğun nokta ve daire dizilimleriyle ritmik geometrik tekstür. Modern iç mekânlar için karakterli bir desen.",
+    details: ["Tuval uyumlu", "Modüler tekrar", "Hassas kesim"],
+    sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
+    emoji: "◆",
+    image: geometrikImg,
+    motifId: "geometrik",
+  },
+  {
+    id: "ss-iznik",
+    name: "İznik Stencil",
+    price: 235,
+    category: "stencil-koleksiyonu",
+    description: "Endülüs ve Selçuklu yıldız geometrisinden esinlenen kare çerçeveli rozet deseni. Geleneksel ve zarif.",
+    details: ["Tuval uyumlu", "Kültürel motif", "Detaylı kesim"],
+    sizes: ["30x30 cm", "50x50 cm", "70x70 cm"],
+    emoji: "✦",
+    image: iznikImg,
+    motifId: "iznik",
+  },
+  {
+    id: "ss-mandala",
+    name: "Mandala Stencil",
+    price: 260,
+    category: "stencil-koleksiyonu",
+    description: "Çok katmanlı taç yapraklı mandala, lotüs ve güneş motifleriyle merkezi simetri. Meditatif bir odak noktası.",
+    details: ["Tuval uyumlu", "Ultra ince detay", "Çok katmanlı"],
+    sizes: ["50x50 cm", "70x70 cm", "100x100 cm"],
+    emoji: "❀",
+    image: mandalaImg,
+    motifId: "mandala",
+    popular: true,
+  },
+  {
+    id: "ss-bambu",
+    name: "Bambu Stencil",
+    price: 175,
+    category: "stencil-koleksiyonu",
+    description: "Dikey bambu sapları, sade ve dingin Asya estetiği için ritmik bir desen. Sakin alanlar için ideal.",
+    details: ["Tuval uyumlu", "Minimal estetik", "Dikey kompozisyon"],
+    sizes: ["30x70 cm", "50x100 cm"],
+    emoji: "🎍",
+    image: bambuImg,
+    motifId: "bambu",
+  },
   // Tropik Yapraklar
   {
     id: "1",
@@ -319,6 +406,7 @@ export const products: Product[] = [
 
 export const categories = [
   { id: "all", label: "Tümü" },
+  { id: "stencil-koleksiyonu", label: "❖ Stencil Koleksiyonu" },
   { id: "tropik-yapraklar", label: "🌿 Tropik Yapraklar" },
   { id: "cicek-gul", label: "🌹 Çiçek & Gül" },
   { id: "art-deco", label: "✦ Art Deco & Gatsby" },
