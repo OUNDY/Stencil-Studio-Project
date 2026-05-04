@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Navbar, GlobalWidgets } from "@/components/navigation";
 import { Footer } from "@/components/sections";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, ArrowLeft, Check, Minus, Plus } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Check, Minus, Plus, Palette } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { products } from "@/data/products";
 import { useState } from "react";
@@ -72,13 +72,21 @@ const ProductDetail = () => {
             >
               <div className="aspect-square bg-gradient-to-br from-muted to-accent/20 rounded-3xl overflow-hidden relative group">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.span
-                    className="text-[120px] opacity-40 group-hover:opacity-60 transition-opacity duration-500"
-                    animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  >
-                    {product.emoji}
-                  </motion.span>
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-3/4 h-3/4 object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500 [filter:invert(18%)_sepia(18%)_saturate(380%)_hue-rotate(350deg)] dark:[filter:invert(92%)]"
+                    />
+                  ) : (
+                    <motion.span
+                      className="text-[120px] opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+                      animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                    >
+                      {product.emoji}
+                    </motion.span>
+                  )}
                 </div>
                 {product.popular && (
                   <div className="absolute top-6 left-6 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-sans">
