@@ -291,9 +291,18 @@ const Collection = () => {
                       <Link to={`/urun/${product.id}`}>
                         <div className="aspect-square bg-gradient-to-br from-muted to-accent/20 rounded-2xl overflow-hidden relative">
                           <div className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                            <span className="text-4xl md:text-5xl opacity-35 group-hover:opacity-55 transition-opacity duration-300">
-                              {product.emoji}
-                            </span>
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                loading="lazy"
+                                className="w-3/4 h-3/4 object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300 [filter:invert(18%)_sepia(18%)_saturate(380%)_hue-rotate(350deg)] dark:[filter:invert(92%)]"
+                              />
+                            ) : (
+                              <span className="text-4xl md:text-5xl opacity-35 group-hover:opacity-55 transition-opacity duration-300">
+                                {product.emoji}
+                              </span>
+                            )}
                           </div>
                           {product.popular && (
                             <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-sans">
