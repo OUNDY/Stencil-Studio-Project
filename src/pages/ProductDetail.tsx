@@ -177,6 +177,20 @@ const ProductDetail = () => {
                   Sepete Ekle — ₺{(product.price * quantity).toFixed(0)}
                 </Button>
               </div>
+
+              {product.motifId && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="mt-3 h-12 gap-2 rounded-xl text-base"
+                >
+                  <Link to={`/tuval?motif=${product.motifId}`}>
+                    <Palette className="w-5 h-5" />
+                    Tuvalde Dene
+                  </Link>
+                </Button>
+              )}
             </motion.div>
           </div>
 
