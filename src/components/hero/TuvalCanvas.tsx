@@ -758,7 +758,8 @@ export default function StencilCanvas({ embedded = false, className, style, init
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [customMotifs,    setCustomMotifs]    = useState<Motif[]>([]);
-  const [tekliActiveIds,  setTekliActiveIds]  = useState<Set<string>>(new Set([PRESET_MOTIFS[0].id]));
+  const _initialMotifId = (initialMotifId && PRESET_MOTIFS.some(m => m.id === initialMotifId)) ? initialMotifId : PRESET_MOTIFS[0].id;
+  const [tekliActiveIds,  setTekliActiveIds]  = useState<Set<string>>(new Set([_initialMotifId]));
   const [motifCounts,     setMotifCounts]     = useState<Record<string, number>>({});
   const [motifSizes,      setMotifSizes]      = useState<Record<string, number>>(
     () => Object.fromEntries(PRESET_MOTIFS.map(m => [m.id, 150]))
@@ -772,9 +773,9 @@ export default function StencilCanvas({ embedded = false, className, style, init
   const [brushSize,       setBrushSize]       = useState(48);
   const [brushOpacity,    setBrushOpacity]    = useState(0.7);
   const [placementMode,   setPlacementMode]   = useState<PlacementMode>("grid");
-  const [gridActiveIds,      setGridActiveIds]      = useState<Set<string>>(new Set([PRESET_MOTIFS[0].id]));
+  const [gridActiveIds,      setGridActiveIds]      = useState<Set<string>>(new Set([_initialMotifId]));
   const [gridColors,         setGridColors]         = useState<Record<string, string>>({});
-  const [gridSelectedMotifId,setGridSelectedMotifId] = useState<string>(PRESET_MOTIFS[0].id);
+  const [gridSelectedMotifId,setGridSelectedMotifId] = useState<string>(_initialMotifId);
   const [gridPhase,          setGridPhase]          = useState<"placing"|"painting">("placing");
   const [instanceRotations,    setInstanceRotations]    = useState<Record<string, number>>({});
   const [instancePatRotations, setInstancePatRotations] = useState<Record<string, number>>({});
