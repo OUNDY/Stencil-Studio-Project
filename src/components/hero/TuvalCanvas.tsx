@@ -690,9 +690,11 @@ interface StencilCanvasProps {
   embedded?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  /** Açılışta seçili gelecek motif id (örn. ürün sayfasından "Tuvalde Dene"). */
+  initialMotifId?: string;
 }
 
-export default function StencilCanvas({ embedded = false, className, style }: StencilCanvasProps = {}) {
+export default function StencilCanvas({ embedded = false, className, style, initialMotifId }: StencilCanvasProps = {}) {
   // DOM refs
   const canvasRef  = useRef<HTMLCanvasElement>(null);
 
