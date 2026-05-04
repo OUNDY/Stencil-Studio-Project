@@ -139,7 +139,7 @@ const Tuval = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             style={{ height: "min(82vh, 760px)" }}
           >
-            <TuvalCanvas embedded />
+            <TuvalCanvas embedded initialMotifId={initialMotifId} />
           </motion.div>
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
