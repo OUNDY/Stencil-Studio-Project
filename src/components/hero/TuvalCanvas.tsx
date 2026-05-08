@@ -2518,6 +2518,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
           </>
         )}
       </div>
+
+      {/* Ürün kütüphanesinden motif ekleme dialogu */}
+      <ProductPicker
+        open={showProductPicker}
+        onClose={() => setShowProductPicker(false)}
+        onPick={addProductAsMotif}
+      />
     </div>
   );
 }
