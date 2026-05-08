@@ -1,5 +1,7 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { motifs as PRESET_MOTIFS, type Motif } from "./motifs";
+import ProductPicker from "./ProductPicker";
+import type { Product } from "@/data/products";
 
 const CANVAS_W = 800;
 const CANVAS_H = 600;
