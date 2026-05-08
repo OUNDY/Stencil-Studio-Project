@@ -2188,28 +2188,48 @@ export default function StencilCanvas({ embedded = false, className, style, init
       <div className="flex flex-1 min-h-0 bg-muted/20">
 
         {/* ── LEFT: Motif Library ── */}
-        <aside className="hidden lg:flex flex-col w-[220px] flex-shrink-0 bg-card border-r border-border">
-          <div className="px-4 py-3 border-b border-border">
-            <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Motif Kütüphanesi</span>
+        <aside className="hidden lg:flex flex-col w-[240px] flex-shrink-0 bg-card border-r border-border">
+          <div className="px-4 py-3 border-b border-border flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Motif Kütüphanesi</span>
+              <span className="text-[10px] text-muted-foreground">{filteredMotifs.length}</span>
+            </div>
+            <input
+              type="search"
+              value={motifSearch}
+              onChange={e => setMotifSearch(e.target.value)}
+              placeholder="Ara…"
+              className="w-full px-2.5 py-1.5 rounded-md bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
           </div>
           <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5">
-            {allMotifs.map(m => {
+            {filteredMotifs.length === 0 && (
+              <span className="text-[11px] text-muted-foreground text-center py-4">Sonuç yok.</span>
+            )}
+            {filteredMotifs.map(m => {
               const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
               return (
                 <div key={m.id} className="relative group">
                   <button
                     onClick={()=>placementMode==="grid" ? toggleGridMotif(m.id) : toggleTekliMotif(m.id)}
-                    className={`sc-tool w-full text-left px-3 py-2 rounded-md border text-xs font-medium ${
+                    className={`sc-tool w-full text-left px-3 py-2 rounded-md border text-xs font-medium flex items-center gap-2 ${
                       isActive
                         ? "bg-primary text-primary-foreground border-primary shadow-sm"
                         : "bg-background text-foreground border-border"
                     }`}
                     title={m.description}
                   >
-                    {m.name}
+                    {m.pngDataUrl && (
+                      <img src={m.pngDataUrl} alt="" aria-hidden
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                        style={{ filter: isActive ? "brightness(0) invert(1)" : "none", opacity: isActive ? 1 : 0.7 }}
+                      />
+                    )}
+                    <span className="truncate">{m.name}</span>
                   </button>
                   {customMotifs.some(c=>c.id===m.id) && (
                     <button onClick={()=>removeCustom(m.id)}
+                      aria-label="Motifi kaldır"
                       className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[8px] flex items-center justify-center border border-card opacity-0 group-hover:opacity-100 transition-opacity">
                       ×
                     </button>
@@ -2219,6 +2239,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
             })}
           </div>
           <div className="p-3 border-t border-border flex flex-col gap-1.5">
+            <button
+              type="button"
+              onClick={() => setShowProductPicker(true)}
+              className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-primary/40 bg-accent text-primary text-xs font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              ✦ Üründen Ekle
+            </button>
             <label className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-xs text-muted-foreground cursor-pointer hover:text-foreground">
               + SVG Yükle
               <input type="file" accept=".svg,image/svg+xml" onChange={handleSvgUpload} className="hidden"/>
@@ -2235,6 +2262,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
 
           {/* Mobile motif strip */}
           <div className="lg:hidden flex gap-1.5 overflow-x-auto px-3 py-2 bg-card border-b border-border">
+            <button
+              type="button"
+              onClick={() => setShowProductPicker(true)}
+              className="flex-shrink-0 px-3 py-1 rounded-full text-[11px] font-semibold border border-primary/40 bg-accent text-primary"
+            >
+              ✦ Üründen
+            </button>
             {allMotifs.map(m => {
               const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
               return (
