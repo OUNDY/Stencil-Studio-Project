@@ -793,6 +793,8 @@ export default function StencilCanvas({ embedded = false, className, style, init
   );
   const [showAdvanced,    setShowAdvanced]    = useState(false);
   const [blendMode,       setBlendMode]       = useState<GlobalCompositeOperation>("multiply");
+  const [showProductPicker, setShowProductPicker] = useState(false);
+  const [motifSearch,       setMotifSearch]       = useState("");
 
   // Sync mirror refs every render
   const allMotifs = [...PRESET_MOTIFS, ...customMotifs];
