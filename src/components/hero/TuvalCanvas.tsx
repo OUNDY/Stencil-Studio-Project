@@ -1,5 +1,7 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { motifs as PRESET_MOTIFS, type Motif } from "./motifs";
+import ProductPicker from "./ProductPicker";
+import type { Product } from "@/data/products";
 
 const CANVAS_W = 800;
 const CANVAS_H = 600;
@@ -791,6 +793,8 @@ export default function StencilCanvas({ embedded = false, className, style, init
   );
   const [showAdvanced,    setShowAdvanced]    = useState(false);
   const [blendMode,       setBlendMode]       = useState<GlobalCompositeOperation>("multiply");
+  const [showProductPicker, setShowProductPicker] = useState(false);
+  const [motifSearch,       setMotifSearch]       = useState("");
 
   // Sync mirror refs every render
   const allMotifs = [...PRESET_MOTIFS, ...customMotifs];
@@ -1909,6 +1913,54 @@ export default function StencilCanvas({ embedded = false, className, style, init
     letterSpacing: "0.01em",
   });
 
+  // ── Ürün kataloğundan motif ekle ─────────────────────────────────────────
+  // Eğer ürün mevcut bir preset motife bağlıysa onu aktive eder.
+  // Değilse ürünün PNG görselinden anında özel bir motif oluşturur.
+  const addProductAsMotif = useCallback((p: Product) => {
+    // Mevcut preset motif?
+    const existing = p.motifId && allMotifsRef.current.find(m => m.id === p.motifId);
+    if (existing) {
+      if (modeRef.current === "grid") {
+        setGridActiveIds(new Set([existing.id]));
+        setGridSelectedMotifId(existing.id);
+      } else {
+        setTekliActiveIds(new Set([existing.id]));
+        setMotifCounts(prev => ({ ...prev, [existing.id]: prev[existing.id] ?? 1 }));
+      }
+      return;
+    }
+    if (!p.image) return;
+    // Aksi halde özel motif olarak yükle (görsel zaten alfa-temiz stencil PNG).
+    const id = `prod_${p.id}_${Date.now()}`;
+    const placeholder = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>`;
+    const m: Motif = {
+      id,
+      name: p.name.length > 20 ? p.name.slice(0, 18) + "…" : p.name,
+      description: p.description,
+      svg: placeholder,
+      pngDataUrl: p.image,
+    };
+    setCustomMotifs(prev => [...prev, m]);
+    setMotifSizes(prev => ({ ...prev, [id]: 150 }));
+    if (modeRef.current === "grid") {
+      setGridActiveIds(new Set([id]));
+      setGridSelectedMotifId(id);
+    } else {
+      setTekliActiveIds(new Set([id]));
+      setMotifCounts(prev => ({ ...prev, [id]: 1 }));
+    }
+  }, []);
+
+  // Motif kütüphanesi araması
+  const filteredMotifs = useMemo(() => {
+    const q = motifSearch.trim().toLocaleLowerCase("tr");
+    if (!q) return allMotifs;
+    return allMotifs.filter(m =>
+      m.name.toLocaleLowerCase("tr").includes(q) ||
+      m.description.toLocaleLowerCase("tr").includes(q)
+    );
+  }, [motifSearch, allMotifs]);
+
   return (
     <div
       className={className}
@@ -2136,28 +2188,48 @@ export default function StencilCanvas({ embedded = false, className, style, init
       <div className="flex flex-1 min-h-0 bg-muted/20">
 
         {/* ── LEFT: Motif Library ── */}
-        <aside className="hidden lg:flex flex-col w-[220px] flex-shrink-0 bg-card border-r border-border">
-          <div className="px-4 py-3 border-b border-border">
-            <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Motif Kütüphanesi</span>
+        <aside className="hidden lg:flex flex-col w-[240px] flex-shrink-0 bg-card border-r border-border">
+          <div className="px-4 py-3 border-b border-border flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">Motif Kütüphanesi</span>
+              <span className="text-[10px] text-muted-foreground">{filteredMotifs.length}</span>
+            </div>
+            <input
+              type="search"
+              value={motifSearch}
+              onChange={e => setMotifSearch(e.target.value)}
+              placeholder="Ara…"
+              className="w-full px-2.5 py-1.5 rounded-md bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
           </div>
           <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-1.5">
-            {allMotifs.map(m => {
+            {filteredMotifs.length === 0 && (
+              <span className="text-[11px] text-muted-foreground text-center py-4">Sonuç yok.</span>
+            )}
+            {filteredMotifs.map(m => {
               const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
               return (
                 <div key={m.id} className="relative group">
                   <button
                     onClick={()=>placementMode==="grid" ? toggleGridMotif(m.id) : toggleTekliMotif(m.id)}
-                    className={`sc-tool w-full text-left px-3 py-2 rounded-md border text-xs font-medium ${
+                    className={`sc-tool w-full text-left px-3 py-2 rounded-md border text-xs font-medium flex items-center gap-2 ${
                       isActive
                         ? "bg-primary text-primary-foreground border-primary shadow-sm"
                         : "bg-background text-foreground border-border"
                     }`}
                     title={m.description}
                   >
-                    {m.name}
+                    {m.pngDataUrl && (
+                      <img src={m.pngDataUrl} alt="" aria-hidden
+                        className="w-5 h-5 object-contain flex-shrink-0"
+                        style={{ filter: isActive ? "brightness(0) invert(1)" : "none", opacity: isActive ? 1 : 0.7 }}
+                      />
+                    )}
+                    <span className="truncate">{m.name}</span>
                   </button>
                   {customMotifs.some(c=>c.id===m.id) && (
                     <button onClick={()=>removeCustom(m.id)}
+                      aria-label="Motifi kaldır"
                       className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[8px] flex items-center justify-center border border-card opacity-0 group-hover:opacity-100 transition-opacity">
                       ×
                     </button>
@@ -2167,6 +2239,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
             })}
           </div>
           <div className="p-3 border-t border-border flex flex-col gap-1.5">
+            <button
+              type="button"
+              onClick={() => setShowProductPicker(true)}
+              className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-primary/40 bg-accent text-primary text-xs font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              ✦ Üründen Ekle
+            </button>
             <label className="sc-tool flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-xs text-muted-foreground cursor-pointer hover:text-foreground">
               + SVG Yükle
               <input type="file" accept=".svg,image/svg+xml" onChange={handleSvgUpload} className="hidden"/>
@@ -2183,6 +2262,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
 
           {/* Mobile motif strip */}
           <div className="lg:hidden flex gap-1.5 overflow-x-auto px-3 py-2 bg-card border-b border-border">
+            <button
+              type="button"
+              onClick={() => setShowProductPicker(true)}
+              className="flex-shrink-0 px-3 py-1 rounded-full text-[11px] font-semibold border border-primary/40 bg-accent text-primary"
+            >
+              ✦ Üründen
+            </button>
             {allMotifs.map(m => {
               const isActive = placementMode==="grid" ? gridActiveIds.has(m.id) : tekliActiveIds.has(m.id);
               return (
@@ -2432,6 +2518,13 @@ export default function StencilCanvas({ embedded = false, className, style, init
           </>
         )}
       </div>
+
+      {/* Ürün kütüphanesinden motif ekleme dialogu */}
+      <ProductPicker
+        open={showProductPicker}
+        onClose={() => setShowProductPicker(false)}
+        onPick={addProductAsMotif}
+      />
     </div>
   );
 }
