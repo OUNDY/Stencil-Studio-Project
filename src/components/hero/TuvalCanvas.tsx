@@ -1913,6 +1913,54 @@ export default function StencilCanvas({ embedded = false, className, style, init
     letterSpacing: "0.01em",
   });
 
+  // ── Ürün kataloğundan motif ekle ─────────────────────────────────────────
+  // Eğer ürün mevcut bir preset motife bağlıysa onu aktive eder.
+  // Değilse ürünün PNG görselinden anında özel bir motif oluşturur.
+  const addProductAsMotif = useCallback((p: Product) => {
+    // Mevcut preset motif?
+    const existing = p.motifId && allMotifsRef.current.find(m => m.id === p.motifId);
+    if (existing) {
+      if (modeRef.current === "grid") {
+        setGridActiveIds(new Set([existing.id]));
+        setGridSelectedMotifId(existing.id);
+      } else {
+        setTekliActiveIds(new Set([existing.id]));
+        setMotifCounts(prev => ({ ...prev, [existing.id]: prev[existing.id] ?? 1 }));
+      }
+      return;
+    }
+    if (!p.image) return;
+    // Aksi halde özel motif olarak yükle (görsel zaten alfa-temiz stencil PNG).
+    const id = `prod_${p.id}_${Date.now()}`;
+    const placeholder = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"></svg>`;
+    const m: Motif = {
+      id,
+      name: p.name.length > 20 ? p.name.slice(0, 18) + "…" : p.name,
+      description: p.description,
+      svg: placeholder,
+      pngDataUrl: p.image,
+    };
+    setCustomMotifs(prev => [...prev, m]);
+    setMotifSizes(prev => ({ ...prev, [id]: 150 }));
+    if (modeRef.current === "grid") {
+      setGridActiveIds(new Set([id]));
+      setGridSelectedMotifId(id);
+    } else {
+      setTekliActiveIds(new Set([id]));
+      setMotifCounts(prev => ({ ...prev, [id]: 1 }));
+    }
+  }, []);
+
+  // Motif kütüphanesi araması
+  const filteredMotifs = useMemo(() => {
+    const q = motifSearch.trim().toLocaleLowerCase("tr");
+    if (!q) return allMotifs;
+    return allMotifs.filter(m =>
+      m.name.toLocaleLowerCase("tr").includes(q) ||
+      m.description.toLocaleLowerCase("tr").includes(q)
+    );
+  }, [motifSearch, allMotifs]);
+
   return (
     <div
       className={className}
