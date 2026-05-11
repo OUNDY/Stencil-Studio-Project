@@ -61,7 +61,9 @@ export function CanvasStage() {
     };
   }, [drag, dispatch]);
 
-  const onStageClick = () => dispatch({ type: "SELECT", id: null });
+  const onStageClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) dispatch({ type: "SELECT", id: null });
+  };
 
   const grid = state.gridMode;
 
