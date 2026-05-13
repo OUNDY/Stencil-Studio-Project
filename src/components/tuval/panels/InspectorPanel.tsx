@@ -95,6 +95,27 @@ export function InspectorPanel() {
         <input type="range" min={0} max={1} step={0.01} value={sel.opacity} onChange={(e) => update({ opacity: Number(e.target.value) })} className="w-full accent-primary" />
       </div>
 
+      <div className="rounded-lg border border-border bg-card p-3 space-y-3">
+        <div className="text-xs font-medium text-foreground">Perspektif & Eğim</div>
+        <div>
+          <div className="flex justify-between text-xs mb-1"><span className="text-muted-foreground">Yatay döndür (Y)</span><span className="tabular-nums">{sel.perspX ?? 0}°</span></div>
+          <input type="range" min={-60} max={60} step={1} value={sel.perspX ?? 0} onChange={(e) => update({ perspX: Number(e.target.value) })} className="w-full accent-primary" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs mb-1"><span className="text-muted-foreground">Dikey döndür (X)</span><span className="tabular-nums">{sel.perspY ?? 0}°</span></div>
+          <input type="range" min={-60} max={60} step={1} value={sel.perspY ?? 0} onChange={(e) => update({ perspY: Number(e.target.value) })} className="w-full accent-primary" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs mb-1"><span className="text-muted-foreground">Eğim X</span><span className="tabular-nums">{sel.skewX ?? 0}°</span></div>
+          <input type="range" min={-45} max={45} step={1} value={sel.skewX ?? 0} onChange={(e) => update({ skewX: Number(e.target.value) })} className="w-full accent-primary" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs mb-1"><span className="text-muted-foreground">Eğim Y</span><span className="tabular-nums">{sel.skewY ?? 0}°</span></div>
+          <input type="range" min={-45} max={45} step={1} value={sel.skewY ?? 0} onChange={(e) => update({ skewY: Number(e.target.value) })} className="w-full accent-primary" />
+        </div>
+        <button onClick={() => update({ perspX: 0, perspY: 0, skewX: 0, skewY: 0 })} className="w-full text-xs px-2 py-1.5 rounded border border-border hover:border-primary/40">Perspektifi sıfırla</button>
+      </div>
+
       <div className="grid grid-cols-2 gap-2 pt-2">
         <button onClick={() => update({ x: 0.5, y: 0.5 })} className="text-xs px-2 py-1.5 rounded border border-border hover:border-primary/40">Ortala</button>
         <button onClick={() => update({ rotation: 0 })} className="text-xs px-2 py-1.5 rounded border border-border hover:border-primary/40">Açıyı sıfırla</button>

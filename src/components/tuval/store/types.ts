@@ -23,6 +23,12 @@ export interface MotifInstance {
   opacity: number;       // 0..1
   visible: boolean;
   locked: boolean;
+  /** Perspective: derece cinsinden 3D X/Y dönüşü (-60..60) */
+  perspX?: number;
+  perspY?: number;
+  /** Skew (eğim) X/Y, derece (-45..45) */
+  skewX?: number;
+  skewY?: number;
 }
 
 export interface TuvalState {
