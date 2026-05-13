@@ -6,6 +6,7 @@ import { MotifPanel } from "./panels/MotifPanel";
 import { ProductPanel } from "./panels/ProductPanel";
 import { SurfacePanel } from "./panels/SurfacePanel";
 import { LayersPanel } from "./panels/LayersPanel";
+import { ZonesPanel } from "./panels/ZonesPanel";
 import { InspectorPanel } from "./panels/InspectorPanel";
 import { TopBar } from "./topbar/TopBar";
 import { resolveMotifImage } from "./store/motifResolver";
@@ -75,6 +76,7 @@ function StudioInner({ initialMotifId }: Props) {
           {tab === "motif" && <MotifPanel />}
           {tab === "urun" && <ProductPanel />}
           {tab === "zemin" && <SurfacePanel />}
+          {tab === "alan" && <ZonesPanel />}
           {tab === "katman" && <LayersPanel />}
         </aside>
         <StageContainer />
