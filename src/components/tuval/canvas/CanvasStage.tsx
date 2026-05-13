@@ -30,6 +30,28 @@ export function CanvasStage() {
   const { state, dispatch } = useTuval();
   const stageRef = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
+  const [aspectMap, setAspectMap] = useState<Record<string, number>>({});
+
+  // Preload each unique imageUrl to detect intrinsic aspect ratio (so non-square
+  // motifs aren't squashed/cropped inside a 1:1 box).
+  const uniqueUrls = useMemo(() => {
+    const urls = new Set<string>();
+    state.motifs.forEach(m => urls.add(m.imageUrl));
+    if (state.gridMode.imageUrl) urls.add(state.gridMode.imageUrl);
+    return Array.from(urls);
+  }, [state.motifs, state.gridMode.imageUrl]);
+
+  useEffect(() => {
+    uniqueUrls.forEach(url => {
+      if (aspectMap[url]) return;
+      const img = new Image();
+      img.onload = () => {
+        const ratio = img.naturalWidth / Math.max(1, img.naturalHeight);
+        setAspectMap(prev => (prev[url] ? prev : { ...prev, [url]: ratio }));
+      };
+      img.src = url;
+    });
+  }, [uniqueUrls, aspectMap]);
 
   const onMotifMouseDown = useCallback((e: React.MouseEvent, m: MotifInstance) => {
     e.stopPropagation();
@@ -104,6 +126,12 @@ export function CanvasStage() {
         {state.motifs.filter(m => m.visible).map(m => {
           const selected = state.selectedId === m.id;
           const sizePct = m.scale * 100;
+          const ratio = aspectMap[m.imageUrl] ?? 1;
+          const rx = m.perspY ?? 0; // Y axis tilt rotates around X
+          const ry = m.perspX ?? 0;
+          const sx = m.skewX ?? 0;
+          const sy = m.skewY ?? 0;
+          const hasPersp = rx !== 0 || ry !== 0;
           return (
             <div
               key={m.id}
@@ -117,8 +145,9 @@ export function CanvasStage() {
                 left: `${m.x * 100}%`,
                 top: `${m.y * 100}%`,
                 width: `${sizePct}%`,
-                aspectRatio: "1 / 1",
-                transform: `translate(-50%, -50%) rotate(${m.rotation}deg)`,
+                aspectRatio: `${ratio} / 1`,
+                transform: `translate(-50%, -50%) rotate(${m.rotation}deg) skew(${sx}deg, ${sy}deg) ${hasPersp ? `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)` : ""}`,
+                transformStyle: "preserve-3d",
                 opacity: m.opacity,
               }}
             >
