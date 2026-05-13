@@ -1,143 +1,116 @@
-# Tuval Studio v2 — Yeni Mimari Önerisi
+# Tuval — Zenginleştirilmiş Zeminler + Perspektif Boyama Alanları
 
-Mevcut `TuvalCanvas.tsx` tek dosyada ~hepsi bir arada büyüdü; motif seçimi, perspektif, fırça, ürün entegrasyonu, modlar tek state ağacında. Hedef: **modüler, geri alınabilir, sezgisel** bir stüdyo deneyimi — özellik kaybı olmadan.
+## Hedef
 
----
+Şu anki Tuval'de zeminler düz gradient/SVG noise. Motifler tüm tuvale serbest yerleşiyor; gerçek bir duvarın eğik yüzeyine "uyguluyormuş" hissi yok. İki şey ekliyoruz:
 
-## 1. Yeni UX Çerçevesi
+1. **Zengin zemin görselleri** — gerçek duvar, ahşap, tuğla, beton fotoğrafları
+2. **Perspektif Boyama Alanları (Zones)** — kullanıcı tuval üzerinde 4 köşeli dörtgenler çizer; her dörtgen bir "boyanacak yüzey"dir. Köşeler sürüklenebilir, böylece dörtgen perspektifte yamulur ve içine atılan motif/grid doğal olarak yüzeye uyar.
 
-```text
-┌────────────────────────────────────────────────────────────────┐
-│ TopBar:  [◀ Geri] [▶ İleri] · Proje Adı · [💾 Kaydet] [⤓ Dışa] │
-├──────────┬──────────────────────────────────────────┬──────────┤
-│          │                                          │          │
-│  SOL     │            TUVAL (zoom/pan)              │   SAĞ    │
-│  RAY     │                                          │  PANEL   │
-│ (icons)  │     • boş alana tıkla → motif yerleşir   │ (bağlam) │
-│          │     • motifi seç → handles görünür       │          │
-│ Motif    │     • sürükle/döndür/ölçekle             │ Seçili   │
-│ Ürün     │                                          │ öğenin   │
-│ Renk     │                                          │ ayarları │
-│ Zemin    │                                          │          │
-│ Katman   │                                          │          │
-│          │                                          │          │
-├──────────┴──────────────────────────────────────────┴──────────┤
-│ Alt çubuk: Mod [Tekli|Grid|Serbest] · Zoom · Yardım · Kısayol  │
-└────────────────────────────────────────────────────────────────┘
+## Kullanıcı Akışı
+
+1. Zemin sekmesinde gerçek görsel seçenekleri (duvar, tuğla, ahşap, beton, çıplak oda)
+2. Sağ panelde **"+ Alan Ekle"** butonu → tuval ortasına yeni bir dikdörtgen düşer (4 köşe)
+3. Köşeler sürüklenebilir → dörtgen istenen perspektife getirilir
+4. Alan seçili iken: silme, kopyalama, opaklık, içine "Bu alana motif/grid uygula" toggle
+5. Motifler hangi alana atanmışsa o alanın matrix3d perspektifinde render olur
+6. Atama yapılmamış motifler eskisi gibi serbest
+
+## Teknik Yaklaşım
+
+### Yeni state alanları
+
+```ts
+interface PaintZone {
+  id: string;
+  name: string;
+  // 4 köşe, sırasıyla: TL, TR, BR, BL — normalize (0..1) tuval koordinatı
+  corners: [Pt, Pt, Pt, Pt];
+  fillColor: string | null;   // alanı düz boya (opsiyonel)
+  fillOpacity: number;
+  useGrid: boolean;            // grid bu alanın içine clip-lenir mi
+  visible: boolean;
+}
+type Pt = { x: number; y: number };
+
+interface MotifInstance {
+  ...
+  zoneId?: string | null;     // null = serbest, "z-xxx" = belirli alana bağlı
+}
 ```
 
-**UX prensipleri**
-- **Tek bağlam paneli**: Sağ panel her zaman *seçili öğenin* ayarlarını gösterir (motif yoksa zemin ayarları). Mod değiştirme ile UI değişmez.
-- **Doğrudan manipülasyon**: Motifler tuvalde tıklanabilir/sürüklenebilir; gizli "perspektif modu" yerine handle ile döndürme/ölçek.
-- **Sol ray ikon menüsü**: Discord/Figma tarzı — Motif, Ürün, Renk, Zemin, Katman. Açılır panel olarak çalışır.
-- **Ürünler motif kütüphanesiyle birleşik**: "Üründen Ekle" ayrı buton değil; Ürün sekmesinden direkt sürükle-bırak.
-- **Boş durum rehberi**: İlk açılışta tuvalde "Bir motif seç veya tıkla" hayalet yazısı.
+### Perspektif matematiği
 
----
+`matrix3d` ile 4-nokta homografisi:
 
-## 2. Geri Al / İleri Al / Save (Yeni)
+- Kaynak: birim kare köşeleri `(0,0) (1,0) (1,1) (0,1)`
+- Hedef: kullanıcının dörtgen köşeleri (tuval px cinsinden)
+- 8 bilinmeyen → 8 lineer denklem → çözülen H matrisi → CSS `matrix3d(a,b,0,c, d,e,0,f, 0,0,1,0, g,h,0,1)` formuna dönüştürülür
 
-**Komut tabanlı history stack** (`useHistory` hook):
-
-```text
-state = { motifs[], surface, brush, viewport }
-history = { past: State[], present: State, future: State[] }
+`src/components/tuval/canvas/perspective.ts` küçük bir util:
+```
+getPerspectiveMatrix(srcQuad, dstQuad) → string ("matrix3d(...)")
 ```
 
-- Her mutasyon → `dispatch({type, payload})` → yeni snapshot push
-- `Cmd/Ctrl+Z` geri, `Cmd/Ctrl+Shift+Z` ileri
-- Top bar'da görsel butonlar
-- 50 adımlık limit (memory için)
+### Render mantığı (CanvasStage)
 
-**Save sistemi**
-- **Otomatik taslak**: localStorage'a 2 sn debounce ile yazılır (`tuval:autosave`)
-- **Manuel kaydet**: İsimli proje → `tuval:projects` listesi
-- **Açılışta**: "Devam et?" toast → autosave varsa restore
-- **Dışa aktar**: PNG (mevcut), JSON proje dosyası (yeni)
+Her zone için:
+- `<div>` mutlak konumlu, üstten 0,0 — boyut = stage boyutu
+- `transform: matrix3d(...)` zone'un perspektifini uygular
+- `transform-origin: 0 0`
+- İçinde:
+  - opsiyonel düz fill katmanı
+  - `useGrid` ise grid mask render (tile)
+  - `motifs.filter(m => m.zoneId === zone.id)` — bu motifler zone'un kendi 0..1 uzayında konumlanır
+- Üstüne SVG katman: 4 köşe handle (8x8 daireler), kenarlar (dashed), seçili ise primary renk
 
----
+Köşe drag → corners[i] güncelle → matrix yeniden hesaplanır → tüm içerik canlı eğilir.
 
-## 3. Dosya Yapısı (Refactor)
+### UI değişiklikleri
 
-```text
-src/components/tuval/
-├── TuvalStudio.tsx           # ana shell (layout + provider)
-├── store/
-│   ├── TuvalContext.tsx      # state + dispatch + history
-│   ├── reducer.ts            # tüm aksiyonlar (ADD_MOTIF, MOVE, ...)
-│   ├── persistence.ts        # autosave + projects
-│   └── types.ts
-├── canvas/
-│   ├── CanvasStage.tsx       # tuval render + interaksiyon
-│   ├── MotifLayer.tsx        # tek motif (drag/rotate/scale handles)
-│   ├── SurfaceLayer.tsx      # zemin (duvar/ahşap/beton)
-│   └── useCanvasRender.ts    # mevcut alfa-mask render mantığı (taşınır)
-├── panels/
-│   ├── LeftRail.tsx          # ikon menüsü
-│   ├── MotifPanel.tsx        # arama + thumbnails + upload
-│   ├── ProductPanel.tsx      # ProductPicker mantığı (entegre)
-│   ├── ColorPanel.tsx        # palet + hex
-│   ├── SurfacePanel.tsx      # zemin seçimi
-│   ├── LayersPanel.tsx       # z-order, görünürlük, kilit
-│   └── InspectorPanel.tsx    # sağ panel, seçili öğe
-├── topbar/
-│   ├── TopBar.tsx            # undo/redo/save/export
-│   └── ProjectMenu.tsx
-└── bottombar/
-    └── ModeSwitcher.tsx
-```
+- **Yeni panel**: `ZonesPanel.tsx` (LeftRail'e yeni "Alan" sekmesi). Liste: tüm alanlar; aksiyonlar: ekle, sil, kopyala, görünürlük.
+- **InspectorPanel**: zone seçili iken → fill rengi, opaklık, gridi bu alana clipleme, "Perspektifi sıfırla" (dörtgeni dikdörtgene döndür)
+- **Motif drag**: motif bir zone'un üzerine bırakılırsa otomatik `zoneId` atanır (faz 2 — şimdilik Inspector'dan dropdown ile manuel atama)
 
-**Korunan/taşınan**: Mevcut alfa-mask render mantığı (`renderColorTile`), motif kataloğu (`motifs.ts`), ProductPicker mantığı, perspektif transform, Grid/Tekli modları — hepsi modüllere bölünür ama davranış aynı.
+### Zenginleştirilmiş zeminler
 
----
+`imagegen` ile 5 yüksek kaliteli görsel:
+- `surface-wall.jpg` — kremsi ince dokulu duvar
+- `surface-brick.jpg` — beyaz badana tuğla
+- `surface-wood.jpg` — yıkanmış meşe lambri
+- `surface-concrete.jpg` — mikro çimento
+- `surface-room.jpg` — boş bir oda fotoğrafı (köşe + zemin görünür) — kullanıcı bu odanın üzerine perspektif alan çizip duvarı boyayabilir
 
-## 4. Etkileşim Modları (sadeleştirme)
+`SurfacePanel`: 5 büyük thumbnail kart, hover'da yakınlaştırma.
 
-| Eski | Yeni |
-|---|---|
-| Tekli mod (manuel yerleştir) | **Serbest** — tıkla, ekle, sürükle |
-| Grid mod (otomatik dolu) | **Grid** — desen olarak tüm yüzeyi kapla, ayar paneli grid yoğunluğu |
-| Perspektif modu (gizli) | Seçili motifin Inspector panelinde "Perspektif" sekmesi |
+## Geri dönülebilirlik
 
----
+- Yeni dosyalar: `perspective.ts`, `ZonesPanel.tsx`, `ZoneOverlay.tsx`
+- Mevcut dosyalar güvenle genişletilir; reducer'a `ADD_ZONE / UPDATE_ZONE / REMOVE_ZONE / SELECT_ZONE` action'ları
+- History stack alan değişikliklerini de içerir → Cmd+Z geri alır
+- `zoneId` opsiyonel → eski projeler bozulmaz (autosave migration güvenli)
 
-## 5. Klavye Kısayolları (yeni)
+## Dosya Listesi
 
-- `V` seçim · `M` motif · `B` fırça · `G` grid mod
-- `Cmd/Ctrl+Z/⇧Z` geri/ileri · `Cmd/Ctrl+S` kaydet
-- `Delete` seçili motifi sil · `Cmd/Ctrl+D` çoğalt
-- `Space+drag` tuvali kaydır · `Cmd+0` sığdır
+**Yeni:**
+- `src/components/tuval/canvas/perspective.ts` (matris util)
+- `src/components/tuval/canvas/ZoneOverlay.tsx` (köşe handle UI)
+- `src/components/tuval/panels/ZonesPanel.tsx`
+- `src/assets/surfaces/wall.jpg`, `brick.jpg`, `wood.jpg`, `concrete.jpg`, `room.jpg`
 
----
+**Düzenlenir:**
+- `store/types.ts`, `store/reducer.ts`, `store/persistence.ts` (zone tipleri + actions)
+- `canvas/CanvasStage.tsx` (zone render + matrix transform)
+- `panels/SurfacePanel.tsx` (gerçek görseller)
+- `panels/InspectorPanel.tsx` (zone seçili iken kontroller, motif için "Alan" dropdown)
+- `panels/LeftRail.tsx` ("Alan" sekmesi)
 
-## 6. Uygulama Aşamaları
+## Kapsam Dışı (Faz 2)
 
-1. **store/** kur (context + reducer + history) — saf state, UI yok
-2. **TuvalStudio.tsx** shell + LeftRail + TopBar iskeleti
-3. **CanvasStage**: mevcut render mantığını taşı, tıkla-ekle-seç davranışı ekle
-4. **Panels**: Motif, Product, Color, Surface, Layers, Inspector — birer birer
-5. **History + autosave + projects** entegrasyonu
-6. **Klavye kısayolları + boş durum + onboarding tooltip**
-7. `/tuval` route'u yeni `TuvalStudio`'ya bağla; eski `TuvalCanvas` korunur (`legacy=true` query ile fallback) — geri dönülebilir
-8. Test: motif ekle/taşı/sil, undo/redo, kaydet/yükle, ürün → tuval, tema değişimi
+- Motifin sürükle-bırak ile alana otomatik atanması
+- Eğri/non-quad alanlar (yalnız 4 köşe)
+- Görsel maskelerden otomatik alan algılama (AI segmentation)
 
----
+## Onay
 
-## 7. Geri Dönülebilirlik Garantisi
-
-- Eski `TuvalCanvas.tsx` **silinmez**, dosya kalır
-- Yeni dosyalar `components/tuval/` altında — eski `components/hero/Tuval*` dokunulmaz
-- `Tuval.tsx` route'u flag ile iki sürüm arası geçiş yapabilir (`?v=legacy`)
-- Lovable history üzerinden tek tıkla bu mesaj öncesine dönülebilir
-
----
-
-## 8. Riskler
-
-- Render mantığını taşırken motif boyama bozulabilir → birim test yerine canlı QA gerekli
-- History stack büyük canvas state'i tutar → snapshot'ta sadece motif metadata + viewport, render yeniden çalışır
-- Autosave çakışması → versiyon damgası ile çözülür
-
----
-
-Onaylarsan adım adım uygularım; istersen sadece belirli adımı (ör. yalnız undo/save) seçebilirsin.
+Onaylarsan tüm değişiklikleri tek seferde uygulayacağım. Sadece zenginleştirilmiş zeminleri istiyorsan ya da önce sadece zone sistemini istiyorsan, küçük parçalara bölerim.

@@ -81,13 +81,18 @@ export function TuvalProvider({ children, initial }: { children: ReactNode; init
       if (meta && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
       else if (meta && (e.key.toLowerCase() === "y" || (e.shiftKey && e.key.toLowerCase() === "z"))) { e.preventDefault(); redo(); }
       else if (e.key === "Delete" || e.key === "Backspace") {
-        const sel = stateRef.current.selectedId;
-        if (sel) { e.preventDefault(); dispatch({ type: "REMOVE_MOTIF", id: sel }); }
+        const selM = stateRef.current.selectedId;
+        const selZ = stateRef.current.selectedZoneId;
+        if (selM) { e.preventDefault(); dispatch({ type: "REMOVE_MOTIF", id: selM }); }
+        else if (selZ) { e.preventDefault(); dispatch({ type: "REMOVE_ZONE", id: selZ }); }
       } else if (meta && e.key.toLowerCase() === "d") {
-        const sel = stateRef.current.selectedId;
-        if (sel) { e.preventDefault(); dispatch({ type: "DUPLICATE_MOTIF", id: sel, newId: `m-${Date.now()}` }); }
+        const selM = stateRef.current.selectedId;
+        const selZ = stateRef.current.selectedZoneId;
+        if (selM) { e.preventDefault(); dispatch({ type: "DUPLICATE_MOTIF", id: selM, newId: `m-${Date.now()}` }); }
+        else if (selZ) { e.preventDefault(); dispatch({ type: "DUPLICATE_ZONE", id: selZ, newId: `z-${Date.now()}` }); }
       } else if (e.key === "Escape") {
         dispatch({ type: "SELECT", id: null });
+        dispatch({ type: "SELECT_ZONE", id: null });
       }
     };
     window.addEventListener("keydown", onKey);

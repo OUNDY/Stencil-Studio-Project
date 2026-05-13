@@ -1,12 +1,13 @@
-import { Sparkles, ShoppingBag, Layers, Image as ImageIcon } from "lucide-react";
+import { Sparkles, ShoppingBag, Layers, Image as ImageIcon, Frame } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type RailTab = "motif" | "urun" | "zemin" | "katman";
+export type RailTab = "motif" | "urun" | "zemin" | "alan" | "katman";
 
 const ITEMS: { id: RailTab; label: string; icon: typeof Sparkles }[] = [
   { id: "motif", label: "Motif", icon: Sparkles },
   { id: "urun", label: "Ürün", icon: ShoppingBag },
   { id: "zemin", label: "Zemin", icon: ImageIcon },
+  { id: "alan", label: "Alan", icon: Frame },
   { id: "katman", label: "Katman", icon: Layers },
 ];
 
