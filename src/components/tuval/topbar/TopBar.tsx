@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Undo2, Redo2, Save, Trash2, Download, FolderOpen, RotateCcw } from "lucide-react";
+import { Undo2, Redo2, Save, Trash2, Download, FolderOpen, RotateCcw, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTuval } from "../store/TuvalContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,6 +132,32 @@ export function TopBar() {
         <Button size="sm" variant="ghost" onClick={() => { if (confirm("Tuvali sıfırlamak istiyor musun?")) reset(); }} title="Sıfırla">
           <RotateCcw className="h-3.5 w-3.5" />
         </Button>
+
+        {/* Canlı Uygula CTA */}
+        <motion.button
+          onClick={() => {
+            const stage = document.querySelector<HTMLElement>("[data-tuval-stage]");
+            if (stage) {
+              stage.animate(
+                [
+                  { filter: "brightness(1)" },
+                  { filter: "brightness(1.25) saturate(1.2)" },
+                  { filter: "brightness(1)" },
+                ],
+                { duration: 700, easing: "ease-out" }
+              );
+            }
+            toast.success("Boyama uygulandı", { description: `${state.motifs.length} katman tuvale işlendi` });
+          }}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+          animate={{ boxShadow: ["0 0 0 0 hsl(var(--primary)/0.45)", "0 0 0 10px hsl(var(--primary)/0)", "0 0 0 0 hsl(var(--primary)/0)"] }}
+          transition={{ boxShadow: { duration: 1.8, repeat: Infinity, ease: "easeOut" } }}
+          className="ml-2 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-primary/80 px-4 py-1.5 text-sm font-medium text-primary-foreground shadow-md hover:shadow-lg transition-shadow"
+        >
+          <Sparkles className="h-4 w-4" />
+          Uygula
+        </motion.button>
       </div>
     </div>
   );
