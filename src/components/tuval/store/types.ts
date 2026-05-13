@@ -1,4 +1,4 @@
-export type SurfaceId = "duvar" | "ahsap" | "beton" | "beyaz";
+export type SurfaceId = "duvar" | "ahsap" | "beton" | "beyaz" | "tugla" | "oda";
 
 export interface MotifSource {
   /** Stable id (e.g. preset motif id, or custom-XXXX) */
@@ -15,9 +15,9 @@ export interface MotifInstance {
   sourceId: string;      // points to MotifSource.id (cached in registry)
   name: string;
   imageUrl: string;      // resolved data url or asset url for mask
-  x: number;             // 0..1 normalized center
+  x: number;             // 0..1 normalized center (in zone-space if zoneId set, else stage-space)
   y: number;
-  scale: number;         // 0.05..1 (relative to canvas width)
+  scale: number;         // 0.05..1 (relative to canvas/zone width)
   rotation: number;      // degrees
   color: string;         // hex
   opacity: number;       // 0..1
@@ -29,12 +29,29 @@ export interface MotifInstance {
   /** Skew (eğim) X/Y, derece (-45..45) */
   skewX?: number;
   skewY?: number;
+  /** Eğer set ise motif bu zone'un perspektif düzleminde render olur. */
+  zoneId?: string | null;
+}
+
+export type Pt = { x: number; y: number };
+
+export interface PaintZone {
+  id: string;
+  name: string;
+  /** Normalize (0..1) tuval koordinatında 4 köşe — TL, TR, BR, BL */
+  corners: [Pt, Pt, Pt, Pt];
+  fillColor: string | null;     // null = düz boya yok
+  fillOpacity: number;          // 0..1
+  useGrid: boolean;             // grid bu alana clip-lensin mi
+  visible: boolean;
 }
 
 export interface TuvalState {
   surface: SurfaceId;
   motifs: MotifInstance[];
-  selectedId: string | null;
+  zones: PaintZone[];
+  selectedId: string | null;          // motif seçimi
+  selectedZoneId: string | null;      // alan seçimi
   /** Repeat-grid mode places the active motif as a tiled background */
   gridMode: {
     enabled: boolean;
@@ -49,7 +66,9 @@ export interface TuvalState {
 export const DEFAULT_STATE: TuvalState = {
   surface: "duvar",
   motifs: [],
+  zones: [],
   selectedId: null,
+  selectedZoneId: null,
   gridMode: {
     enabled: false,
     sourceId: null,
@@ -69,5 +88,11 @@ export type Action =
   | { type: "SELECT"; id: string | null }
   | { type: "REORDER"; id: string; direction: "up" | "down" | "top" | "bottom" }
   | { type: "SET_GRID"; patch: Partial<TuvalState["gridMode"]> }
+  | { type: "ADD_ZONE"; zone: PaintZone }
+  | { type: "UPDATE_ZONE"; id: string; patch: Partial<PaintZone> }
+  | { type: "UPDATE_ZONE_CORNER"; id: string; index: 0 | 1 | 2 | 3; point: Pt }
+  | { type: "REMOVE_ZONE"; id: string }
+  | { type: "DUPLICATE_ZONE"; id: string; newId: string }
+  | { type: "SELECT_ZONE"; id: string | null }
   | { type: "CLEAR" }
   | { type: "LOAD"; state: TuvalState };

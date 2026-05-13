@@ -9,6 +9,7 @@ export function reducer(state: TuvalState, action: Action): TuvalState {
         ...state,
         motifs: [...state.motifs, action.motif],
         selectedId: action.motif.id,
+        selectedZoneId: null,
       };
     case "UPDATE_MOTIF":
       return {
@@ -30,7 +31,7 @@ export function reducer(state: TuvalState, action: Action): TuvalState {
       return { ...state, motifs: [...state.motifs, copy], selectedId: copy.id };
     }
     case "SELECT":
-      return { ...state, selectedId: action.id };
+      return { ...state, selectedId: action.id, selectedZoneId: action.id ? null : state.selectedZoneId };
     case "REORDER": {
       const idx = state.motifs.findIndex(m => m.id === action.id);
       if (idx < 0) return state;
@@ -46,14 +47,69 @@ export function reducer(state: TuvalState, action: Action): TuvalState {
     }
     case "SET_GRID":
       return { ...state, gridMode: { ...state.gridMode, ...action.patch } };
+
+    case "ADD_ZONE":
+      return {
+        ...state,
+        zones: [...state.zones, action.zone],
+        selectedZoneId: action.zone.id,
+        selectedId: null,
+      };
+    case "UPDATE_ZONE":
+      return {
+        ...state,
+        zones: state.zones.map(z => z.id === action.id ? { ...z, ...action.patch } : z),
+      };
+    case "UPDATE_ZONE_CORNER":
+      return {
+        ...state,
+        zones: state.zones.map(z => {
+          if (z.id !== action.id) return z;
+          const corners = [...z.corners] as typeof z.corners;
+          corners[action.index] = action.point;
+          return { ...z, corners };
+        }),
+      };
+    case "REMOVE_ZONE":
+      return {
+        ...state,
+        zones: state.zones.filter(z => z.id !== action.id),
+        // Detach motifs that pointed at this zone
+        motifs: state.motifs.map(m => m.zoneId === action.id ? { ...m, zoneId: null } : m),
+        selectedZoneId: state.selectedZoneId === action.id ? null : state.selectedZoneId,
+      };
+    case "DUPLICATE_ZONE": {
+      const src = state.zones.find(z => z.id === action.id);
+      if (!src) return state;
+      const offset = 0.04;
+      const copy: typeof src = {
+        ...src,
+        id: action.newId,
+        name: `${src.name} kopya`,
+        corners: src.corners.map(p => ({
+          x: Math.min(0.98, p.x + offset),
+          y: Math.min(0.98, p.y + offset),
+        })) as typeof src.corners,
+      };
+      return { ...state, zones: [...state.zones, copy], selectedZoneId: copy.id };
+    }
+    case "SELECT_ZONE":
+      return { ...state, selectedZoneId: action.id, selectedId: action.id ? null : state.selectedId };
+
     case "CLEAR":
       return { ...DEFAULT_STATE };
     case "LOAD":
-      return action.state;
+      // backward-compat: older saves may not have zones/selectedZoneId
+      return {
+        ...DEFAULT_STATE,
+        ...action.state,
+        zones: action.state.zones ?? [],
+        selectedZoneId: action.state.selectedZoneId ?? null,
+      };
     default:
       return state;
   }
 }
 
 /** Actions that should not push a new history entry (selection/UI-only). */
-export const TRANSIENT_ACTIONS = new Set<Action["type"]>(["SELECT"]);
+export const TRANSIENT_ACTIONS = new Set<Action["type"]>(["SELECT", "SELECT_ZONE"]);
