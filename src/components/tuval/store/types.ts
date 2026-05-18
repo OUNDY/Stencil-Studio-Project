@@ -35,6 +35,12 @@ export interface MotifInstance {
 
 export type Pt = { x: number; y: number };
 
+export interface ZoneGridOverride {
+  density?: number;     // 3..20
+  color?: string;       // hex
+  opacity?: number;     // 0..1
+}
+
 export interface PaintZone {
   id: string;
   name: string;
@@ -43,6 +49,8 @@ export interface PaintZone {
   fillColor: string | null;     // null = düz boya yok
   fillOpacity: number;          // 0..1
   useGrid: boolean;             // grid bu alana clip-lensin mi
+  /** Bu alana özel grid ayarları — set olmayan alanlar global grid'den miras alınır. */
+  gridOverride?: ZoneGridOverride;
   visible: boolean;
 }
 
