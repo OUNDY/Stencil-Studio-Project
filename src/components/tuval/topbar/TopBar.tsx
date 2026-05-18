@@ -144,6 +144,16 @@ export function TopBar() {
       </Sheet>
 
       <div className="ml-auto flex items-center gap-1">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json,.json"
+          onChange={onImportJsonFile}
+          className="hidden"
+        />
+        <Button size="sm" variant="ghost" onClick={onImportJsonClick} title="JSON içe aktar">
+          <Upload className="h-3.5 w-3.5" /> İçe aktar
+        </Button>
         <Button size="sm" variant="ghost" onClick={onExportJson} title="JSON dışa aktar">
           <Download className="h-3.5 w-3.5" /> JSON
         </Button>
