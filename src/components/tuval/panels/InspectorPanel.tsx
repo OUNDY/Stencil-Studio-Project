@@ -82,6 +82,35 @@ function ZoneInspector({ zone }: { zone: PaintZone }) {
         {zone.useGrid && !state.gridMode.enabled && (
           <p className="text-[10px] text-amber-600">Grid modu kapalı — sol panelden bir motif seçip etkinleştir.</p>
         )}
+        {zone.useGrid && state.gridMode.enabled && (() => {
+          const o = zone.gridOverride ?? {};
+          const density = o.density ?? state.gridMode.density;
+          const opacity = o.opacity ?? state.gridMode.opacity;
+          const color = o.color ?? state.gridMode.color;
+          const setOverride = (patch: Partial<typeof o>) => update({ gridOverride: { ...o, ...patch } });
+          return (
+            <div className="pt-2 space-y-2 border-t border-border">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-medium text-foreground">Alana özel grid</span>
+                {zone.gridOverride && (
+                  <button onClick={() => update({ gridOverride: undefined })} className="text-[10px] text-muted-foreground hover:text-foreground">global'e dön</button>
+                )}
+              </div>
+              <div>
+                <div className="flex justify-between text-[11px] mb-1"><span className="text-muted-foreground">Yoğunluk</span><span className="tabular-nums">{density}</span></div>
+                <input type="range" min={3} max={20} value={density} onChange={(e) => setOverride({ density: Number(e.target.value) })} className="w-full accent-primary" />
+              </div>
+              <div>
+                <div className="flex justify-between text-[11px] mb-1"><span className="text-muted-foreground">Opaklık</span><span className="tabular-nums">{Math.round(opacity * 100)}%</span></div>
+                <input type="range" min={0} max={1} step={0.01} value={opacity} onChange={(e) => setOverride({ opacity: Number(e.target.value) })} className="w-full accent-primary" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-muted-foreground">Renk</span>
+                <input type="color" value={color} onChange={(e) => setOverride({ color: e.target.value })} className="h-6 w-8 rounded cursor-pointer p-0 border-0" />
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Motifs assigned */}

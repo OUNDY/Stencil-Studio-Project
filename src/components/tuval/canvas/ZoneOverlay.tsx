@@ -1,6 +1,7 @@
 import { useTuval } from "../store/TuvalContext";
 import type { Pt } from "../store/types";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { snapStore, snapToStep, alignToPoints } from "../store/snapStore";
 
 interface Props {
   /** Stage pixel size; used to convert normalized corners → screen px. */
@@ -48,22 +49,38 @@ export function ZoneOverlay({ width, height }: Props) {
     const onMove = (e: PointerEvent) => {
       const dx = (e.clientX - drag.startX) / Math.max(1, width);
       const dy = (e.clientY - drag.startY) / Math.max(1, height);
+      const snapOn = snapStore.get();
+      const useStep = snapOn !== e.shiftKey; // Shift toggles snap behaviour
+      const step = 0.02;
+
+      // Reference points for alignment: corners from OTHER zones + center/edges
+      const refs: Pt[] = [];
+      state.zones.forEach(z => {
+        if (z.id === drag.zoneId) return;
+        z.corners.forEach(c => refs.push(c));
+      });
+      refs.push({ x: 0.5, y: 0.5 }, { x: 0, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 0 });
+
       if (drag.cornerIdx === "body") {
+        let ox = dx, oy = dy;
+        if (useStep) { ox = snapToStep(ox, step); oy = snapToStep(oy, step); }
         const newCorners = drag.origCorners.map(p => ({
-          x: Math.min(1, Math.max(0, p.x + dx)),
-          y: Math.min(1, Math.max(0, p.y + dy)),
+          x: Math.min(1, Math.max(0, p.x + ox)),
+          y: Math.min(1, Math.max(0, p.y + oy)),
         })) as [Pt, Pt, Pt, Pt];
         dispatch({ type: "UPDATE_ZONE", id: drag.zoneId, patch: { corners: newCorners } });
       } else {
         const orig = drag.origCorners[drag.cornerIdx];
+        let nx = Math.min(1, Math.max(0, orig.x + dx));
+        let ny = Math.min(1, Math.max(0, orig.y + dy));
+        if (useStep) { nx = snapToStep(nx, step); ny = snapToStep(ny, step); }
+        // Smart alignment to other corners
+        const aligned = alignToPoints({ x: nx, y: ny }, refs);
         dispatch({
           type: "UPDATE_ZONE_CORNER",
           id: drag.zoneId,
           index: drag.cornerIdx,
-          point: {
-            x: Math.min(1, Math.max(0, orig.x + dx)),
-            y: Math.min(1, Math.max(0, orig.y + dy)),
-          },
+          point: aligned,
         });
       }
     };
@@ -74,7 +91,7 @@ export function ZoneOverlay({ width, height }: Props) {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
     };
-  }, [drag, width, height, dispatch]);
+  }, [drag, width, height, dispatch, state.zones]);
 
   return (
     <svg

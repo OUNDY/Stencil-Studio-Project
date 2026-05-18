@@ -114,22 +114,28 @@ function ZoneContent({
           style={{ background: zone.fillColor, opacity: zone.fillOpacity }}
         />
       )}
-      {/* Grid clipped to zone */}
-      {zone.useGrid && grid.enabled && grid.imageUrl && (
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: grid.color,
-            opacity: grid.opacity,
-            WebkitMaskImage: `url(${grid.imageUrl})`,
-            maskImage: `url(${grid.imageUrl})`,
-            WebkitMaskRepeat: "repeat",
-            maskRepeat: "repeat",
-            WebkitMaskSize: `${100 / grid.density}% auto`,
-            maskSize: `${100 / grid.density}% auto`,
-          }}
-        />
-      )}
+      {/* Grid clipped to zone (with optional per-zone override) */}
+      {zone.useGrid && grid.enabled && grid.imageUrl && (() => {
+        const o = zone.gridOverride ?? {};
+        const density = o.density ?? grid.density;
+        const opacity = o.opacity ?? grid.opacity;
+        const color = o.color ?? grid.color;
+        return (
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: color,
+              opacity,
+              WebkitMaskImage: `url(${grid.imageUrl})`,
+              maskImage: `url(${grid.imageUrl})`,
+              WebkitMaskRepeat: "repeat",
+              maskRepeat: "repeat",
+              WebkitMaskSize: `${100 / density}% auto`,
+              maskSize: `${100 / density}% auto`,
+            }}
+          />
+        );
+      })()}
       {/* Motifs assigned to this zone — re-enable pointer events for these */}
       <div className="absolute inset-0" style={{ pointerEvents: "auto" }}>
         {zoneMotifs.map(m => (

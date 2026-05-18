@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Undo2, Redo2, Save, Trash2, Download, FolderOpen, RotateCcw, Sparkles } from "lucide-react";
+import { useRef, useState } from "react";
+import { Undo2, Redo2, Save, Trash2, Download, Upload, FolderOpen, RotateCcw, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTuval } from "../store/TuvalContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { loadProjects, saveProject, deleteProject, type SavedProject } from "../store/persistence";
+import type { TuvalState } from "../store/types";
 import { toast } from "sonner";
 
 export function TopBar() {
@@ -13,6 +14,7 @@ export function TopBar() {
   const [name, setName] = useState("");
   const [projects, setProjects] = useState<SavedProject[]>(() => loadProjects());
   const [openLoad, setOpenLoad] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onSave = () => {
     const finalName = name.trim() || `Tuval ${new Date().toLocaleString("tr-TR")}`;
@@ -73,6 +75,25 @@ export function TopBar() {
     a.href = URL.createObjectURL(blob);
     a.download = `tuval-${Date.now()}.json`;
     a.click();
+    toast.success("JSON dışa aktarıldı");
+  };
+
+  const onImportJsonClick = () => fileInputRef.current?.click();
+  const onImportJsonFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f) return;
+    try {
+      const text = await f.text();
+      const parsed = JSON.parse(text) as Partial<TuvalState>;
+      if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.motifs)) {
+        throw new Error("Geçersiz tuval dosyası");
+      }
+      dispatch({ type: "LOAD", state: parsed as TuvalState });
+      toast.success("Proje içe aktarıldı", { description: f.name });
+    } catch (err) {
+      toast.error("İçe aktarma başarısız", { description: (err as Error).message });
+    }
   };
 
   return (
@@ -123,6 +144,16 @@ export function TopBar() {
       </Sheet>
 
       <div className="ml-auto flex items-center gap-1">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json,.json"
+          onChange={onImportJsonFile}
+          className="hidden"
+        />
+        <Button size="sm" variant="ghost" onClick={onImportJsonClick} title="JSON içe aktar">
+          <Upload className="h-3.5 w-3.5" /> İçe aktar
+        </Button>
         <Button size="sm" variant="ghost" onClick={onExportJson} title="JSON dışa aktar">
           <Download className="h-3.5 w-3.5" /> JSON
         </Button>
